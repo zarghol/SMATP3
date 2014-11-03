@@ -16,14 +16,26 @@ public class Grille {
 				if (a != null) {
 					result.add(a);
 				}
-
 			}
 		}
 		return result;
 	}
 
     public boolean isSolved() {
-        //TODO
-        return false;
+        for (Agent a : this.tab.values()) {
+        	// TODO
+        	if (!a.isHappy()) {
+        		return false;
+        	}
+        }
+        return true;
     }
+
+	public boolean isDestinationPossible(Position position) {
+		return this.tab.get(position) != null;
+	}
+	
+	public Agent getElement(Position position) {
+		return this.tab.get(position);
+	}
 }

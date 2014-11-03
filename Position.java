@@ -1,3 +1,5 @@
+package SMATP3;
+
 
 public class Position {
 	int x;

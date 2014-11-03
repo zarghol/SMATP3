@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Agent extends Thread {
 	ArrayList<Agent> agents;
 	Grille puzzle;
+    MailBox mailbox;
 	private Position position;
 	private Position positionBut;
 	
@@ -25,15 +26,16 @@ public class Agent extends Thread {
 	@Override
 	public void run() {
 		// Tant que le puzzle n'est pas reconstitue
-		
-		// // traiter messages
-		// // verifier
-		// // raisonne
-		// // // si case vers son chemin est libre
-		// // // // in se déplace
-		// // // sinon
-		// // // // on envoit un message
-		// // effectuer les actions
+        while(!puzzle.isSolved()) {
+            // traiter messages
+            // verifier
+            // raisonne
+            // // si case vers son chemin est libre
+            // // // in se déplace
+            // // sinon
+            // // // on envoit un message
+            // effectuer les actions
+        }
 	}
 
 	Position getPositionBut() {

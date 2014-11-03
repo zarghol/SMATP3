@@ -5,14 +5,20 @@ import java.util.HashMap;
 
 
 public class Grille {
-	private HashMap<Position, Agent> tab;
-	private int tailleLigne;
-	
+	private HashMap<Position, Agent> tab;	
 	
 	public ArrayList<Agent> getNeighbourhood(Agent agent) {
 		ArrayList<Agent> result = new ArrayList<Agent>();
-		Position p1 = agent.getPosition();
-		result.add(this.tab.get())
-		return null;
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				Position p = agent.getPosition().cloneadd(i, j);
+				Agent a = this.tab.get(p);
+				if (a != null) {
+					result.add(a);
+				}
+
+			}
+		}
+		return result;
 	}
 }

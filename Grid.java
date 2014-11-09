@@ -4,23 +4,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Grille {
+public class Grid {
 	/** On ne conserve en mémoire que les agents, avec leurs positions */
 	private HashMap<Position, Agent> tab;
 	/** la taille du tableau */
 	private int tabSize;
 	
+	private static Grid instance;
+	
+	public static Grid getInstance() {
+		if (instance == null) {
+			instance = new Grid();
+		}
+		return instance;
+	}
+	
 	/**
 	 * Retourne le voisinage d'un agent
 	 * @param agent l'agent duquel on tire le voisinage
-	 * @return le voisinage d'un agent
+	 * @return l'ensemble des agents autour d'un agent
 	 */
 	public ArrayList<Agent> getNeighbourhood(Agent agent) {
 		ArrayList<Agent> result = new ArrayList<Agent>();
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
 				Position p = agent.getPosition().cloneadd(i, j);
-				Agent a = this.tab.get(p);
+				Agent a = this.getAgent(p);
 				if (a != null) {
 					result.add(a);
 				}
@@ -78,5 +87,13 @@ public class Grille {
 		Agent a = this.getAgent(fromPosition);
 		this.tab.remove(fromPosition);
 		this.tab.put(toPosition, a);
+	}
+	
+	@Override
+	public Object clone() {
+		Grid g = new Grid();
+		g.tabSize = this.tabSize;
+		g.tab = (HashMap<Position, Agent>) this.tab.clone();
+		return g;
 	}
 }

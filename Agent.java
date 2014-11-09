@@ -1,22 +1,25 @@
 package SMATP3;
 
-import java.util.ArrayList;
+import java.util.List;
+
 
 
 public class Agent extends Thread {
-	ArrayList<Agent> agents;
-	Grille puzzle;
-    MailBox mailbox;
+	private int agentId;
 	private Position position;
 	private Position positionBut;
 	
+	private PerceivedEnvironment currentEnvironment;
 	
-	public void communiquer() {
+	
+	public void sendMessage(Agent toAgent) {
 		// envoyer message
+		Message m = new Message(this, toAgent);
+		MailBox.getInstance().postMessage(m);
 	}
 	
 	public void percevoirEnvironnement() {
-		
+		this.currentEnvironment = PerceivedEnvironment.getPerceptionFromAgent(this);
 	}
 	
 	public void modifierEnvironnement() {
@@ -27,6 +30,18 @@ public class Agent extends Thread {
 	public void run() {
 		// Tant que le puzzle n'est pas reconstitue
         while(!this.isHappy()) {
+        	this.percevoirEnvironnement();
+        	if (this.currentEnvironment.getMessagesToRead().size() > 0) {
+        		
+        	} else {
+        		Direction toFollow = Direction.directionDifferential(position, positionBut);
+            	Position newPosition = toFollow.newPosition(position);
+            	if (this.currentEnvironment.getGridVision().isPositionOccupied(newPosition)) {
+            		this.sendMessage(this.currentEnvironment.getGridVision().getAgent(newPosition));
+            	} else {
+            		Grid.getInstance().moveAgent(this.position, newPosition);
+            	}
+        	}
             // traiter messages
             // verifier
             // raisonne
@@ -36,6 +51,10 @@ public class Agent extends Thread {
             // // // on envoit un message
             // effectuer les actions
         }
+	}
+	
+	public int getAgentId() {
+		return this.agentId;
 	}
 	
 	public boolean isHappy() {

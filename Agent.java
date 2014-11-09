@@ -26,7 +26,7 @@ public class Agent extends Thread {
 	@Override
 	public void run() {
 		// Tant que le puzzle n'est pas reconstitue
-        while(!puzzle.isSolved()) {
+        while(!this.isHappy()) {
             // traiter messages
             // verifier
             // raisonne
@@ -37,20 +37,24 @@ public class Agent extends Thread {
             // effectuer les actions
         }
 	}
+	
+	public boolean isHappy() {
+		return this.position.equals(this.positionBut);
+	}
 
-	Position getPositionBut() {
+	public Position getPositionBut() {
 		return positionBut;
 	}
 
-	void setPositionBut(Position positionBut) {
+	public void setPositionBut(Position positionBut) {
 		this.positionBut = positionBut;
 	}
 
-	Position getPosition() {
+	public Position getPosition() {
 		return position;
 	}
 
-	void setPosition(Position position) {
+	public void setPosition(Position position) {
 		this.position = position;
 	}
 }

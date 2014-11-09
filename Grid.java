@@ -3,7 +3,6 @@ package SMATP3;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 public class Grid {
 	/** On ne conserve en mémoire que les agents, avec leurs positions */
 	private HashMap<Position, Agent> tab;

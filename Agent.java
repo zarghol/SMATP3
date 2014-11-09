@@ -1,19 +1,12 @@
 package SMATP3;
 
-import java.util.List;
-
-
-
 public class Agent extends Thread {
 	private int agentId;
 	private Position position;
 	private Position positionBut;
-	
 	private PerceivedEnvironment currentEnvironment;
 	
-	
 	public void sendMessage(Agent toAgent) {
-		// envoyer message
 		Message m = new Message(this, toAgent);
 		MailBox.getInstance().postMessage(m);
 	}
@@ -23,16 +16,16 @@ public class Agent extends Thread {
 	}
 	
 	public void modifierEnvironnement() {
-		
+		// TODO utilisation ? actuellement on fait un moveAgent dans le run
 	}
 	
 	@Override
 	public void run() {
-		// Tant que le puzzle n'est pas reconstitue
+		// Tant que le puzzle n'est pas reconstitue => tant qu'on est pas content : une fois content, on bouge plus ! xD
         while(!this.isHappy()) {
         	this.percevoirEnvironnement();
         	if (this.currentEnvironment.getMessagesToRead().size() > 0) {
-        		
+        		// TODO
         	} else {
         		Direction toFollow = Direction.directionDifferential(position, positionBut);
             	Position newPosition = toFollow.newPosition(position);

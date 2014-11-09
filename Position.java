@@ -1,6 +1,5 @@
 package SMATP3;
 
-
 public class Position {
 	private int x;
 	private int y;
@@ -54,7 +53,4 @@ public class Position {
 			return false;
 		return true;
 	}
-	
-	
-	
 }

@@ -1,6 +1,5 @@
 package SMATP3;
 
-
 public class Message {
 	private Agent emetteur; // Agent
 	private Agent recepteur; // Agent

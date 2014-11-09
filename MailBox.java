@@ -30,5 +30,4 @@ public class MailBox {
     public List<Message> getMessages(Agent a) {
     	return this.box.get(a.getAgentId());
     }
-
 }

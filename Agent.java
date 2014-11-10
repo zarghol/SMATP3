@@ -13,11 +13,13 @@ public class Agent implements Runnable {
 	private BoiteAuxLettres mailbox;
 	private Message lastMessageToRead;
 
-	public Agent(Grid grid, BoiteAuxLettres mailbox, Position positionBut) {
+	public Agent(Grid grid, BoiteAuxLettres mailbox, Position currentPosition, Position aimPosition) {
 		this.agentId = LAST_AGENT_ID++;
 		this.currentVision = null;
 		this.mailbox = mailbox;
-		this.positionBut = positionBut;
+		this.mailbox.ajouterAgent(this);
+		this.positionBut = aimPosition;
+		this.position = currentPosition;
 		this.realGrid = grid;
 	}
 

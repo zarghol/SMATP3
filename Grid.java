@@ -12,15 +12,18 @@ public class Grid {
 	 * la taille du tableau
 	 */
 	private int tabSize;
-
-	private static Grid instance;
-
-	public static Grid getInstance() {
-		if (instance == null) {
-			instance = new Grid();
-		}
-		return instance;
+	
+	public Grid(int tabSize) {
+		this.tab = new HashMap<Position, Agent>();
+		this.tabSize = tabSize;
 	}
+	
+	public void addAgent(Agent a, Position p) {
+		if (this.isAvailableDestination(p)) {
+			this.tab.put(p, a);
+		}
+	}
+	
 
 	/**
 	 * Retourne le voisinage d'un agent
@@ -62,7 +65,7 @@ public class Grid {
 	 * @param position la position de la case
 	 * @return retourne vrai si la position est dans la limite de la grille
 	 */
-	public boolean isDestinationPossible(Position position) {
+	public boolean isAvailableDestination(Position position) {
 		return position.getX() >= 0 && position.getX() < this.tabSize && position.getY() >= 0 && position.getY() < this.tabSize;
 	}
 
@@ -73,7 +76,7 @@ public class Grid {
 	 * @return retourne vrai si la case existe et qu'elle est occupée
 	 */
 	public boolean isPositionOccupied(Position position) {
-		return this.isDestinationPossible(position) && this.tab.containsKey(position);
+		return this.isAvailableDestination(position) && this.tab.containsKey(position);
 	}
 
 	/**
@@ -100,8 +103,7 @@ public class Grid {
 
 	@Override
 	public Object clone() {
-		Grid g = new Grid();
-		g.tabSize = this.tabSize;
+		Grid g = new Grid(this.tabSize);
 		g.tab = (HashMap<Position, Agent>) this.tab.clone();
 		return g;
 	}

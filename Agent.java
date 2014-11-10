@@ -6,14 +6,19 @@ public class Agent implements Runnable {
 	private int agentId;
 	private Position position;
 	private Position positionBut;
-	private PerceivedEnvironment currentEnvironment;
+	
+	private Grid realGrid;
+	private Grid currentVision;
+	
 	private BoiteAuxLettres mailbox;
+	private Message lastMessageToRead;
 
-	public Agent(PerceivedEnvironment currentEnvironment, BoiteAuxLettres mailbox, Position positionBut) {
+	public Agent(Grid grid, BoiteAuxLettres mailbox, Position positionBut) {
 		this.agentId = LAST_AGENT_ID++;
-		this.currentEnvironment = currentEnvironment;
+		this.currentVision = null;
 		this.mailbox = mailbox;
 		this.positionBut = positionBut;
+		this.realGrid = grid;
 	}
 
 	public void envoyerMessage(Agent toAgent) {
@@ -22,7 +27,9 @@ public class Agent implements Runnable {
 	}
 
 	public void percevoirEnvironnement() {
-		this.currentEnvironment = PerceivedEnvironment.getPerceptionFromAgent(this);
+		this.currentVision = (Grid) this.realGrid.clone();
+		// TODO
+		this.lastMessageToRead = this.mailbox.getMessage(this);
 	}
 
 	public void modifierEnvironnement() {
@@ -34,15 +41,15 @@ public class Agent implements Runnable {
 		// Tant que le puzzle n'est pas reconstitue => tant qu'on est pas content : une fois content, on bouge plus ! xD
 		while (!this.estHeureux()) {
 			this.percevoirEnvironnement();
-			if (this.currentEnvironment.getMessagesToRead().size() > 0) {
+			if (this.lastMessageToRead == null) {
 				// TODO
 			} else {
 				Direction toFollow = Direction.directionDifferential(position, positionBut);
 				Position newPosition = toFollow.newPosition(position);
-				if (this.currentEnvironment.getGridVision().isPositionOccupied(newPosition)) {
-					this.envoyerMessage(this.currentEnvironment.getGridVision().getAgent(newPosition));
+				if (this.currentVision.isPositionOccupied(newPosition)) {
+					this.envoyerMessage(this.currentVision.getAgent(newPosition));
 				} else {
-					Grid.getInstance().moveAgent(this.position, newPosition);
+					this.realGrid.moveAgent(this.position, newPosition);
 				}
 			}
 			// traiter messages

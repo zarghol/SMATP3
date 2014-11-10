@@ -4,21 +4,22 @@ public class Agent implements Runnable {
 	private static int LAST_AGENT_ID = 0;
 
 	private final int agentId;
-	private Position position;
-	private Grid realGrid;
-	private Grid currentVision;
-	private Position aimPosition;
-	private PostOffice postOffice;
-	private Message lastMessageToRead;
+	private final Grid grid;
+	private final PostOffice postOffice;
+	private final Position aimPosition;
 
-	public Agent(Grid grid, PostOffice postOffice, Position currentPosition, Position aimPosition) {
+	private Position position;
+	private Grid snapshot;
+
+	public Agent(Grid grid, PostOffice postOffice, Position aimPosition, Position startPosition) {
 		this.agentId = LAST_AGENT_ID++;
-		this.currentVision = null;
-		this.realGrid = grid;
+		this.grid = grid;
 		this.postOffice = postOffice;
 		this.postOffice.addAgent(this);
 		this.aimPosition = aimPosition;
-		this.position = currentPosition;
+
+		this.position = startPosition;
+		this.snapshot = null;
 	}
 
 	public void sendMessage(Agent recipient) {
@@ -27,9 +28,7 @@ public class Agent implements Runnable {
 	}
 
 	public void perceiveEnvironment() {
-		this.currentVision = (Grid) this.realGrid.clone();
-		// TODO
-		this.lastMessageToRead = this.postOffice.getNextMessage(this);
+		this.snapshot = (Grid) this.grid.clone();
 	}
 
 	@Override
@@ -37,15 +36,15 @@ public class Agent implements Runnable {
 		// Tant que le puzzle n'est pas reconstitue => tant qu'on est pas content : une fois content, on bouge plus ! xD
 		while (!this.isHappy()) {
 			this.perceiveEnvironment();
-			if (this.lastMessageToRead == null) {
-				// TODO
+			if (this.postOffice.getNextMessage(this) != null) {
+				// TODO: handle messages
 			} else {
 				Direction toFollow = Direction.directionDifferential(position, aimPosition);
 				Position newPosition = position.move(toFollow);
-				if (this.currentVision.isPositionOccupied(newPosition)) {
-					this.sendMessage(this.currentVision.getAgent(newPosition));
+				if (this.snapshot.isPositionOccupied(newPosition)) {
+					this.sendMessage(this.snapshot.getAgent(newPosition));
 				} else {
-					this.realGrid.moveAgent(this.position, newPosition);
+					this.grid.moveAgent(this.position, newPosition);
 				}
 			}
 			// traiter messages
@@ -69,10 +68,6 @@ public class Agent implements Runnable {
 
 	public Position getAimPosition() {
 		return aimPosition;
-	}
-
-	public void setAimPosition(Position aimPosition) {
-		this.aimPosition = aimPosition;
 	}
 
 	public Position getPosition() {

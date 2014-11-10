@@ -124,8 +124,8 @@ public class Grid {
 		PostOffice po = new PostOffice();
 		ArrayList<Agent> agents = new ArrayList<Agent>();
 		
-		agents.add(new Agent(theGrid, po, new Position(1, 4), new Position(0, 3)));
-		agents.add(new Agent(theGrid, po, new Position(3, 2), new Position(3, 0)));
+		agents.add(new Agent(theGrid, po, new Position(0, 3), new Position(1, 4)));
+		agents.add(new Agent(theGrid, po, new Position(3, 0), new Position(3, 2)));
 		
 		theGrid.addAgents(agents);
 		theGrid.launch();

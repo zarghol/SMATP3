@@ -3,7 +3,7 @@ package SMATP3;
 public class Agent implements Runnable {
 	private static int LAST_AGENT_ID = 0;
 
-	private int agentId;
+	private final int agentId;
 	private Position position;
 	private Grid realGrid;
 	private Grid currentVision;

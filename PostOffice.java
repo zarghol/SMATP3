@@ -16,10 +16,14 @@ public class PostOffice {
 	}
 
 	public void sendMessage(Message message) {
-		this.mailboxes.get(message.getRecipient().getId()).add(message);
+		synchronized (this.mailboxes.get(message.getRecipient().getId())) {
+			this.mailboxes.get(message.getRecipient().getId()).add(message);
+		}
 	}
 
 	public Message getNextMessage(Agent a) {
-		return this.mailboxes.get(a.getId()).remove(0);
+		synchronized (this.mailboxes.get(a.getId())) {
+			return this.mailboxes.get(a.getId()).remove(0);
+		}
 	}
 }

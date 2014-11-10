@@ -40,14 +40,10 @@ public class Grid {
 	 */
 	public ArrayList<Agent> getNeighbourhood(Agent agent) {
 		ArrayList<Agent> result = new ArrayList<Agent>();
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				//TODO: to simplify
-				Position p = agent.getPosition().sum(new Position(i, j));
-				Agent a = this.getAgent(p);
-				if (a != null) {
-					result.add(a);
-				}
+		for (Direction d : Direction.allDirections()) {
+			Agent a = this.getAgent(agent.getPosition().move(d));
+			if (a != null) {
+				result.add(a);
 			}
 		}
 		return result;

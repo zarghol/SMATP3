@@ -27,7 +27,7 @@ public class Agent implements Runnable {
 	public void perceiveEnvironment() {
 		this.currentVision = (Grid) this.realGrid.clone();
 		// TODO
-		this.lastMessageToRead = this.postOffice.getMessage(this);
+		this.lastMessageToRead = this.postOffice.getNextMessage(this);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class Agent implements Runnable {
 				// TODO
 			} else {
 				Direction toFollow = Direction.directionDifferential(position, aimPosition);
-				Position newPosition = toFollow.newPosition(position);
+				Position newPosition = position.move(toFollow);
 				if (this.currentVision.isPositionOccupied(newPosition)) {
 					this.sendMessage(this.currentVision.getAgent(newPosition));
 				} else {

@@ -19,7 +19,7 @@ public class PostOffice {
 		this.mailboxes.get(message.getRecipient().getId()).add(message);
 	}
 
-	public List<Message> getMessages(Agent a) {
-		return this.mailboxes.get(a.getId());
+	public Message getNextMessage(Agent a) {
+		return this.mailboxes.get(a.getId()).remove(0);
 	}
 }

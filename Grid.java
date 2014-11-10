@@ -35,7 +35,8 @@ public class Grid {
 		ArrayList<Agent> result = new ArrayList<Agent>();
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
-				Position p = agent.getPosition().sum(i, j);
+				//TODO: to simplify
+				Position p = agent.getPosition().sum(new Position(i, j));
 				Agent a = this.getAgent(p);
 				if (a != null) {
 					result.add(a);

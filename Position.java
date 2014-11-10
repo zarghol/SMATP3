@@ -43,6 +43,10 @@ public class Position {
 		return result;
 	}
 
+	public Position move(Direction direction) {
+		return this.sum(direction.toPosition());
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

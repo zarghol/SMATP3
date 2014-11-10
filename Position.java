@@ -25,8 +25,13 @@ public class Position {
 		this.y = val;
 	}
 
-	public Position cloneadd(int x, int y) {
-		return new Position(this.x + x, this.y + y);
+	/**
+	 * Makes the sum of the current instance and the one given in parameter.
+	 * @param position The position to sum up with the current one.
+	 * @return A new Position instance containing the sum of the current instance and the one given in parameter
+	 */
+	public Position sum(Position position) {
+		return new Position(this.x + position.getX(), this.y + position.getY());
 	}
 
 	@Override

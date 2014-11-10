@@ -11,7 +11,7 @@ public class Grid {
 	/**
 	 * la taille du tableau
 	 */
-	private int tabSize;
+	private int gridSize;
 
 	private static Grid instance;
 
@@ -32,7 +32,7 @@ public class Grid {
 		ArrayList<Agent> result = new ArrayList<Agent>();
 		for (int i = -1; i <= 1; i++) {
 			for (int j = -1; j <= 1; j++) {
-				Position p = agent.getPosition().cloneadd(i, j);
+				Position p = agent.getPosition().sum(i, j);
 				Agent a = this.getAgent(p);
 				if (a != null) {
 					result.add(a);
@@ -49,7 +49,7 @@ public class Grid {
 	 */
 	public boolean isSolved() {
 		for (Agent a : this.tab.values()) {
-			if (!a.estHeureux()) {
+			if (!a.isHappy()) {
 				return false;
 			}
 		}
@@ -62,8 +62,8 @@ public class Grid {
 	 * @param position la position de la case
 	 * @return retourne vrai si la position est dans la limite de la grille
 	 */
-	public boolean isDestinationPossible(Position position) {
-		return position.getX() >= 0 && position.getX() < this.tabSize && position.getY() >= 0 && position.getY() < this.tabSize;
+	public boolean isDestinationValid(Position position) {
+		return position.getX() >= 0 && position.getX() < this.gridSize && position.getY() >= 0 && position.getY() < this.gridSize;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class Grid {
 	 * @return retourne vrai si la case existe et qu'elle est occupée
 	 */
 	public boolean isPositionOccupied(Position position) {
-		return this.isDestinationPossible(position) && this.tab.containsKey(position);
+		return this.isDestinationValid(position) && this.tab.containsKey(position);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class Grid {
 	@Override
 	public Object clone() {
 		Grid g = new Grid();
-		g.tabSize = this.tabSize;
+		g.gridSize = this.gridSize;
 		g.tab = (HashMap<Position, Agent>) this.tab.clone();
 		return g;
 	}

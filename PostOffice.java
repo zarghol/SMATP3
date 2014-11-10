@@ -1,0 +1,25 @@
+package SMATP3;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
+public class PostOffice {
+	private Hashtable<Integer, List<Message>> mailboxes;
+
+	public PostOffice() {
+		this.mailboxes = new Hashtable<Integer, List<Message>>();
+	}
+
+	public void addAgent(Agent a) {
+		this.mailboxes.put(a.getId(), new ArrayList<Message>());
+	}
+
+	public void sendMessage(Message message) {
+		this.mailboxes.get(message.getRecipient().getId()).add(message);
+	}
+
+	public List<Message> getMessages(Agent a) {
+		return this.mailboxes.get(a.getId());
+	}
+}

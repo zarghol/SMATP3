@@ -5,42 +5,38 @@ public class Agent implements Runnable {
 
 	private int agentId;
 	private Position position;
-	private Position positionBut;
+	private Position aimPosition;
 	private PerceivedEnvironment currentEnvironment;
-	private BoiteAuxLettres mailbox;
+	private PostOffice postOffice;
 
-	public Agent(PerceivedEnvironment currentEnvironment, BoiteAuxLettres mailbox, Position positionBut) {
+	public Agent(PerceivedEnvironment currentEnvironment, PostOffice postOffice, Position aimPosition) {
 		this.agentId = LAST_AGENT_ID++;
 		this.currentEnvironment = currentEnvironment;
-		this.mailbox = mailbox;
-		this.positionBut = positionBut;
+		this.postOffice = postOffice;
+		this.aimPosition = aimPosition;
 	}
 
-	public void envoyerMessage(Agent toAgent) {
-		Message m = new Message(this, toAgent);
-		mailbox.envoyerMessage(m);
+	public void sendMessage(Agent recipient) {
+		Message m = new Message(this, recipient);
+		postOffice.sendMessage(m);
 	}
 
-	public void percevoirEnvironnement() {
+	public void perceiveEnvironment() {
 		this.currentEnvironment = PerceivedEnvironment.getPerceptionFromAgent(this);
-	}
-
-	public void modifierEnvironnement() {
-		// TODO utilisation ? actuellement on fait un moveAgent dans le run
 	}
 
 	@Override
 	public void run() {
 		// Tant que le puzzle n'est pas reconstitue => tant qu'on est pas content : une fois content, on bouge plus ! xD
-		while (!this.estHeureux()) {
-			this.percevoirEnvironnement();
+		while (!this.isHappy()) {
+			this.perceiveEnvironment();
 			if (this.currentEnvironment.getMessagesToRead().size() > 0) {
 				// TODO
 			} else {
-				Direction toFollow = Direction.directionDifferential(position, positionBut);
+				Direction toFollow = Direction.directionDifferential(position, aimPosition);
 				Position newPosition = toFollow.newPosition(position);
 				if (this.currentEnvironment.getGridVision().isPositionOccupied(newPosition)) {
-					this.envoyerMessage(this.currentEnvironment.getGridVision().getAgent(newPosition));
+					this.sendMessage(this.currentEnvironment.getGridVision().getAgent(newPosition));
 				} else {
 					Grid.getInstance().moveAgent(this.position, newPosition);
 				}
@@ -60,16 +56,16 @@ public class Agent implements Runnable {
 		return this.agentId;
 	}
 
-	public boolean estHeureux() {
-		return this.position.equals(this.positionBut);
+	public boolean isHappy() {
+		return this.position.equals(this.aimPosition);
 	}
 
-	public Position getPositionBut() {
-		return positionBut;
+	public Position getAimPosition() {
+		return aimPosition;
 	}
 
-	public void setPositionBut(Position positionBut) {
-		this.positionBut = positionBut;
+	public void setAimPosition(Position aimPosition) {
+		this.aimPosition = aimPosition;
 	}
 
 	public Position getPosition() {

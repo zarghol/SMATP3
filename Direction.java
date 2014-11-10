@@ -38,6 +38,6 @@ public class Direction {
 	}
 
 	public Position newPosition(Position position) {
-		return position.cloneadd(xDir, yDir);
+		return position.sum(xDir, yDir);
 	}
 }

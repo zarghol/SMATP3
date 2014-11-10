@@ -11,7 +11,7 @@ public class PerceivedEnvironment {
 	}
 
 	private PerceivedEnvironment(Agent a) {
-		this.messagesToRead = BoiteAuxLettres.getInstance().getMessages(a);
+		this.messagesToRead = PostOffice.getInstance().getMessages(a);
 		this.gridVision = (Grid) Grid.getInstance().clone();
 	}
 

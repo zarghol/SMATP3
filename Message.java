@@ -1,33 +1,33 @@
 package SMATP3;
 
 public class Message {
-	private Agent emetteur; // Agent
-	private Agent recepteur; // Agent
-	private static String performatif = "Request";
+	private Agent emitter; // Agent
+	private Agent recipient; // Agent
+	private static String performative = "Request";
 	private static String action = "move";
-	private Position positionDepart;
-	private Position positionArrive;
+	private Position startPosition;
+	private Position aimPosition;
 
-	public Message(Agent emetteur, Agent recepteur) {
-		this.emetteur = emetteur;
-		this.recepteur = recepteur;
-		this.positionDepart = emetteur.getPosition();
-		this.positionArrive = recepteur.getPosition();
+	public Message(Agent emitter, Agent recipient) {
+		this.emitter = emitter;
+		this.recipient = recipient;
+		this.startPosition = emitter.getPosition();
+		this.aimPosition = recipient.getPosition();
 	}
 
-	public Agent getEmetteur() {
-		return emetteur;
+	public Agent getEmitter() {
+		return emitter;
 	}
 
-	public Agent getRecepteur() {
-		return recepteur;
+	public Agent getRecipient() {
+		return recipient;
 	}
 
-	public Position getPositionDepart() {
-		return positionDepart;
+	public Position getStartPosition() {
+		return startPosition;
 	}
 
-	public Position getPositionArrive() {
-		return positionArrive;
+	public Position getAimPosition() {
+		return aimPosition;
 	}
 }

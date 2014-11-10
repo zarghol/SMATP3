@@ -2,6 +2,7 @@ package SMATP3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Grid {
 	/**
@@ -17,10 +18,16 @@ public class Grid {
 		this.agents = new HashMap<Position, Agent>();
 		this.gridSize = gridSize;
 	}
+
+	public void addAgent(Agent a) {
+		if (this.isDestinationValid(a.getPosition())) {
+			this.agents.put(a.getPosition(), a);
+		}
+	}
 	
-	public void addAgent(Agent a, Position p) {
-		if (this.isDestinationValid(p)) {
-			this.agents.put(p, a);
+	public void addAgents(List<Agent> agents) {
+		for (Agent a : agents) {
+			this.addAgent(a);
 		}
 	}
 	
@@ -107,5 +114,24 @@ public class Grid {
 		Grid g = new Grid(this.gridSize);
 		g.agents = (HashMap<Position, Agent>) this.agents.clone();
 		return g;
+	}
+	
+	public void launch() {
+		for (Agent ag : this.agents.values()) {
+			Thread t = new Thread(ag);
+			t.run();
+		}
+	}
+	
+	public static void main(String[] args) {
+		Grid theGrid = new Grid(5);
+		PostOffice po = new PostOffice();
+		ArrayList<Agent> agents = new ArrayList<Agent>();
+		
+		agents.add(new Agent(theGrid, po, new Position(1, 4), new Position(0, 3)));
+		agents.add(new Agent(theGrid, po, new Position(3, 2), new Position(3, 0)));
+		
+		theGrid.addAgents(agents);
+		theGrid.launch();
 	}
 }

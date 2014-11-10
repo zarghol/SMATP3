@@ -11,12 +11,14 @@ public class Agent implements Runnable {
 	private PostOffice postOffice;
 	private Message lastMessageToRead;
 
-	public Agent(Grid grid, PostOffice postOffice, Position aimPosition) {
+	public Agent(Grid grid, PostOffice postOffice, Position currentPosition, Position aimPosition) {
 		this.agentId = LAST_AGENT_ID++;
 		this.currentVision = null;
 		this.realGrid = grid;
 		this.postOffice = postOffice;
+		this.postOffice.addAgent(this);
 		this.aimPosition = aimPosition;
+		this.position = currentPosition;
 	}
 
 	public void sendMessage(Agent recipient) {

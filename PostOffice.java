@@ -23,7 +23,12 @@ public class PostOffice {
 
 	public Message getNextMessage(Agent a) {
 		synchronized (this.mailboxes.get(a.getId())) {
-			return this.mailboxes.get(a.getId()).remove(0);
+			List<Message> mailbox = this.mailboxes.get(a.getId());
+			if(mailbox.isEmpty()) {
+				return null;
+			}
+
+			return mailbox.remove(0);
 		}
 	}
 }

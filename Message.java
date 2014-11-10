@@ -7,14 +7,14 @@ public class Message {
 	private static String action = "move";
 	private Position positionDepart;
 	private Position positionArrive;
-	
+
 	public Message(Agent emetteur, Agent recepteur) {
 		this.emetteur = emetteur;
 		this.recepteur = recepteur;
 		this.positionDepart = emetteur.getPosition();
 		this.positionArrive = recepteur.getPosition();
 	}
-	
+
 	public Agent getEmetteur() {
 		return emetteur;
 	}

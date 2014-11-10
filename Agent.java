@@ -5,13 +5,16 @@ public class Agent implements Runnable {
 
 	private int agentId;
 	private Position position;
+	private Grid realGrid;
+	private Grid currentVision;
 	private Position aimPosition;
-	private PerceivedEnvironment currentEnvironment;
 	private PostOffice postOffice;
+	private Message lastMessageToRead;
 
-	public Agent(PerceivedEnvironment currentEnvironment, PostOffice postOffice, Position aimPosition) {
+	public Agent(Grid grid, PostOffice postOffice, Position aimPosition) {
 		this.agentId = LAST_AGENT_ID++;
-		this.currentEnvironment = currentEnvironment;
+		this.currentVision = null;
+		this.realGrid = grid;
 		this.postOffice = postOffice;
 		this.aimPosition = aimPosition;
 	}
@@ -22,7 +25,9 @@ public class Agent implements Runnable {
 	}
 
 	public void perceiveEnvironment() {
-		this.currentEnvironment = PerceivedEnvironment.getPerceptionFromAgent(this);
+		this.currentVision = (Grid) this.realGrid.clone();
+		// TODO
+		this.lastMessageToRead = this.postOffice.getMessage(this);
 	}
 
 	@Override
@@ -30,15 +35,15 @@ public class Agent implements Runnable {
 		// Tant que le puzzle n'est pas reconstitue => tant qu'on est pas content : une fois content, on bouge plus ! xD
 		while (!this.isHappy()) {
 			this.perceiveEnvironment();
-			if (this.currentEnvironment.getMessagesToRead().size() > 0) {
+			if (this.lastMessageToRead == null) {
 				// TODO
 			} else {
 				Direction toFollow = Direction.directionDifferential(position, aimPosition);
 				Position newPosition = toFollow.newPosition(position);
-				if (this.currentEnvironment.getGridVision().isPositionOccupied(newPosition)) {
-					this.sendMessage(this.currentEnvironment.getGridVision().getAgent(newPosition));
+				if (this.currentVision.isPositionOccupied(newPosition)) {
+					this.sendMessage(this.currentVision.getAgent(newPosition));
 				} else {
-					Grid.getInstance().moveAgent(this.position, newPosition);
+					this.realGrid.moveAgent(this.position, newPosition);
 				}
 			}
 			// traiter messages

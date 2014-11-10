@@ -7,20 +7,23 @@ public class Grid {
 	/**
 	 * On ne conserve en mémoire que les agents, avec leurs positions
 	 */
-	private HashMap<Position, Agent> tab;
+	private HashMap<Position, Agent> agents;
 	/**
 	 * la taille du tableau
 	 */
 	private int gridSize;
-
-	private static Grid instance;
-
-	public static Grid getInstance() {
-		if (instance == null) {
-			instance = new Grid();
-		}
-		return instance;
+	
+	public Grid(int gridSize) {
+		this.agents = new HashMap<Position, Agent>();
+		this.gridSize = gridSize;
 	}
+	
+	public void addAgent(Agent a, Position p) {
+		if (this.isDestinationValid(p)) {
+			this.agents.put(p, a);
+		}
+	}
+	
 
 	/**
 	 * Retourne le voisinage d'un agent
@@ -48,7 +51,7 @@ public class Grid {
 	 * @return un booleen montrant l'avancement du puzzle
 	 */
 	public boolean isSolved() {
-		for (Agent a : this.tab.values()) {
+		for (Agent a : this.agents.values()) {
 			if (!a.isHappy()) {
 				return false;
 			}
@@ -73,7 +76,7 @@ public class Grid {
 	 * @return retourne vrai si la case existe et qu'elle est occupée
 	 */
 	public boolean isPositionOccupied(Position position) {
-		return this.isDestinationValid(position) && this.tab.containsKey(position);
+		return this.isDestinationValid(position) && this.agents.containsKey(position);
 	}
 
 	/**
@@ -83,7 +86,7 @@ public class Grid {
 	 * @return l'agent demandé
 	 */
 	public Agent getAgent(Position position) {
-		return this.tab.get(position);
+		return this.agents.get(position);
 	}
 
 	/**
@@ -94,15 +97,14 @@ public class Grid {
 	 */
 	public void moveAgent(Position fromPosition, Position toPosition) {
 		Agent a = this.getAgent(fromPosition);
-		this.tab.remove(fromPosition);
-		this.tab.put(toPosition, a);
+		this.agents.remove(fromPosition);
+		this.agents.put(toPosition, a);
 	}
 
 	@Override
 	public Object clone() {
-		Grid g = new Grid();
-		g.gridSize = this.gridSize;
-		g.tab = (HashMap<Position, Agent>) this.tab.clone();
+		Grid g = new Grid(this.gridSize);
+		g.agents = (HashMap<Position, Agent>) this.agents.clone();
 		return g;
 	}
 }

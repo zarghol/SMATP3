@@ -1,33 +1,35 @@
 package SMATP3;
 
 public class Message {
-	private Agent emitter; // Agent
-	private Agent recipient; // Agent
+//TODO: On va avoir besoin de de différents types de messages => héritage
 	private static String performative = "Request";
 	private static String action = "move";
-	private Position startPosition;
-	private Position aimPosition;
 
-	public Message(Agent emitter, Agent recipient) {
-		this.emitter = emitter;
-		this.recipient = recipient;
-		this.startPosition = emitter.getPosition();
-		this.aimPosition = recipient.getPosition();
+	private final int emitterId;
+	private final int recipientId;
+//	private Position startPosition;
+//	private Position aimPosition;
+
+	public Message(int emitterId, int recipientId) {
+		this.emitterId = emitterId;
+		this.recipientId = recipientId;
+//		this.startPosition = emitterId.getPosition();
+//		this.aimPosition = recipientId.getPosition();
 	}
 
-	public Agent getEmitter() {
-		return emitter;
+	public int getEmitterId() {
+		return emitterId;
 	}
 
-	public Agent getRecipient() {
-		return recipient;
+	public int getRecipientId() {
+		return recipientId;
 	}
 
-	public Position getStartPosition() {
-		return startPosition;
-	}
+//	public Position getStartPosition() {
+//		return startPosition;
+//	}
 
-	public Position getAimPosition() {
-		return aimPosition;
-	}
+//	public Position getAimPosition() {
+//		return aimPosition;
+//	}
 }

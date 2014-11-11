@@ -11,19 +11,32 @@ public class PostOffice {
 		this.mailboxes = new Hashtable<Integer, List<Message>>();
 	}
 
-	public void addAgent(Agent a) {
-		this.mailboxes.put(a.getId(), new ArrayList<Message>());
+	/**
+	 * Ajoute un agent emetteur/récepteur de messages.
+	 * @param agent L'agent à ajouter à la boîte aux lettres.
+	 */
+	public void addAgent(Agent agent) {
+		this.mailboxes.put(agent.getId(), new ArrayList<Message>());
 	}
 
+	/**
+	 * Envoie un message à un agent.
+	 * @param message Le message à transmettre.
+	 */
 	public void sendMessage(Message message) {
-		synchronized (this.mailboxes.get(message.getRecipient().getId())) {
-			this.mailboxes.get(message.getRecipient().getId()).add(message);
+		synchronized (this.mailboxes.get(message.getRecipientId())) {
+			this.mailboxes.get(message.getRecipientId()).add(message);
 		}
 	}
 
-	public Message getNextMessage(Agent a) {
-		synchronized (this.mailboxes.get(a.getId())) {
-			List<Message> mailbox = this.mailboxes.get(a.getId());
+	/**
+	 * Renvoie le message suivant destiné à un agent.
+	 * @param agent L'agent dont on veut le prochain message non lu.
+	 * @return Le prochain message non lu ou null si la boite aux lettres est vide.
+	 */
+	public Message getNextMessage(Agent agent) {
+		synchronized (this.mailboxes.get(agent.getId())) {
+			List<Message> mailbox = this.mailboxes.get(agent.getId());
 			if(mailbox.isEmpty()) {
 				return null;
 			}

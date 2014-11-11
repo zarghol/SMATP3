@@ -18,7 +18,7 @@ public enum Direction {
 	}
 
 	public Position toPosition() {
-		return new Position(xDir,yDir);
+		return new Position(xDir, yDir);
 	}
 
 	public static Direction directionDifferential(Position from, Position to) {

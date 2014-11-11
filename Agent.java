@@ -9,7 +9,7 @@ public class Agent implements Runnable {
 	private final Position aimPosition;
 
 	private Position position;
-	private Grid snapshot;
+	private Snapshot snapshot;
 
 	public Agent(Grid grid, PostOffice postOffice, Position aimPosition, Position startPosition) {
 		this.agentId = LAST_AGENT_ID++;
@@ -22,13 +22,14 @@ public class Agent implements Runnable {
 		this.snapshot = null;
 	}
 
-	public void sendMessage(Agent recipient) {
-		Message m = new Message(this, recipient);
+	public void sendMessage(int recipient) {
+//TODO: Spécifier le type de message. On pourra le construire via un builder...
+		Message m = new Message(this.agentId, recipient);
 		postOffice.sendMessage(m);
 	}
 
 	public void perceiveEnvironment() {
-		this.snapshot = (Grid) this.grid.clone();
+		this.snapshot = new Snapshot(this.grid);
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class Agent implements Runnable {
 				Direction toFollow = Direction.directionDifferential(position, aimPosition);
 				Position newPosition = position.move(toFollow);
 				if (this.snapshot.isPositionOccupied(newPosition)) {
-					this.sendMessage(this.snapshot.getAgent(newPosition));
+					this.sendMessage(this.snapshot.getAgentId(newPosition));
 				} else {
 					this.grid.moveAgent(this.position, newPosition);
 				}

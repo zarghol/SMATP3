@@ -9,6 +9,11 @@ public class Position {
 		this.y = y;
 	}
 
+	public Position(Position p) {
+		this.x = p.x;
+		this.y = p.y;
+	}
+
 	public int getX() {
 		return this.x;
 	}
@@ -44,22 +49,35 @@ public class Position {
 	}
 
 	public Position move(Direction direction) {
+//TODO: Trouver un meilleur nom... Finalement, ça porte à confusion
 		return this.sum(direction.toPosition());
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+//TODO: À éclaircir...
+		if (obj == null) {
+			return false;
+		}
+
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+
+		if (getClass() != obj.getClass()) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
+
 		Position other = (Position) obj;
-		if (x != other.x)
+
+		if (x != other.x) {
 			return false;
-		if (y != other.y)
+		}
+
+		if (y != other.y) {
 			return false;
+		}
+
 		return true;
 	}
 }

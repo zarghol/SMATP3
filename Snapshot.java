@@ -44,7 +44,7 @@ public class Snapshot {
 	 * @param position La position de l'agent dont on veut l'id.
 	 * @return L'id de l'agent demandé.
 	 */
-	public Integer getAgentId(Position position) {
+	public int getAgentId(Position position) {
 		return this.positions.get(position);
 	}
 

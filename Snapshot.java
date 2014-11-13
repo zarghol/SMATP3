@@ -42,10 +42,11 @@ public class Snapshot {
 	 * Renvoie l'id d'un agent à une position donnée.
 	 *
 	 * @param position La position de l'agent dont on veut l'id.
-	 * @return L'id de l'agent demandé.
+	 * @return L'id de l'agent demandé, ou -1 si l'agent n'existe pas à cette position.
 	 */
-	public Integer getAgentId(Position position) {
-		return this.positions.get(position);
+	public int getAgentId(Position position) {
+		Integer id = this.positions.get(position);
+		return (id == null ? -1 : id);
 	}
 
 	/**
@@ -78,11 +79,11 @@ public class Snapshot {
 			string += "[";
 			for (int j = 0; j < this.gridSize; j++) {
 				Position p = new Position(j, i);
-				if (this.getAgentId(p) == null) {
+				int agentId = this.getAgentId(p);
+				if (agentId == -1) {
 					string += " ";
 				} else {
-					// TODO: getSymbol from Agent
-					string += "x";
+					string += Agent.getSymbol(agentId);
 				}
 			}
 			string += "]\n";

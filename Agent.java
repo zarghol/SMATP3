@@ -99,7 +99,11 @@ public class Agent implements Runnable {
 	}
 	
 	public String getSymbol() {
-		char code = (char) (this.agentId + 65);
+		return Agent.getSymbol(this.agentId);
+	}
+	
+	public static String getSymbol(int agentId) {
+		char code = (char) ((agentId % 26) + 65);
 		Character c = new Character(code);
 		return "" + c;
 	}

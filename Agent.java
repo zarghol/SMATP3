@@ -1,5 +1,6 @@
 package SMATP3;
 
+
 public class Agent implements Runnable {
 	private static int LAST_AGENT_ID = 0;
 
@@ -25,16 +26,19 @@ public class Agent implements Runnable {
 
 		this.position = startPosition;
 		this.snapshot = null;
+		this.strategy = null;
 	}
 
 	public void sendMessage(int recipient) {
-//TODO: Spécifier le type de message. On pourra le construire via un builder...
-		Message m = new Message(this.agentId, recipient);
+		this.talk("sending mail to Agent " + recipient);
+		Message m = MessageBuilder.createMessage(true, this.agentId, recipient);
+
 		postOffice.sendMessage(m);
 	}
 	
 	private void handleMessage(Message message) {
-		//TODO: handle messages
+		this.talk("handling mail from Agent " + message.getEmitterId());
+		this.strategy.handleMessage(message, this);
 	}
 	
 	public boolean handlePostOffice() {
@@ -58,7 +62,8 @@ public class Agent implements Runnable {
 		// Tant que le puzzle n'est pas reconstitue => tant qu'on est pas content : une fois content, on bouge plus ! xD
 		while (!this.isHappy()) {
 			this.perceiveEnvironment();
-			this.strategy.reflexionAction(this.snapshot, this);
+			this.talk("strategy : " + this.strategy.getName());
+			this.strategy.reflexionAction(this);
 			// traiter messages
 			// verifier
 			// raisonne
@@ -68,6 +73,11 @@ public class Agent implements Runnable {
 			// // // on envoit un message
 			// effectuer les actions
 		}
+	}
+	
+	public void move(Position toPosition) {
+		this.talk("moving Agent " + this.agentId + " from " + this.position + " to " + toPosition);
+		this.grid.moveAgent(this.position, toPosition);
 	}
 
 	public int getId() {
@@ -92,6 +102,10 @@ public class Agent implements Runnable {
 	
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+	
+	public Snapshot getSnapshot() {
+		return this.snapshot;
 	}
 	
 	public void setStrategy(ThinkingStragegy strategy) {

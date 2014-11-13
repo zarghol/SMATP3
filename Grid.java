@@ -24,6 +24,10 @@ public class Grid extends Snapshot {
 			this.addAgent(a);
 		}
 	}
+	
+	public Agent getAgent(int agentId) {
+		return this.agents.get(agentId);
+	}
 
 	/**
 	 * Deplace un agent d'une case à une autre
@@ -52,6 +56,10 @@ public class Grid extends Snapshot {
 		
 		agents.add(new Agent(theGrid, po, new Position(0, 3), new Position(1, 4)));
 		agents.add(new Agent(theGrid, po, new Position(3, 0), new Position(3, 2)));
+		
+		for (Agent a : agents) {
+			a.setStrategy(new SimpleStrategy());
+		}
 		
 		theGrid.addAgents(agents);
 		theGrid.launch(true);

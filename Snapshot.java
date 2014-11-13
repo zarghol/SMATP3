@@ -24,11 +24,11 @@ public class Snapshot {
 	/**
 	 * Retourne le voisinage d'une case
 	 *
-	 * @param position La dont on on tire le voisinage
+	 * @param position La position dont on on tire le voisinage
 	 * @return L'ensemble des identifiants des agents autour de la position
 	 */
 	public ArrayList<Integer> getNeighbourhood(Position positionChecked) {
-		ArrayList<Integer> neighbourhood = new ArrayList<>();
+		ArrayList<Integer> neighbourhood = new ArrayList<Integer>();
 		for (Direction d : Direction.allDirections()) {
 			Position neighbourPosition = positionChecked.towardDirection(d);
 			if (this.positions.containsKey(neighbourPosition)) {
@@ -37,6 +37,25 @@ public class Snapshot {
 		}
 		return neighbourhood;
 	}
+	
+	/**
+	 * Retourne le voisinage vide d'une case
+	 *
+	 * @param position La position dont on on tire le voisinage
+	 * @return L'ensemble des Positions libre autour de la position
+	 */
+	public ArrayList<Position> getEmptyNeighbourhood(Position positionChecked) {
+		ArrayList<Position> neighbourhood = new ArrayList<Position>();
+		for (Direction d : Direction.allDirections()) {
+			Position neighbourPosition = positionChecked.towardDirection(d);
+			if (!this.positions.containsKey(neighbourPosition)) {
+				neighbourhood.add(neighbourPosition);
+			}
+		}
+		return neighbourhood;
+	}
+	
+	
 
 	/**
 	 * Renvoie l'id d'un agent à une position donnée.

@@ -48,8 +48,7 @@ public class Position {
 		return result;
 	}
 
-	public Position move(Direction direction) {
-//TODO: Trouver un meilleur nom... Finalement, ça porte à confusion
+	public Position towardDirection(Direction direction) {
 		return this.sum(direction.toPosition());
 	}
 
@@ -64,10 +63,7 @@ public class Position {
 		}
 
 		Position other = (Position) obj;
-		if(x != other.x || y != other.y) {
-			return false;
-		}
+		return this.x == other.x && this.y == other.y;
 
-		return true;
 	}
 }

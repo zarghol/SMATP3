@@ -10,7 +10,7 @@ public class Snapshot {
 	protected int gridSize;
 
 	public Snapshot(int gridSize) {
-		this.positions = new HashMap<>();
+		this.positions = new HashMap<Position, Integer>();
 		this.gridSize = gridSize;
 	}
 
@@ -22,30 +22,50 @@ public class Snapshot {
 	}
 
 	/**
-	 * Retourne le voisinage d'un agent
+	 * Retourne le voisinage d'une case
 	 *
-	 * @param agent L'agent duquel on tire le voisinage
-	 * @return L'ensemble des agents autour d'un agent
+	 * @param positionChecked La position dont on on tire le voisinage
+	 * @return L'ensemble des identifiants des agents autour de la position
 	 */
-	public ArrayList<Integer> getNeighbourhood(Agent agent) {
-		ArrayList<Integer> neighbourhood = new ArrayList<>();
+	public ArrayList<Integer> getNeighbourhood(Position positionChecked) {
+		ArrayList<Integer> neighbourhood = new ArrayList<Integer>();
 		for (Direction d : Direction.allDirections()) {
-			Position neighbourPosition = agent.getPosition().move(d);
+			Position neighbourPosition = positionChecked.towardDirection(d);
 			if (this.positions.containsKey(neighbourPosition)) {
 				neighbourhood.add(this.positions.get(neighbourPosition));
 			}
 		}
 		return neighbourhood;
 	}
+	
+	/**
+	 * Retourne le voisinage vide d'une case
+	 *
+	 * @param positionChecked La position dont on on tire le voisinage
+	 * @return L'ensemble des positions libres autour de la position indiquée
+	 */
+	public ArrayList<Position> getEmptyNeighbourhood(Position positionChecked) {
+		ArrayList<Position> neighbourhood = new ArrayList<Position>();
+		for (Direction d : Direction.allDirections()) {
+			Position neighbourPosition = positionChecked.towardDirection(d);
+			if (!this.positions.containsKey(neighbourPosition)) {
+				neighbourhood.add(neighbourPosition);
+			}
+		}
+		return neighbourhood;
+	}
+	
+	
 
 	/**
 	 * Renvoie l'id d'un agent à une position donnée.
 	 *
 	 * @param position La position de l'agent dont on veut l'id.
-	 * @return L'id de l'agent demandé.
+	 * @return L'id de l'agent demandé, ou NO_AGENT (-1) si aucun agent ne se trouve à cette position.
 	 */
 	public int getAgentId(Position position) {
-		return this.positions.get(position);
+		Integer id = this.positions.get(position);
+		return (id == null ? Agent.NO_AGENT : id);
 	}
 
 	/**
@@ -70,4 +90,28 @@ public class Snapshot {
 				&& position.getY() >= 0
 				&& position.getY() < this.gridSize;
 	}
+
+	@Override
+	public String toString() {
+		String string = "";
+		for (int i = 0; i < this.gridSize; i++) {
+			string += "[";
+			for (int j = 0; j < this.gridSize; j++) {
+				Position p = new Position(j, i);
+				int agentId = this.getAgentId(p);
+				if (agentId == -1) {
+					string += " ";
+				} else {
+					string += Agent.getSymbol(agentId);
+				}
+			}
+			string += "]\n";
+		}
+		
+		
+		return string;
+	}
+	
+	
+	
 }

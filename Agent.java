@@ -1,9 +1,10 @@
 package SMATP3;
 
 import SMATP3.messages.Message;
-import SMATP3.messages.MoveRequestMessage;
+import SMATP3.strategies.ThinkingStrategy;
 
 public class Agent implements Runnable {
+	public static int NO_AGENT = -1;
 	private static int LAST_AGENT_ID = 0;
 
 	private final int agentId;
@@ -13,6 +14,10 @@ public class Agent implements Runnable {
 
 	private Position position;
 	private Snapshot snapshot;
+	
+	private ThinkingStrategy strategy;
+	
+	private boolean verbose;
 
 	public Agent(Grid grid, PostOffice postOffice, Position aimPosition, Position startPosition) {
 		this.agentId = LAST_AGENT_ID++;
@@ -20,49 +25,59 @@ public class Agent implements Runnable {
 		this.postOffice = postOffice;
 		this.postOffice.addAgent(this);
 		this.aimPosition = aimPosition;
+		this.verbose = false;
 
 		this.position = startPosition;
 		this.snapshot = null;
+		this.strategy = null;
 	}
 
-	public void sendMessage(Message message) {
-//TODO: Spécifier le type de message. On pourra le construire via un builder...
+//TODO: Discuter du protocole de communication...
+//	public void sendMessage(Message message) {
+//		postOffice.sendMessage(message);
+//	}
 
+	public void sendMessage(int recipient) {
+		this.talk("sending mail to Agent " + recipient);
+		Message m = MessageBuilder.createMessage(true, this.agentId, recipient);
 
-		postOffice.sendMessage(message);
+		postOffice.sendMessage(m);
+	}
+	
+	private void handleMessage(Message message) {
+		this.talk("handling mail from Agent " + message.getEmitterId());
+		this.strategy.handleMessage(message, this);
+	}
+	
+	public boolean handlePostOffice() {
+		Message m = this.postOffice.getNextMessage(this);
+		
+		if (m != null) {
+			this.handleMessage(m);
+			return true;
+		}
+		return false;
 	}
 
 	public void perceiveEnvironment() {
+		this.talk("getting snapshot");
 		this.snapshot = new Snapshot(this.grid);
+		this.talk("snapshot received");
 	}
 
 	@Override
 	public void run() {
-		// Tant que le puzzle n'est pas reconstitue => tant qu'on est pas content : une fois content, on bouge plus ! xD
+		// Tant que le puzzle n'est pas reconstitué => tant qu'on n'est pas content : une fois content, on bouge plus ! xD
 		while (!this.isHappy()) {
 			this.perceiveEnvironment();
-			if (this.postOffice.getNextMessage(this) != null) {
-				// TODO: gérer les messages
-			} else {
-				Direction toFollow = Direction.directionDifferential(position, aimPosition);
-				Position newPosition = position.move(toFollow);
-				if (this.snapshot.isPositionOccupied(newPosition)) {
-					Message message = new MoveRequestMessage(this
-							.setRecipientId(recipient);
-					this.sendMessage(this.snapshot.getAgentId(newPosition));
-				} else {
-					this.grid.moveAgent(this.position, newPosition);
-				}
-			}
-			// traiter messages
-			// verifier
-			// raisonne
-			// // si case vers son chemin est libre
-			// // // in se déplace
-			// // sinon
-			// // // on envoit un message
-			// effectuer les actions
+			this.talk("strategy : " + this.strategy.getName());
+			this.strategy.reflexionAction(this);
 		}
+	}
+	
+	public void move(Position toPosition) {
+		this.talk("moving Agent " + this.agentId + " from " + this.position + " to " + toPosition);
+		this.grid.moveAgent(this.position, toPosition);
 	}
 
 	public int getId() {
@@ -83,5 +98,32 @@ public class Agent implements Runnable {
 
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+	
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
+	
+	public Snapshot getSnapshot() {
+		return this.snapshot;
+	}
+	
+	public void setStrategy(ThinkingStrategy strategy) {
+		this.strategy = strategy;
+	}
+	
+	public String getSymbol() {
+		return Agent.getSymbol(this.agentId);
+	}
+	
+	public static String getSymbol(int agentId) {
+		char code = (char) ((agentId % 26) + 65);
+		return Character.toString(code);
+	}
+	
+	private void talk(String stringToSay) {
+		if (this.verbose) {
+			System.out.println("agent " + this.agentId + " : " + stringToSay);
+		}
 	}
 }

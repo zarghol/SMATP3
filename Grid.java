@@ -1,11 +1,12 @@
 package SMATP3;
 
+import SMATP3.strategies.SimpleStrategy;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Grid extends Snapshot {
-//TODO: Créer une méthode pour obtenir un Snapshot de la Grid (sans copier les agents)
 
 	private HashMap<Integer, Agent> agents;
 
@@ -25,6 +26,10 @@ public class Grid extends Snapshot {
 			this.addAgent(a);
 		}
 	}
+	
+	public Agent getAgent(int agentId) {
+		return this.agents.get(agentId);
+	}
 
 	/**
 	 * Deplace un agent d'une case à une autre
@@ -38,8 +43,9 @@ public class Grid extends Snapshot {
 		this.positions.put(to, agentId);
 	}
 	
-	public void launch() {
+	public void launch(boolean verbose) {
 		for (Agent agent : this.agents.values()) {
+			agent.setVerbose(verbose);
 			Thread t = new Thread(agent);
 			t.run();
 		}
@@ -53,8 +59,12 @@ public class Grid extends Snapshot {
 		agents.add(new Agent(theGrid, po, new Position(0, 3), new Position(1, 4)));
 		agents.add(new Agent(theGrid, po, new Position(3, 0), new Position(3, 2)));
 		
+		for (Agent a : agents) {
+			a.setStrategy(new SimpleStrategy());
+		}
+		
 		theGrid.addAgents(agents);
-		theGrid.launch();
+		theGrid.launch(true);
 	}
 
 	/**
@@ -63,12 +73,17 @@ public class Grid extends Snapshot {
 	 * @return un booleen montrant l'avancement du puzzle
 	 */
 	public boolean isSolved() {
-//TODO: Ne pourrait-on pas le remonter dans Snapshot ?
+		// Ne pourrait-on pas le remonter dans Snapshot ? 
+		// Non, car on a pas les agents donc peut pas déterminer si c'est ok ou pas pour eux
 		for (Agent a : this.agents.values()) {
 			if (!a.isHappy()) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public Snapshot getSnapshot() {
+		return new Snapshot(this);
 	}
 }

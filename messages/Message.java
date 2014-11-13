@@ -1,20 +1,23 @@
 package SMATP3.messages;
 
+/*
+TODO: On va avoir besoin de de différents types de messages => héritage
+Tried : useless
+À discuter en effet. Ca dépend du protocole de communication et de la variété des messages...
+*/
+
 public abstract class Message {
+	// TODO: use Enumerations
 	private final String performative;
 	private final Action action;
 	private final int emitterId;
 	private final int recipientId;
-//	private Position startPosition;
-//	private Position aimPosition;
 
 	public Message(String performative, Action action, int emitterId, int recipientId) {
 		this.performative = performative;
 		this.action = action;
 		this.emitterId = emitterId;
 		this.recipientId = recipientId;
-//		this.startPosition = emitterId.getPosition();
-//		this.aimPosition = recipientId.getPosition();
 	}
 
 	public int getEmitterId() {
@@ -25,11 +28,11 @@ public abstract class Message {
 		return recipientId;
 	}
 
-//	public Position getStartPosition() {
-//		return startPosition;
-//	}
-
-//	public Position getAimPosition() {
-//		return aimPosition;
-//	}
+	public String getPerformative() {
+		return performative;
+	}
+	
+	public Action getAction() {
+		return action;
+	}
 }

@@ -10,7 +10,7 @@ public class Snapshot {
 	protected int gridSize;
 
 	public Snapshot(int gridSize) {
-		this.positions = new HashMap<>();
+		this.positions = new HashMap<Position, Integer>();
 		this.gridSize = gridSize;
 	}
 
@@ -22,15 +22,15 @@ public class Snapshot {
 	}
 
 	/**
-	 * Retourne le voisinage d'un agent
+	 * Retourne le voisinage d'une case
 	 *
-	 * @param agent L'agent duquel on tire le voisinage
-	 * @return L'ensemble des agents autour d'un agent
+	 * @param position La dont on on tire le voisinage
+	 * @return L'ensemble des identifiants des agents autour de la position
 	 */
-	public ArrayList<Integer> getNeighbourhood(Agent agent) {
+	public ArrayList<Integer> getNeighbourhood(Position positionChecked) {
 		ArrayList<Integer> neighbourhood = new ArrayList<>();
 		for (Direction d : Direction.allDirections()) {
-			Position neighbourPosition = agent.getPosition().move(d);
+			Position neighbourPosition = positionChecked.towardDirection(d);
 			if (this.positions.containsKey(neighbourPosition)) {
 				neighbourhood.add(this.positions.get(neighbourPosition));
 			}

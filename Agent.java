@@ -10,6 +10,10 @@ public class Agent implements Runnable {
 
 	private Position position;
 	private Snapshot snapshot;
+	
+	private ThinkingStragegy strategy;
+	
+	private boolean verbose;
 
 	public Agent(Grid grid, PostOffice postOffice, Position aimPosition, Position startPosition) {
 		this.agentId = LAST_AGENT_ID++;
@@ -17,6 +21,7 @@ public class Agent implements Runnable {
 		this.postOffice = postOffice;
 		this.postOffice.addAgent(this);
 		this.aimPosition = aimPosition;
+		this.verbose = false;
 
 		this.position = startPosition;
 		this.snapshot = null;
@@ -27,9 +32,25 @@ public class Agent implements Runnable {
 		Message m = new Message(this.agentId, recipient);
 		postOffice.sendMessage(m);
 	}
+	
+	private void handleMessage(Message message) {
+		//TODO: handle messages
+	}
+	
+	public boolean handlePostOffice() {
+		Message m = this.postOffice.getNextMessage(this);
+		
+		if (m != null) {
+			this.handleMessage(m);
+			return true;
+		}
+		return false;
+	}
 
 	public void perceiveEnvironment() {
+		this.talk("getting snapshot");
 		this.snapshot = new Snapshot(this.grid);
+		this.talk("snapshot received");
 	}
 
 	@Override
@@ -37,17 +58,7 @@ public class Agent implements Runnable {
 		// Tant que le puzzle n'est pas reconstitue => tant qu'on est pas content : une fois content, on bouge plus ! xD
 		while (!this.isHappy()) {
 			this.perceiveEnvironment();
-			if (this.postOffice.getNextMessage(this) != null) {
-				// TODO: handle messages
-			} else {
-				Direction toFollow = Direction.directionDifferential(position, aimPosition);
-				Position newPosition = position.move(toFollow);
-				if (this.snapshot.isPositionOccupied(newPosition)) {
-					this.sendMessage(this.snapshot.getAgentId(newPosition));
-				} else {
-					this.grid.moveAgent(this.position, newPosition);
-				}
-			}
+			this.strategy.reflexionAction(this.snapshot, this);
 			// traiter messages
 			// verifier
 			// raisonne
@@ -77,5 +88,19 @@ public class Agent implements Runnable {
 
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+	
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
+	
+	public void setStrategy(ThinkingStragegy strategy) {
+		this.strategy = strategy;
+	}
+	
+	private void talk(String stringToSay) {
+		if (this.verbose) {
+			System.out.println("agent " + this.agentId + " : " + stringToSay);
+		}
 	}
 }

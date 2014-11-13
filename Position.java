@@ -48,36 +48,18 @@ public class Position {
 		return result;
 	}
 
-	public Position move(Direction direction) {
-//TODO: Trouver un meilleur nom... Finalement, ça porte à confusion
+	public Position towardDirection(Direction direction) {
 		return this.sum(direction.toPosition());
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-//TODO: À éclaircir...
-		if (obj == null) {
-			return false;
-		}
-
-		if (this == obj) {
-			return true;
-		}
-
-		if (getClass() != obj.getClass()) {
+		if (this.getClass() != obj.getClass()) {
 			return false;
 		}
 
 		Position other = (Position) obj;
 
-		if (x != other.x) {
-			return false;
-		}
-
-		if (y != other.y) {
-			return false;
-		}
-
-		return true;
+		return this.x == other.x && this.y == other.y;
 	}
 }

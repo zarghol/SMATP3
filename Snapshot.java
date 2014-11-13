@@ -70,4 +70,28 @@ public class Snapshot {
 				&& position.getY() >= 0
 				&& position.getY() < this.gridSize;
 	}
+
+	@Override
+	public String toString() {
+		String string = "";
+		for (int i = 0; i < this.gridSize; i++) {
+			string += "[";
+			for (int j = 0; j < this.gridSize; j++) {
+				Position p = new Position(j, i);
+				if (this.getAgentId(p) == null) {
+					string += " ";
+				} else {
+					// TODO: getSymbol from Agent
+					string += "x";
+				}
+			}
+			string += "]\n";
+		}
+		
+		
+		return string;
+	}
+	
+	
+	
 }

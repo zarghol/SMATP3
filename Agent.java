@@ -98,6 +98,12 @@ public class Agent implements Runnable {
 		this.strategy = strategy;
 	}
 	
+	public String getSymbol() {
+		char code = (char) (this.agentId + 65);
+		Character c = new Character(code);
+		return "" + c;
+	}
+	
 	private void talk(String stringToSay) {
 		if (this.verbose) {
 			System.out.println("agent " + this.agentId + " : " + stringToSay);

@@ -1,16 +1,16 @@
-package SMATP3;
+package SMATP3.messages;
 
-public class Message {
-//TODO: On va avoir besoin de de différents types de messages => héritage
-	private static String performative = "Request";
-	private static String action = "move";
-
+public abstract class Message {
+	private final String performative;
+	private final Action action;
 	private final int emitterId;
 	private final int recipientId;
 //	private Position startPosition;
 //	private Position aimPosition;
 
-	public Message(int emitterId, int recipientId) {
+	public Message(String performative, Action action, int emitterId, int recipientId) {
+		this.performative = performative;
+		this.action = action;
 		this.emitterId = emitterId;
 		this.recipientId = recipientId;
 //		this.startPosition = emitterId.getPosition();

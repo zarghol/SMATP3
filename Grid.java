@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Grid extends Snapshot {
-//TODO: create a method to get a snapshot of the grid (without copying the agents)
+//TODO: Créer une méthode pour obtenir un Snapshot de la Grid (sans copier les agents)
 
 	private HashMap<Integer, Agent> agents;
 

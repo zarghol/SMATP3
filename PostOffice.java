@@ -1,5 +1,7 @@
 package SMATP3;
 
+import SMATP3.messages.Message;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;

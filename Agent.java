@@ -1,5 +1,8 @@
 package SMATP3;
 
+import SMATP3.messages.Message;
+import SMATP3.messages.MoveRequestMessage;
+
 public class Agent implements Runnable {
 	private static int LAST_AGENT_ID = 0;
 
@@ -22,10 +25,11 @@ public class Agent implements Runnable {
 		this.snapshot = null;
 	}
 
-	public void sendMessage(int recipient) {
+	public void sendMessage(Message message) {
 //TODO: Spécifier le type de message. On pourra le construire via un builder...
-		Message m = new Message(this.agentId, recipient);
-		postOffice.sendMessage(m);
+
+
+		postOffice.sendMessage(message);
 	}
 
 	public void perceiveEnvironment() {
@@ -38,11 +42,13 @@ public class Agent implements Runnable {
 		while (!this.isHappy()) {
 			this.perceiveEnvironment();
 			if (this.postOffice.getNextMessage(this) != null) {
-				// TODO: handle messages
+				// TODO: gérer les messages
 			} else {
 				Direction toFollow = Direction.directionDifferential(position, aimPosition);
 				Position newPosition = position.move(toFollow);
 				if (this.snapshot.isPositionOccupied(newPosition)) {
+					Message message = new MoveRequestMessage(this
+							.setRecipientId(recipient);
 					this.sendMessage(this.snapshot.getAgentId(newPosition));
 				} else {
 					this.grid.moveAgent(this.position, newPosition);

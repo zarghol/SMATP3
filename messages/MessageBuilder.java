@@ -1,4 +1,4 @@
-package SMATP3;
+package SMATP3.messages;
 
 import SMATP3.messages.Message;
 import SMATP3.messages.MoveRequestMessage;

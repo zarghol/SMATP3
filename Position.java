@@ -1,14 +1,24 @@
 package SMATP3;
 
 public class Position {
+
 	private int x;
 	private int y;
 
+	/**
+	 * Constructor.
+	 * @param x X coordinate.
+	 * @param y Y coordinate.
+	 */
 	public Position(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param p The position to copy.
+	 */
 	public Position(Position p) {
 		this.x = p.x;
 		this.y = p.y;
@@ -33,7 +43,7 @@ public class Position {
 	/**
 	 * Makes the sum of the current instance and the one given in parameter.
 	 * @param position The position to sum up with the current one.
-	 * @return A new Position instance containing the sum of the current instance and the one given in parameter
+	 * @return A new Position instance containing the sum of the current instance and the one given in parameter.
 	 */
 	public Position sum(Position position) {
 		return new Position(this.x + position.getX(), this.y + position.getY());
@@ -48,6 +58,11 @@ public class Position {
 		return result;
 	}
 
+	/**
+	 * Get the position next to actual position in the given direction.
+	 * @param direction The direction to look for.
+	 * @return A new Position instance, one step from the actual one in the given direction.
+	 */
 	public Position towardDirection(Direction direction) {
 		return this.sum(direction.toPosition());
 	}

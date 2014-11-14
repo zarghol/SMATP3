@@ -7,8 +7,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class PostOffice {
-	private Hashtable<Integer, List<Message>> mailboxes;
 
+	private Hashtable<Integer, List<Message>> mailboxes;
 	public PostOffice() {
 		this.mailboxes = new Hashtable<Integer, List<Message>>();
 	}

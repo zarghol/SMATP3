@@ -9,11 +9,19 @@ public class Snapshot {
 	protected HashMap<Position, Integer> positions;
 	protected int gridSize;
 
+	/**
+	 * Constructor.
+	 * @param gridSize The dimension of the grid.
+	 */
 	public Snapshot(int gridSize) {
 		this.positions = new HashMap<Position, Integer>();
 		this.gridSize = gridSize;
 	}
 
+	/**
+	 * Copy constructor.
+	 * @param snapshot The Snapshot to copy.
+	 */
 	public Snapshot(Snapshot snapshot) {
 		for (Map.Entry<Position, Integer> entry : snapshot.positions.entrySet()) {
 			this.positions.put(new Position(entry.getKey()), entry.getValue());
@@ -22,10 +30,10 @@ public class Snapshot {
 	}
 
 	/**
-	 * Retourne le voisinage d'une case
+	 * Retourne le voisinage d'une case.
 	 *
-	 * @param positionChecked La position dont on on tire le voisinage
-	 * @return L'ensemble des identifiants des agents autour de la position
+	 * @param positionChecked La position dont on on tire le voisinage.
+	 * @return L'ensemble des identifiants des agents autour de la position.
 	 */
 	public ArrayList<Integer> getNeighbourhood(Position positionChecked) {
 		ArrayList<Integer> neighbourhood = new ArrayList<Integer>();
@@ -39,10 +47,10 @@ public class Snapshot {
 	}
 	
 	/**
-	 * Retourne le voisinage vide d'une case
+	 * Retourne le voisinage vide d'une case.
 	 *
-	 * @param positionChecked La position dont on on tire le voisinage
-	 * @return L'ensemble des positions libres autour de la position indiquée
+	 * @param positionChecked La position dont on on tire le voisinage.
+	 * @return L'ensemble des positions libres autour de la position indiquée.
 	 */
 	public ArrayList<Position> getEmptyNeighbourhood(Position positionChecked) {
 		ArrayList<Position> neighbourhood = new ArrayList<Position>();
@@ -69,20 +77,20 @@ public class Snapshot {
 	}
 
 	/**
-	 * Trouve si une case est occupée
+	 * Trouve si une case est occupée.
 	 *
-	 * @param position la position de la case a vérifier
-	 * @return retourne vrai si la case existe et qu'elle est occupée
+	 * @param position la position de la case a vérifier.
+	 * @return retourne vrai si la case existe et qu'elle est occupée.
 	 */
 	public boolean isPositionOccupied(Position position) {
 		return this.positions.containsKey(position);
 	}
 
 	/**
-	 * Trouve si une case dans la grille existe
+	 * Détermine si une case dans la grille existe.
 	 *
-	 * @param position la position de la case
-	 * @return retourne vrai si la position est dans la limite de la grille
+	 * @param position la position de la case.
+	 * @return retourne vrai si la position est dans la limite de la grille.
 	 */
 	public boolean isPositionValid(Position position) {
 		return position.getX() >= 0
@@ -111,7 +119,4 @@ public class Snapshot {
 		
 		return string;
 	}
-	
-	
-	
 }

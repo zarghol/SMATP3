@@ -1,6 +1,7 @@
 package SMATP3;
 
 import SMATP3.messages.Message;
+import SMATP3.messages.MessageBuilder;
 import SMATP3.strategies.ThinkingStrategy;
 
 public class Agent implements Runnable {

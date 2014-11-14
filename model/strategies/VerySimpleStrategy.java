@@ -2,7 +2,7 @@ package SMATP3.model.strategies;
 
 import SMATP3.model.Agent;
 import SMATP3.model.Direction;
-import SMATP3.model.Position;
+import SMATP3.Position;
 import SMATP3.model.messages.Message;
 
 public class VerySimpleStrategy implements ThinkingStrategy {

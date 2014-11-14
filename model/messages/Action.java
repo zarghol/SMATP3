@@ -1,4 +1,4 @@
-package SMATP3.messages;
+package SMATP3.model.messages;
 
 public enum Action {
 	MOVE("move");

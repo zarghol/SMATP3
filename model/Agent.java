@@ -1,7 +1,7 @@
-package SMATP3;
+package SMATP3.model;
 
-import SMATP3.messages.Message;
-import SMATP3.strategies.ThinkingStrategy;
+import SMATP3.model.messages.Message;
+import SMATP3.model.strategies.ThinkingStrategy;
 
 public class Agent implements Runnable {
 	public static int NO_AGENT = -1;

@@ -1,4 +1,4 @@
-package SMATP3;
+package SMATP3.model;
 
 public class Position {
 

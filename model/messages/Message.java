@@ -1,6 +1,6 @@
-package SMATP3.messages;
+package SMATP3.model.messages;
 
-import SMATP3.Agent;
+import SMATP3.model.Agent;
 
 import java.util.ArrayList;
 import java.util.List;

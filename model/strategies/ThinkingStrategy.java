@@ -1,7 +1,7 @@
-package SMATP3.strategies;
+package SMATP3.model.strategies;
 
-import SMATP3.Agent;
-import SMATP3.messages.Message;
+import SMATP3.model.Agent;
+import SMATP3.model.messages.Message;
 
 public interface ThinkingStrategy {
 	public void reflexionAction(Agent agent);

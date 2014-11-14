@@ -1,4 +1,4 @@
-package SMATP3;
+package SMATP3.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class Snapshot {
 	 */
 	public ArrayList<Integer> getNeighbourhood(Position positionChecked) {
 		ArrayList<Integer> neighbourhood = new ArrayList<Integer>();
-		for (Direction d : Direction.allDirections()) {
+		for (Direction d : Direction.values()) {
 			Position neighbourPosition = positionChecked.towardDirection(d);
 			if (this.positions.containsKey(neighbourPosition)) {
 				neighbourhood.add(this.positions.get(neighbourPosition));
@@ -54,7 +54,7 @@ public class Snapshot {
 	 */
 	public ArrayList<Position> getEmptyNeighbourhood(Position positionChecked) {
 		ArrayList<Position> neighbourhood = new ArrayList<Position>();
-		for (Direction d : Direction.allDirections()) {
+		for (Direction d : Direction.values()) {
 			Position neighbourPosition = positionChecked.towardDirection(d);
 			if (!this.positions.containsKey(neighbourPosition)) {
 				neighbourhood.add(neighbourPosition);

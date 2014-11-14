@@ -1,6 +1,6 @@
-package SMATP3;
+package SMATP3.model;
 
-import SMATP3.strategies.SimpleStrategy;
+import SMATP3.model.strategies.SimpleStrategy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

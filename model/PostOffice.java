@@ -1,6 +1,6 @@
-package SMATP3;
+package SMATP3.model;
 
-import SMATP3.messages.Message;
+import SMATP3.model.messages.Message;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

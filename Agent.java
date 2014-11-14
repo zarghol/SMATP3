@@ -44,16 +44,12 @@ public class Agent implements Runnable {
 		postOffice.sendMessage(m);
 	}
 	
-	private void handleMessage(Message message) {
-		this.talk("handling mail from Agent " + message.getEmitterId());
-		this.strategy.handleMessage(message, this);
-	}
-	
-	public boolean handlePostOffice() {
-		Message m = this.postOffice.getNextMessage(this);
+	public boolean handleMessages() {
+		Message message = this.postOffice.getNextMessage(this);
 		
-		if (m != null) {
-			this.handleMessage(m);
+		if (message != null) {
+			this.talk("handling mail from Agent " + message.getEmitterId());
+			this.strategy.handleMessage(message, this);
 			return true;
 		}
 		return false;

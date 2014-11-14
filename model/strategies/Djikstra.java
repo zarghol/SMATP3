@@ -1,12 +1,12 @@
-package SMATP3.strategies;
+package SMATP3.model.strategies;
 
-import java.util.PriorityQueue;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.PriorityQueue;
 
-import SMATP3.Position;
-import SMATP3.Snapshot;
+import SMATP3.model.Position;
+import SMATP3.model.Snapshot;
 
 class Vertex implements Comparable<Vertex> {
     private final Position position;

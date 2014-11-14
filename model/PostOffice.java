@@ -1,14 +1,14 @@
-package SMATP3;
+package SMATP3.model;
 
-import SMATP3.messages.Message;
+import SMATP3.model.messages.Message;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 public class PostOffice {
-	private Hashtable<Integer, List<Message>> mailboxes;
 
+	private Hashtable<Integer, List<Message>> mailboxes;
 	public PostOffice() {
 		this.mailboxes = new Hashtable<Integer, List<Message>>();
 	}
@@ -26,8 +26,10 @@ public class PostOffice {
 	 * @param message Le message à transmettre.
 	 */
 	public void sendMessage(Message message) {
-		synchronized (this.mailboxes.get(message.getRecipientId())) {
-			this.mailboxes.get(message.getRecipientId()).add(message);
+		for(int id : message.getRecipientIds()) {
+			synchronized (this.mailboxes.get(id)) {
+				this.mailboxes.get(id).add(message);
+			}
 		}
 	}
 

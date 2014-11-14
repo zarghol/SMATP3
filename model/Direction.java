@@ -1,7 +1,4 @@
-package SMATP3;
-
-import java.util.ArrayList;
-import java.util.List;
+package SMATP3.model;
 
 public enum Direction {
 	UP(0, 1),
@@ -40,14 +37,5 @@ public enum Direction {
 				return Direction.DOWN;
 			}
 		}
-	}
-	
-	public static List<Direction> allDirections() {
-		ArrayList<Direction> directions = new ArrayList<Direction>();
-		directions.add(UP);
-		directions.add(RIGHT);
-		directions.add(LEFT);
-		directions.add(DOWN);
-		return directions;
 	}
 }

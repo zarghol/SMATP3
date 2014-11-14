@@ -1,30 +1,38 @@
 package SMATP3.model;
 
+import SMATP3.Position;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Snapshot {
 
-	protected HashMap<Position, Integer> positions;
-	protected int gridSize;
+	protected final Object lockPositions = new Object();
+	protected final int gridSize;
+
+	protected Map<Position, Integer> positions;
 
 	/**
 	 * Constructor.
+	 *
 	 * @param gridSize The dimension of the grid.
 	 */
 	public Snapshot(int gridSize) {
-		this.positions = new HashMap<Position, Integer>();
 		this.gridSize = gridSize;
+		this.positions = new HashMap<Position, Integer>();
 	}
 
 	/**
 	 * Copy constructor.
+	 *
 	 * @param snapshot The Snapshot to copy.
 	 */
 	public Snapshot(Snapshot snapshot) {
-		for (Map.Entry<Position, Integer> entry : snapshot.positions.entrySet()) {
-			this.positions.put(new Position(entry.getKey()), entry.getValue());
+		synchronized (snapshot.lockPositions) {
+			for (Map.Entry<Position, Integer> entry : snapshot.positions.entrySet()) {
+				this.positions.put(new Position(entry.getKey()), entry.getValue());
+			}
 		}
 		this.gridSize = snapshot.gridSize;
 	}
@@ -36,16 +44,21 @@ public class Snapshot {
 	 * @return L'ensemble des identifiants des agents autour de la position.
 	 */
 	public ArrayList<Integer> getNeighbourhood(Position positionChecked) {
+//TODO: Déterminer s'il faut mettre toute la méthode dans synchronized ou seulement la ligne utilisant this.positions
 		ArrayList<Integer> neighbourhood = new ArrayList<Integer>();
+		Integer id;
 		for (Direction d : Direction.values()) {
 			Position neighbourPosition = positionChecked.towardDirection(d);
-			if (this.positions.containsKey(neighbourPosition)) {
-				neighbourhood.add(this.positions.get(neighbourPosition));
+			synchronized (this.lockPositions) {
+				id = this.positions.get(neighbourPosition);
+			}
+			if (id != null) {
+				neighbourhood.add(id);
 			}
 		}
 		return neighbourhood;
 	}
-	
+
 	/**
 	 * Retourne le voisinage vide d'une case.
 	 *
@@ -53,17 +66,36 @@ public class Snapshot {
 	 * @return L'ensemble des positions libres autour de la position indiquée.
 	 */
 	public ArrayList<Position> getEmptyNeighbourhood(Position positionChecked) {
+//TODO: Déterminer s'il faut mettre toute la méthode dans synchronized ou seulement la ligne utilisant this.positions
 		ArrayList<Position> neighbourhood = new ArrayList<Position>();
+		boolean isEmpty;
 		for (Direction d : Direction.values()) {
 			Position neighbourPosition = positionChecked.towardDirection(d);
-			if (!this.positions.containsKey(neighbourPosition)) {
-				neighbourhood.add(neighbourPosition);
+			if (isPositionValid(neighbourPosition)) {
+				synchronized (this.lockPositions) {
+					isEmpty = !this.positions.containsKey(neighbourPosition);
+				}
+				if (isEmpty) {
+					neighbourhood.add(neighbourPosition);
+				}
 			}
 		}
 		return neighbourhood;
 	}
-	
-	
+
+	/**
+	 * Déplace un agent d'une case à une autre.
+	 *
+	 * @param from Position d'origine de l'agent.
+	 * @param to   Position de destination de l'agent.
+	 */
+	public void moveAgent(Position from, Position to) {
+		int agentId = this.getAgentId(from);
+		synchronized (this.lockPositions) {
+			this.positions.remove(from);
+			this.positions.put(to, agentId);
+		}
+	}
 
 	/**
 	 * Renvoie l'id d'un agent à une position donnée.
@@ -72,7 +104,10 @@ public class Snapshot {
 	 * @return L'id de l'agent demandé, ou NO_AGENT (-1) si aucun agent ne se trouve à cette position.
 	 */
 	public int getAgentId(Position position) {
-		Integer id = this.positions.get(position);
+		Integer id;
+		synchronized (this.lockPositions) {
+			id = this.positions.get(position);
+		}
 		return (id == null ? Agent.NO_AGENT : id);
 	}
 
@@ -83,7 +118,9 @@ public class Snapshot {
 	 * @return retourne vrai si la case existe et qu'elle est occupée.
 	 */
 	public boolean isPositionOccupied(Position position) {
-		return this.positions.containsKey(position);
+		synchronized (this.lockPositions) {
+			return this.positions.containsKey(position);
+		}
 	}
 
 	/**
@@ -115,8 +152,6 @@ public class Snapshot {
 			}
 			string += "]\n";
 		}
-		
-		
 		return string;
 	}
 }

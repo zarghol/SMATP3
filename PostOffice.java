@@ -26,8 +26,10 @@ public class PostOffice {
 	 * @param message Le message à transmettre.
 	 */
 	public void sendMessage(Message message) {
-		synchronized (this.mailboxes.get(message.getRecipientId())) {
-			this.mailboxes.get(message.getRecipientId()).add(message);
+		for(int id : message.getRecipientIds()) {
+			synchronized (this.mailboxes.get(id)) {
+				this.mailboxes.get(id).add(message);
+			}
 		}
 	}
 

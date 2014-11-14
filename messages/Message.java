@@ -1,34 +1,48 @@
 package SMATP3.messages;
 
-/*
-TODO: On va avoir besoin de de différents types de messages => héritage
-Tried : useless
-À discuter en effet. Ca dépend du protocole de communication et de la variété des messages...
-*/
+import SMATP3.Agent;
 
-public abstract class Message {
-	// TODO: use Enumerations
-	private final String performative;
-	private final Action action;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Message {
+
 	private final int emitterId;
-	private final int recipientId;
 
-	public Message(String performative, Action action, int emitterId, int recipientId) {
+	private List<Integer> recipientIds;
+	private Performative performative;
+	private Action action;
+
+	/**
+	 * Constructor.
+	 * @param emitter The message emitter.
+	 */
+	public Message(Agent emitter) {
+		this.emitterId = emitter.getId();
+		this.recipientIds = new ArrayList<Integer>();
+	}
+
+	public void addRecipientId(int recipientId) {
+		this.recipientIds.add(recipientId);
+	}
+
+	public void setPerformative(Performative performative) {
 		this.performative = performative;
+	}
+
+	public void setAction(Action action) {
 		this.action = action;
-		this.emitterId = emitterId;
-		this.recipientId = recipientId;
 	}
 
 	public int getEmitterId() {
 		return emitterId;
 	}
 
-	public int getRecipientId() {
-		return recipientId;
+	public List<Integer> getRecipientIds() {
+		return recipientIds;
 	}
 
-	public String getPerformative() {
+	public Performative getPerformative() {
 		return performative;
 	}
 	

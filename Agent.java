@@ -1,7 +1,6 @@
 package SMATP3;
 
 import SMATP3.messages.Message;
-import SMATP3.messages.MessageBuilder;
 import SMATP3.strategies.ThinkingStrategy;
 
 public class Agent implements Runnable {
@@ -33,16 +32,27 @@ public class Agent implements Runnable {
 		this.strategy = null;
 	}
 
-//TODO: Discuter du protocole de communication...
-//	public void sendMessage(Message message) {
-//		postOffice.sendMessage(message);
-//	}
+	@Override
+	public void run() {
+		// Tant que le puzzle n'est pas reconstitué => tant qu'on n'est pas content : une fois content, on bouge plus ! xD
+		while (!this.isHappy()) {
+			this.perceiveEnvironment();
+			this.talk("strategy : " + this.strategy.getName());
+			this.strategy.reflexionAction(this);
+		}
+	}
 
-	public void sendMessage(int recipient) {
-		this.talk("sending mail to Agent " + recipient);
-		Message m = MessageBuilder.createMessage(true, this.agentId, recipient);
+	public Message getNewMessage() {
+		return new Message(this);
+	}
 
-		postOffice.sendMessage(m);
+	public void sendMessage(Message message) {
+		StringBuilder sb = new StringBuilder();
+		for(int id : message.getRecipientIds()) {
+			sb.append(" ").append(id);
+		}
+		this.talk("sending mail to following agents :" + sb.toString());
+		postOffice.sendMessage(message);
 	}
 	
 	private void handleMessage(Message message) {
@@ -66,16 +76,6 @@ public class Agent implements Runnable {
 		this.talk("snapshot received");
 	}
 
-	@Override
-	public void run() {
-		// Tant que le puzzle n'est pas reconstitué => tant qu'on n'est pas content : une fois content, on bouge plus ! xD
-		while (!this.isHappy()) {
-			this.perceiveEnvironment();
-			this.talk("strategy : " + this.strategy.getName());
-			this.strategy.reflexionAction(this);
-		}
-	}
-	
 	public void move(Position toPosition) {
 		this.talk("moving Agent " + this.agentId + " from " + this.position + " to " + toPosition);
 		this.grid.moveAgent(this.position, toPosition);

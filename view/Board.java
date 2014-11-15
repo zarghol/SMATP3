@@ -1,8 +1,10 @@
 package SMATP3.view;
 
 import SMATP3.Position;
+import SMATP3.model.Snapshot;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +17,8 @@ public class Board extends JPanel {
 		super(true); // Double-buffered
 		cells = new HashMap<Position, Cell>(boardSize * boardSize);
 		setLayout(new GridLayout(boardSize, boardSize, 1, 1));
-		for(int column=0; column<boardSize; ++column) {
-			for(int row=0; row<boardSize; ++row) {
+		for(int column = 0; column < boardSize; ++column) {
+			for(int row = 0; row < boardSize; ++row) {
 				Cell cell = new Cell();
 				cells.put(new Position(column, row), cell);
 				add(cell);

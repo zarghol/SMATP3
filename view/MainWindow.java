@@ -26,8 +26,4 @@ public class MainWindow extends JFrame {
 
 		pack();
 	}
-
-	public static void main(String[] args) {
-		new MainWindow().setVisible(true);
-	}
 }

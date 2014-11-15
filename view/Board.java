@@ -1,19 +1,43 @@
 package SMATP3.view;
 
+import SMATP3.Position;
+
 import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Board extends JPanel {
 
-	private static int DEFAULT_CELL_SIZE = 60;
-
-	private int boardSize;
-	private double zoomFactor;
+	private final Map<Position, Cell> cells;
 
 	public Board(int boardSize) {
 		super(true); // Double-buffered
-		this.boardSize = boardSize;
-		this.zoomFactor = 1.0;
+		cells = new HashMap<Position, Cell>(boardSize * boardSize);
+		setLayout(new GridLayout(boardSize, boardSize, 1, 1));
+		for(int column=0; column<boardSize; ++column) {
+			for(int row=0; row<boardSize; ++row) {
+				Cell cell = new Cell();
+				cells.put(new Position(column, row), cell);
+				add(cell);
+			}
+		}
+
+		//-------- Demonstration
+		Color c1 = Color.getHSBColor(0.625f, 0.75f, 1.0f);
+		Color c2 = Color.getHSBColor(0.0f, 0.75f, 1.0f);
+		cells.get(new Position(2, 1)).setAimColor(c1);
+		cells.get(new Position(3, 3)).setAimColor(c2);
+		cells.get(new Position(0, 0)).setAgentColor(c1);
+		cells.get(new Position(2, 1)).setAgentColor(c2);
+		//----------------------
 	}
 
-	//TODO: Dessiner le plateau
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		g.setColor(Color.LIGHT_GRAY);
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+	}
 }

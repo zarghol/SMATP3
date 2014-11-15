@@ -15,11 +15,19 @@ public class MainWindow extends JFrame {
 
 	public MainWindow() throws HeadlessException {
 		setTitle("SMA TP3");
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setResizable(false);
 
 		board = new Board(5);
 
 		getContentPane().setLayout(new BorderLayout(LAYOUT_SPACING, LAYOUT_SPACING));
 		getContentPane().add(board, BorderLayout.CENTER);
 //		getContentPane().add(controlPanel, BorderLayout.WEST);
+
+		pack();
+	}
+
+	public static void main(String[] args) {
+		new MainWindow().setVisible(true);
 	}
 }

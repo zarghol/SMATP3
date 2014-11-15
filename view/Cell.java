@@ -1,6 +1,9 @@
 package SMATP3.view;
 
 import javax.swing.*;
+
+import SMATP3.model.Agent;
+
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
@@ -60,5 +63,11 @@ public class Cell extends JLabel {
 			g2d.setColor(aimColor);
 			g2d.fill(AIM_ICON);
 		}
+	}
+	
+	
+	public static Color colorForAgent(int agentId) {
+		System.out.println(agentId);
+		return Color.decode("" + agentId);
 	}
 }

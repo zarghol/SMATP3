@@ -32,7 +32,7 @@ public class Controller {
 		//this.applyStrategy(SimpleStrategy.class);
 		this.grid.addAgents(this.agents);
 		
-		this.window = new MainWindow();
+		this.window = new MainWindow(this.grid);
 		this.window.setVisible(true);
 	}
 	

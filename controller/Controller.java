@@ -12,36 +12,37 @@ import SMATP3.model.PostOffice;
 import SMATP3.model.strategies.*;
 import SMATP3.view.MainWindow;
 
+import javax.swing.*;
+
 // TODO: linking entre la maj de la grille et l'affichage dans le Window
-public class Controller implements ActionListener {
+public class Controller {
 	private MainWindow window;
 	private Grid grid;
-	private PostOffice postOffice;
-	private List<Agent> agents;
-	
-	
-	public Controller() {
-		this.grid = new Grid(5);
-		this.postOffice = new PostOffice();
-		this.agents = new ArrayList<Agent>();
+	private LaunchAction launchAction = new LaunchAction();
+	private StepAction stepAction = new StepAction();
 
-		this.agents.add(new Agent(this.grid, this.postOffice, new Position(0, 3), new Position(1, 4)));
-		this.agents.add(new Agent(this.grid, this.postOffice, new Position(3, 0), new Position(3, 2)));
-		this.agents.add(new Agent(this.grid, this.postOffice, new Position(1, 2), new Position(2, 2)));
-		this.agents.add(new Agent(this.grid, this.postOffice, new Position(3, 4), new Position(0, 2)));
+	public Controller(int boardSize) {
+		this.grid = new Grid(boardSize);
+		PostOffice postOffice = new PostOffice();
+		List<Agent> agents = new ArrayList<Agent>();
+
+		agents.add(new Agent(this.grid, postOffice, new Position(0, 3), new Position(1, 4)));
+		agents.add(new Agent(this.grid, postOffice, new Position(3, 0), new Position(3, 2)));
+		agents.add(new Agent(this.grid, postOffice, new Position(1, 2), new Position(2, 2)));
+		agents.add(new Agent(this.grid, postOffice, new Position(3, 4), new Position(0, 2)));
 		// FIXME : verifier pourquoi seul l'agent 0 parle
-		for (Agent a : this.agents) {
+		for (Agent a : agents) {
 			a.setStrategy(new SimpleStrategy());
 		}
 		//this.applyStrategy(SimpleStrategy.class);
-		this.grid.addAgents(this.agents);
-		
+		this.grid.addAgents(agents);
+
 		this.window = new MainWindow(this);
 	}
 	
 	/*
 	 * TODO: faire fonctionner -> Ce serait cool
-	public void applyStrategy(Class<ThinkingStrategy> strategy) {
+	private void applyStrategy(Class<ThinkingStrategy> strategy) {
 		for (Agent a : this.agents) {
 			try {
 				a.setStrategy(strategy.newInstance());
@@ -52,25 +53,43 @@ public class Controller implements ActionListener {
 	}
 	*/
 	
-	public void launch() {
-		System.out.println("launch");
-		this.grid.launch(true);
-	}
-	
 	public Grid getGrid() {
 		return this.grid;
 	}
-	
-	
-	public static void main(String[] args) {
-		Controller controller = new Controller();
+
+	public LaunchAction getLaunchAction() {
+		return launchAction;
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		String c = e.getActionCommand();
-		if (c.equals("Lancer")) {
-			this.launch();
+	public StepAction getStepAction() {
+		return stepAction;
+	}
+
+	public static void main(String[] args) {
+		Controller controller = new Controller(5);
+	}
+
+
+	public class LaunchAction extends AbstractAction {
+		public LaunchAction() {
+			super("Launch");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("launch");
+			grid.launch(true);
+		}
+	}
+
+	public class StepAction extends AbstractAction {
+		public StepAction() {
+			super("Step");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//TODO: implémentation étape par étape
 		}
 	}
 }

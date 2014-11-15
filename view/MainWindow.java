@@ -40,22 +40,21 @@ public class MainWindow extends JFrame {
 		this.controlPanel.setFloatable(false);
 		
 		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
-		
-		this.addButton("Lancer", controller);
-		this.addButton("1 pas", controller);
+
+		JButton launchButton = new JButton(controller.getLaunchAction());
+		launchButton.setHorizontalAlignment(SwingConstants.CENTER);
+		this.controlPanel.add(launchButton);
+		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
+
+
+		JButton stepButton = new JButton(controller.getStepAction());
+		stepButton.setHorizontalAlignment(SwingConstants.CENTER);
+		this.controlPanel.add(stepButton);
+//		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
 
 		this.getContentPane().add(controlPanel, BorderLayout.WEST);
 
 		this.pack();
 		this.setVisible(true);
-	}
-	
-	private void addButton(String name, ActionListener actionListener) {
-		JButton button = new JButton(name);
-		button.setActionCommand(name);
-		button.setHorizontalAlignment(SwingConstants.CENTER);
-		button.addActionListener(actionListener);
-		this.controlPanel.add(button);
-		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
 	}
 }

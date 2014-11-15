@@ -1,5 +1,7 @@
 package SMATP3.controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import SMATP3.model.PostOffice;
 import SMATP3.model.strategies.BaseStrategy;
 import SMATP3.view.MainWindow;
 
-public class Controller {
+public class Controller implements ActionListener {
 	private MainWindow window;
 	private Grid grid;
 	private PostOffice postOffice;
@@ -33,8 +35,7 @@ public class Controller {
 		//this.applyStrategy(SimpleStrategy.class);
 		this.grid.addAgents(this.agents);
 		
-		this.window = new MainWindow(this.grid);
-		this.window.setVisible(true);
+		this.window = new MainWindow(this);
 	}
 	
 	/*
@@ -51,11 +52,24 @@ public class Controller {
 	*/
 	
 	public void launch() {
+		System.out.println("launch");
 		this.grid.launch(true);
+	}
+	
+	public Grid getGrid() {
+		return this.grid;
 	}
 	
 	
 	public static void main(String[] args) {
 		Controller controller = new Controller();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String c = e.getActionCommand();
+		if (c.equals("Lancer")) {
+			this.launch();
+		}
 	}
 }

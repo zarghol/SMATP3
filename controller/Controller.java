@@ -9,9 +9,10 @@ import SMATP3.Position;
 import SMATP3.model.Agent;
 import SMATP3.model.Grid;
 import SMATP3.model.PostOffice;
-import SMATP3.model.strategies.BaseStrategy;
+import SMATP3.model.strategies.*;
 import SMATP3.view.MainWindow;
 
+// TODO: linking entre la maj de la grille et l'affichage dans le Window
 public class Controller implements ActionListener {
 	private MainWindow window;
 	private Grid grid;
@@ -28,9 +29,9 @@ public class Controller implements ActionListener {
 		this.agents.add(new Agent(this.grid, this.postOffice, new Position(3, 0), new Position(3, 2)));
 		this.agents.add(new Agent(this.grid, this.postOffice, new Position(1, 2), new Position(2, 2)));
 		this.agents.add(new Agent(this.grid, this.postOffice, new Position(3, 4), new Position(0, 2)));
-		
+		// FIXME : verifier pourquoi seul l'agent 0 parle
 		for (Agent a : this.agents) {
-			a.setStrategy(new BaseStrategy());
+			a.setStrategy(new SimpleStrategy());
 		}
 		//this.applyStrategy(SimpleStrategy.class);
 		this.grid.addAgents(this.agents);

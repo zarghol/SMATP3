@@ -17,7 +17,7 @@ import javax.swing.WindowConstants;
 import SMATP3.controller.Controller;
 import SMATP3.model.Grid;
 
-//TODO: Mettre des contrôles dans le panneau de contrôle
+//TODO: Mettre plus de contrôles dans le panneau de contrôle
 
 public class MainWindow extends JFrame {
 

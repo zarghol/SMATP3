@@ -29,12 +29,12 @@ public class Snapshot {
 	 * @param snapshot The Snapshot to copy.
 	 */
 	public Snapshot(Snapshot snapshot) {
+		this(snapshot.gridSize);
 		synchronized (snapshot.lockPositions) {
 			for (Map.Entry<Position, Integer> entry : snapshot.positions.entrySet()) {
 				this.positions.put(new Position(entry.getKey()), entry.getValue());
 			}
 		}
-		this.gridSize = snapshot.gridSize;
 	}
 
 	/**
@@ -44,16 +44,19 @@ public class Snapshot {
 	 * @return L'ensemble des identifiants des agents autour de la position.
 	 */
 	public ArrayList<Integer> getNeighbourhood(Position positionChecked) {
-//TODO: Déterminer s'il faut mettre toute la méthode dans synchronized ou seulement la ligne utilisant this.positions
+		// Déterminer s'il faut mettre toute la méthode dans synchronized ou seulement la ligne utilisant this.positions
+		// REP: Il faut tout mettre : on ajoute la position en haut, puis celle du bas, mais pendant celle du bas, on modifie celle du haut : pas bon
+
 		ArrayList<Integer> neighbourhood = new ArrayList<Integer>();
 		Integer id;
-		for (Direction d : Direction.values()) {
-			Position neighbourPosition = positionChecked.towardDirection(d);
-			synchronized (this.lockPositions) {
+		synchronized (this.lockPositions) {
+
+			for (Direction d : Direction.values()) {
+				Position neighbourPosition = positionChecked.towardDirection(d);
 				id = this.positions.get(neighbourPosition);
-			}
-			if (id != null) {
-				neighbourhood.add(id);
+				if (id != null) {
+					neighbourhood.add(id);
+				}
 			}
 		}
 		return neighbourhood;
@@ -66,20 +69,18 @@ public class Snapshot {
 	 * @return L'ensemble des positions libres autour de la position indiquée.
 	 */
 	public ArrayList<Position> getEmptyNeighbourhood(Position positionChecked) {
-//TODO: Déterminer s'il faut mettre toute la méthode dans synchronized ou seulement la ligne utilisant this.positions
+		// Déterminer s'il faut mettre toute la méthode dans synchronized ou seulement la ligne utilisant this.positions
+		// REP: Il faut tout mettre : on ajoute la position en haut, puis celle du bas, mais pendant celle du bas, on modifie celle du haut : pas bon
 		ArrayList<Position> neighbourhood = new ArrayList<Position>();
-		boolean isEmpty;
-		for (Direction d : Direction.values()) {
-			Position neighbourPosition = positionChecked.towardDirection(d);
-			if (isPositionValid(neighbourPosition)) {
-				synchronized (this.lockPositions) {
-					isEmpty = !this.positions.containsKey(neighbourPosition);
-				}
-				if (isEmpty) {
+		synchronized (this.lockPositions) {
+			for (Direction d : Direction.values()) {
+				Position neighbourPosition = positionChecked.towardDirection(d);
+				if (!this.positions.containsKey(neighbourPosition)) {
 					neighbourhood.add(neighbourPosition);
 				}
 			}
 		}
+		
 		return neighbourhood;
 	}
 

@@ -69,7 +69,7 @@ public class Agent implements Runnable {
 
 	public void perceiveEnvironment() {
 		this.talk("getting snapshot");
-		this.snapshot = new Snapshot(this.grid);
+		this.snapshot = this.grid.getSnapshot();
 		this.talk("snapshot received");
 	}
 

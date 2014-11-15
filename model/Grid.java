@@ -1,9 +1,5 @@
 package SMATP3.model;
 
-import SMATP3.Position;
-import SMATP3.model.strategies.BaseStrategy;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

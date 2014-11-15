@@ -1,12 +1,10 @@
 package SMATP3.view;
 
-import javax.swing.*;
-
-import SMATP3.model.Agent;
-
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+
+import javax.swing.JLabel;
 
 public class Cell extends JLabel {
 
@@ -67,7 +65,7 @@ public class Cell extends JLabel {
 	
 	
 	public static Color colorForAgent(int agentId) {
-		System.out.println(agentId);
-		return Color.decode("" + agentId);
+		float hueAngle = ((agentId * 0.3f) % 1.0f);
+		return Color.getHSBColor(hueAngle, hueAngle, hueAngle);
 	}
 }

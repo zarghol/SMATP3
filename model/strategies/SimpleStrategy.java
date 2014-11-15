@@ -14,7 +14,7 @@ public class SimpleStrategy implements ThinkingStrategy {
 
 	@Override
 	public void reflexionAction(Agent agent) {
-		if (!agent.handlePostOffice()) {
+		if (!agent.handleMessages()) {
 			Direction toFollow = Direction.directionDifferential(agent.getPosition(), agent.getAimPosition());
 			Position nextPosition = agent.getPosition().towardDirection(toFollow);
 			if (agent.getSnapshot().isPositionOccupied(nextPosition)) {

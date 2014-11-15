@@ -1,11 +1,11 @@
 package SMATP3.model.strategies;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import SMATP3.model.Agent;
 import SMATP3.Position;
+import SMATP3.model.Agent;
+import SMATP3.model.Snapshot;
 import SMATP3.model.messages.Message;
+
+import java.util.List;
 
 public class PlanifiedSimpleStrategy implements ThinkingStrategy {
 	private List<Position> route;
@@ -15,11 +15,10 @@ public class PlanifiedSimpleStrategy implements ThinkingStrategy {
 		Position nextPosition = route.remove(0);
 		if (route == null || agent.getSnapshot().isPositionOccupied(nextPosition)) {
 			// calcul itinéraire
-			this.findRoute();
+			this.findRoute(agent.getSnapshot(), agent.getPosition(), agent.getAimPosition());
 		} 
 		// on avance
 		agent.move(nextPosition);
-		
 	}
 
 	@Override
@@ -31,12 +30,9 @@ public class PlanifiedSimpleStrategy implements ThinkingStrategy {
 	public void handleMessage(Message message, Agent agent) {
 	}
 	
-	private void findRoute() {
-		List<Position> route = new ArrayList<Position>();
-		// TODO: find route (djikstra, etc..)
-		
-		
-		this.route = route;
+	private void findRoute(Snapshot snap, Position origin, Position target) {
+		Dijkstra d = new Dijkstra(snap, origin);
+		this.route = d.getShortestPathTo(target);
 	}
 
 }

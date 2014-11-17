@@ -1,13 +1,17 @@
 package SMATP3.model;
 
-import SMATP3.utils.Position;
 import SMATP3.model.messages.Message;
 import SMATP3.model.strategies.ThinkingStrategy;
+import SMATP3.utils.Position;
 
+//TODO: Gros boulot sur la synchronisation Agent-Grid de la position de l'agent...
 public class Agent implements Runnable {
 	public static int NO_AGENT = -1;
 	private static int LAST_AGENT_ID = 0;
 
+	private final Object lockRunning = new Object();
+	private final Object lockVerbose = new Object();
+	private final Object lockLatency = new Object();
 	private final int agentId;
 	private final Grid grid;
 	private final PostOffice postOffice;
@@ -15,10 +19,10 @@ public class Agent implements Runnable {
 
 	private Position position;
 	private Snapshot snapshot;
-	
 	private ThinkingStrategy strategy;
-	
-	private boolean verbose;
+	private long latency = 500;
+	private boolean verbose = false;
+	private boolean running = false;
 
 	public Agent(Grid grid, PostOffice postOffice, Position aimPosition, Position startPosition) {
 		this.agentId = LAST_AGENT_ID++;
@@ -26,8 +30,6 @@ public class Agent implements Runnable {
 		this.postOffice = postOffice;
 		this.postOffice.addAgent(this);
 		this.aimPosition = aimPosition;
-		this.verbose = false;
-
 		this.position = startPosition;
 		this.snapshot = null;
 		this.strategy = null;
@@ -35,11 +37,43 @@ public class Agent implements Runnable {
 
 	@Override
 	public void run() {
-		// Tant que le puzzle n'est pas reconstitué => tant qu'on n'est pas content : une fois content, on bouge plus ! xD
-		while (!this.isHappy()) {
+		boolean goOn = true;
+		long waitingTime;
+		while (goOn) {
 			this.perceiveEnvironment();
 			this.talk("strategy : " + this.strategy.getName());
 			this.strategy.reflexionAction(this);
+
+			synchronized (lockLatency) {
+				waitingTime = latency;
+			}
+
+			synchronized (lockRunning) {
+				goOn = running;
+			}
+
+			try {
+				Thread.sleep(waitingTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				goOn = false;
+			}
+		}
+	}
+
+	public void start() {
+		synchronized (lockRunning) {
+			if (running) {
+				return;
+			}
+			running = true;
+		}
+		new Thread(this).start();
+	}
+
+	public void stop() {
+		synchronized (lockRunning) {
+			running = false;
 		}
 	}
 
@@ -49,16 +83,16 @@ public class Agent implements Runnable {
 
 	public void sendMessage(Message message) {
 		StringBuilder sb = new StringBuilder();
-		for(int id : message.getRecipientIds()) {
+		for (int id : message.getRecipientIds()) {
 			sb.append(" ").append(id);
 		}
 		this.talk("sending mail to following agents :" + sb.toString());
 		postOffice.sendMessage(message);
 	}
-	
+
 	public boolean handleMessages() {
 		Message message = this.postOffice.getNextMessage(this);
-		
+
 		if (message != null) {
 			this.talk("handling mail from Agent " + message.getEmitterId());
 			this.strategy.handleMessage(message, this);
@@ -67,7 +101,7 @@ public class Agent implements Runnable {
 		return false;
 	}
 
-	public void perceiveEnvironment() {
+	private void perceiveEnvironment() {
 		this.talk("getting snapshot");
 		this.snapshot = this.grid.getSnapshot();
 		this.talk("snapshot received");
@@ -99,7 +133,9 @@ public class Agent implements Runnable {
 	}
 	
 	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
+		synchronized (lockVerbose) {
+			this.verbose = verbose;
+		}
 	}
 	
 	public Snapshot getSnapshot() {
@@ -117,10 +153,20 @@ public class Agent implements Runnable {
 	public static String getSymbol(int agentId) {
 		char code = (char) ((agentId % 26) + 65);
 		return Character.toString(code);
+
+	public void setLatency(int latency) {
+		synchronized (lockLatency) {
+			this.latency = latency;
+		}
 	}
 	
 	private void talk(String stringToSay) {
-		if (this.verbose) {
+		boolean v;
+		synchronized (lockVerbose) {
+			v = verbose;
+		}
+
+		if (v) {
 			System.out.println("agent " + this.agentId + " : " + stringToSay);
 		}
 	}

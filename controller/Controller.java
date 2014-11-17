@@ -1,7 +1,6 @@
 package SMATP3.controller;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +17,8 @@ import javax.swing.*;
 public class Controller {
 	private MainWindow window;
 	private Grid grid;
-	private LaunchAction launchAction = new LaunchAction();
-	private StepAction stepAction = new StepAction();
+	private StartAction startAction = new StartAction();
+	private StopAction stopAction = new StopAction();
 
 	public Controller(int boardSize) {
 		this.grid = new Grid(boardSize);
@@ -57,12 +56,12 @@ public class Controller {
 		return this.grid;
 	}
 
-	public LaunchAction getLaunchAction() {
-		return launchAction;
+	public StartAction getStartAction() {
+		return startAction;
 	}
 
-	public StepAction getStepAction() {
-		return stepAction;
+	public StopAction getStopAction() {
+		return stopAction;
 	}
 
 	public static void main(String[] args) {
@@ -70,26 +69,27 @@ public class Controller {
 	}
 
 
-	public class LaunchAction extends AbstractAction {
-		public LaunchAction() {
-			super("Launch");
+	public class StartAction extends AbstractAction {
+		public StartAction() {
+			super("Start");
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("launch");
-			grid.launch(true);
+			System.out.println("start");
+			grid.start();
 		}
 	}
 
-	public class StepAction extends AbstractAction {
-		public StepAction() {
-			super("Step");
+	public class StopAction extends AbstractAction {
+		public StopAction() {
+			super("Stop");
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//TODO: implémentation étape par étape
+			System.out.println("stop");
+			grid.stop();
 		}
 	}
 }

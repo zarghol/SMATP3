@@ -40,12 +40,34 @@ public class Grid extends Snapshot {
 		}
 	}
 
-	public void launch(boolean verbose) {
+	/**
+	 * Définit si les agents décrivent leurs actions dans la console.
+	 * @param verbose
+	 */
+	public void setVerbose(boolean verbose) {
+		for(Agent agent : agents.values()) {
+			agent.setVerbose(verbose);
+		}
+	}
+
+	/**
+	 * Lance la résolution du puzzle.
+	 */
+	public void start() {
 		synchronized (this.lockAgents) {
 			for (Agent agent : this.agents.values()) {
-				agent.setVerbose(verbose);
-				Thread t = new Thread(agent);
-				t.run();
+				agent.start();
+			}
+		}
+	}
+
+	/**
+	 * Arrête la résolution du puzzle.
+	 */
+	public void stop() {
+		synchronized (this.lockAgents) {
+			for (Agent agent : this.agents.values()) {
+				agent.stop();
 			}
 		}
 	}

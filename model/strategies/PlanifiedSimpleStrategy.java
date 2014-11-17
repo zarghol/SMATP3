@@ -12,13 +12,21 @@ public class PlanifiedSimpleStrategy implements ThinkingStrategy {
 
 	@Override
 	public void reflexionAction(Agent agent) {
-		Position nextPosition = route.remove(0);
-		if (route == null || agent.getSnapshot().isPositionOccupied(nextPosition)) {
-			// calcul itinéraire
+		if (agent.getPosition().equals(agent.getAimPosition())) {
+			return;
+		}
+		
+		if (route == null || route.size() <= 0 || agent.getSnapshot().isPositionOccupied(route.get(0))) {
 			this.findRoute(agent.getSnapshot(), agent.getPosition(), agent.getAimPosition());
-		} 
-		// on avance
-		agent.move(nextPosition);
+		}		
+		
+		
+		if (route.size() > 0) {
+			Position nextPosition = route.remove(0);
+
+			System.out.println("on avance");
+			agent.move(nextPosition);
+		}
 	}
 
 	@Override
@@ -31,6 +39,7 @@ public class PlanifiedSimpleStrategy implements ThinkingStrategy {
 	}
 	
 	private void findRoute(Snapshot snap, Position origin, Position target) {
+		//System.out.println("demande dijkstra ; from : " + origin + " to : " + target);
 		Dijkstra d = new Dijkstra(snap, origin);
 		this.route = d.getShortestPathTo(target);
 	}

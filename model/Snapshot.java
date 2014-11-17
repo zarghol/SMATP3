@@ -144,20 +144,20 @@ public class Snapshot {
 
 	@Override
 	public String toString() {
-		String string = "";
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < this.gridSize; i++) {
-			string += "[";
+			sb.append("[");
 			for (int j = 0; j < this.gridSize; j++) {
 				Position p = new Position(j, i);
 				int agentId = this.getAgentId(p);
 				if (agentId == -1) {
-					string += " ";
+					sb.append(" ");
 				} else {
-					string += Agent.getSymbol(agentId);
+					sb.append(agentId);
 				}
 			}
-			string += "]\n";
+			sb.append("]\n");
 		}
-		return string;
+		return sb.toString();
 	}
 }

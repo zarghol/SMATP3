@@ -131,35 +131,27 @@ public class Agent implements Runnable {
 	public void setPosition(Position position) {
 		this.position = position;
 	}
-	
+
 	public void setVerbose(boolean verbose) {
 		synchronized (lockVerbose) {
 			this.verbose = verbose;
 		}
 	}
-	
+
 	public Snapshot getSnapshot() {
 		return this.snapshot;
 	}
-	
+
 	public void setStrategy(ThinkingStrategy strategy) {
 		this.strategy = strategy;
 	}
-	
-	public String getSymbol() {
-		return Agent.getSymbol(this.agentId);
-	}
-	
-	public static String getSymbol(int agentId) {
-		char code = (char) ((agentId % 26) + 65);
-		return Character.toString(code);
 
 	public void setLatency(int latency) {
 		synchronized (lockLatency) {
 			this.latency = latency;
 		}
 	}
-	
+
 	private void talk(String stringToSay) {
 		boolean v;
 		synchronized (lockVerbose) {

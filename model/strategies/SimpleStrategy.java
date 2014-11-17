@@ -18,7 +18,7 @@ public class SimpleStrategy implements ThinkingStrategy {
 
 	@Override
 	public String getName() {
-		return "VerySimpleStrategy";
+		return "SimpleStrategy";
 	}
 
 	@Override

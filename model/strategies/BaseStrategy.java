@@ -30,7 +30,7 @@ public class BaseStrategy implements ThinkingStrategy {
 
 	@Override
 	public String getName() {
-		return "SimpleStrategy";
+		return "BaseStrategy";
 	}
 
 	@Override

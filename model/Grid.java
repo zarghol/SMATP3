@@ -1,12 +1,17 @@
 package SMATP3.model;
 
+import SMATP3.utils.IObservable;
+import SMATP3.utils.Observable;
+import SMATP3.utils.Observer;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Grid extends Snapshot {
+public class Grid extends Snapshot implements IObservable {
 
 	private final Object lockAgents = new Object();
+	private final Observable observable = new Observable();
 
 	private Map<Integer, Agent> agents;
 
@@ -90,5 +95,25 @@ public class Grid extends Snapshot {
 
 	public Snapshot getSnapshot() {
 		return new Snapshot(this);
+	}
+
+	@Override
+	public void registerObserver(Observer observer) {
+		observable.registerObserver(observer);
+	}
+
+	@Override
+	public void unregisterObserver(Observer observer) {
+		observable.unregisterObserver(observer);
+	}
+
+	@Override
+	public void notifyObservers() {
+		observable.notifyObservers();
+	}
+
+	@Override
+	public void setDirty() {
+		observable.setDirty();
 	}
 }

@@ -1,10 +1,10 @@
 package SMATP3.model;
 
 import SMATP3.model.messages.Message;
+import SMATP3.model.messages.Performative;
 import SMATP3.model.strategies.ThinkingStrategy;
 import SMATP3.utils.Position;
 
-//TODO: Gros boulot sur la synchronisation Agent-Grid de la position de l'agent...
 public class Agent implements Runnable {
 	public static int NO_AGENT = -1;
 	private static int LAST_AGENT_ID = 0;
@@ -15,6 +15,7 @@ public class Agent implements Runnable {
 	private final int agentId;
 	private final Grid grid;
 	private final PostOffice postOffice;
+	private boolean waitForMessage;
 	private final Position aimPosition;
 
 	private Position position;
@@ -29,6 +30,7 @@ public class Agent implements Runnable {
 		this.grid = grid;
 		this.postOffice = postOffice;
 		this.postOffice.addAgent(this);
+		this.waitForMessage = false;
 		this.aimPosition = aimPosition;
 		this.position = startPosition;
 		this.snapshot = null;
@@ -41,7 +43,6 @@ public class Agent implements Runnable {
 		long waitingTime;
 		while (goOn) {
 			this.perceiveEnvironment();
-			this.talk("strategy : " + this.strategy.getName());
 			this.strategy.reflexionAction(this);
 
 			
@@ -89,6 +90,9 @@ public class Agent implements Runnable {
 			sb.append(" ").append(id);
 		}
 		this.talk("sending mail to following agents :" + sb.toString());
+		if (message.getPerformative() == Performative.REQUEST) {
+			this.waitForMessage = true;
+		}
 		postOffice.sendMessage(message);
 	}
 
@@ -97,10 +101,11 @@ public class Agent implements Runnable {
 
 		if (message != null) {
 			this.talk("handling mail from Agent " + message.getEmitterId());
+			this.waitForMessage = false;
 			this.strategy.handleMessage(message, this);
 			return true;
 		}
-		return false;
+		return this.waitForMessage;
 	}
 
 	private void perceiveEnvironment() {

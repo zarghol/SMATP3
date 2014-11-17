@@ -5,7 +5,7 @@ public enum Direction {
 	DOWN(0, -1),
 	LEFT(-1, 0),
 	RIGHT(1, 0),
-	CENTER(0, 0);
+	NONE(0, 0);
 
 	private int xDir;
 	private int yDir;
@@ -24,7 +24,7 @@ public enum Direction {
 		int yDiff = to.getY() - from.getY();
 		
 		if (from.equals(to)) {
-			return Direction.CENTER;
+			return Direction.NONE;
 		}else if (Math.abs(xDiff) > Math.abs(yDiff)) {
 			// Horizontal Direction
 			if (xDiff > 0) {

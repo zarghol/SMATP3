@@ -15,7 +15,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-// TODO: linking entre la maj de la grille et l'affichage dans le Window
 public class Controller {
 	private MainWindow window;
 	private Grid grid;
@@ -34,7 +33,7 @@ public class Controller {
 		agents.add(new Agent(this.grid, postOffice, new Position(1, 2), new Position(2, 2)));
 		agents.add(new Agent(this.grid, postOffice, new Position(3, 4), new Position(0, 2)));
 
-		this.applyStrategy(PlanifiedSimpleStrategy.class, agents);
+		this.applyStrategy(DialogStrategy.class, agents);
 		this.grid.addAgents(agents);
 		this.grid.setVerbose(true);
 

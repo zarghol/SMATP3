@@ -1,7 +1,9 @@
 package SMATP3.model.messages;
 
 public enum Action {
-	MOVE("move");
+	MOVE("move"),
+	ACCEPTED("accepted"),
+	REFUSED("refused");
 
 	private String label;
 

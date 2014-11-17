@@ -16,14 +16,16 @@ public class BaseStrategy implements ThinkingStrategy {
 		if (!agent.handleMessages()) {
 			Direction toFollow = Direction.directionDifferential(agent.getPosition(), agent.getAimPosition());
 			Position nextPosition = agent.getPosition().towardDirection(toFollow);
-			if (agent.getSnapshot().isPositionOccupied(nextPosition)) {
-				Message message = agent.getNewMessage();
-				message.setAction(Action.MOVE);
-				message.setPerformative(Performative.REQUEST);
-				message.addRecipientId(agent.getSnapshot().getAgentId(nextPosition));
-				agent.sendMessage(message);
-			} else {
-				agent.move(nextPosition);
+			if (toFollow == Direction.NONE) {
+				if (agent.getSnapshot().isPositionOccupied(nextPosition)) {
+					Message message = agent.getNewMessage();
+					message.setAction(Action.MOVE);
+					message.setPerformative(Performative.REQUEST);
+					message.addRecipientId(agent.getSnapshot().getAgentId(nextPosition));
+					agent.sendMessage(message);
+				} else {
+					agent.move(nextPosition);
+				}
 			}
 		}
 	}

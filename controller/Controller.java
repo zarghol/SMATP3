@@ -29,40 +29,38 @@ public class Controller {
 		agents.add(new Agent(this.grid, postOffice, new Position(3, 0), new Position(3, 2)));
 		agents.add(new Agent(this.grid, postOffice, new Position(1, 2), new Position(2, 2)));
 		agents.add(new Agent(this.grid, postOffice, new Position(3, 4), new Position(0, 2)));
-		// FIXME : verifier pourquoi seul l'agent 0 parle
-		for (Agent a : agents) {
-			a.setStrategy(new SimpleStrategy());
-		}
-		//this.applyStrategy(SimpleStrategy.class);
+
+		this.applyStrategy(PlanifiedSimpleStrategy.class, agents);
 		this.grid.addAgents(agents);
+		this.grid.setVerbose(true);
 
 		this.window = new MainWindow(this);
 	}
 	
-	/*
-	 * TODO: faire fonctionner -> Ce serait cool
-	private void applyStrategy(Class<ThinkingStrategy> strategy) {
-		for (Agent a : this.agents) {
+	private void applyStrategy(Class<?> strategy, List<Agent> agents) {
+		
+		for (Agent a : agents) {
 			try {
-				a.setStrategy(strategy.newInstance());
+				a.setStrategy((ThinkingStrategy) strategy.newInstance());
 			} catch (InstantiationException | IllegalAccessException e) {
 				a.setStrategy(new SimpleStrategy());
 			}
 		}
 	}
-	*/
+	
 	
 	public Grid getGrid() {
 		return this.grid;
 	}
 
 	public StartAction getStartAction() {
-		return startAction;
+		return this.startAction;
 	}
 
 	public StopAction getStopAction() {
-		return stopAction;
+		return this.stopAction;
 	}
+	
 
 	public static void main(String[] args) {
 		Controller controller = new Controller(5);

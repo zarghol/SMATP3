@@ -138,6 +138,10 @@ public class Snapshot {
 				&& position.getY() < this.gridSize;
 	}
 
+	public int getGridSize() {
+		return gridSize;
+	}
+
 	@Override
 	public String toString() {
 		String string = "";

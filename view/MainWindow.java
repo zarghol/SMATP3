@@ -3,19 +3,15 @@ package SMATP3.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.HeadlessException;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
 import SMATP3.controller.Controller;
-import SMATP3.model.Grid;
 
 //TODO: Mettre plus de contrôles dans le panneau de contrôle
 
@@ -31,7 +27,7 @@ public class MainWindow extends JFrame {
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setResizable(false);
 
-		board = new Board(5, controller.getGrid());
+		board = new Board(controller.getGrid());
 
 		this.getContentPane().setLayout(new BorderLayout(LAYOUT_SPACING, LAYOUT_SPACING));
 		this.getContentPane().add(board, BorderLayout.CENTER);
@@ -41,16 +37,18 @@ public class MainWindow extends JFrame {
 		
 		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
 
-		JButton launchButton = new JButton(controller.getLaunchAction());
+		JButton launchButton = new JButton(controller.getStartAction());
 		launchButton.setHorizontalAlignment(SwingConstants.CENTER);
 		this.controlPanel.add(launchButton);
 		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
 
 
-		JButton stepButton = new JButton(controller.getStepAction());
-		stepButton.setHorizontalAlignment(SwingConstants.CENTER);
-		this.controlPanel.add(stepButton);
+		JButton stopButton = new JButton(controller.getStopAction());
+		stopButton.setHorizontalAlignment(SwingConstants.CENTER);
+//		stopButton.setEnabled(false);
+		this.controlPanel.add(stopButton);
 //		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
+		//TODO: Ajouter un contrôle pour la vitesse d'exécution
 
 		this.getContentPane().add(controlPanel, BorderLayout.WEST);
 

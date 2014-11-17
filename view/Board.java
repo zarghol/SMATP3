@@ -9,18 +9,26 @@ import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
+import SMATP3.model.Agent;
+import SMATP3.model.Snapshot;
 import SMATP3.utils.Position;
 import SMATP3.model.Grid;
 
-public class Board extends JPanel {
 
 	private final Map<Position, Cell> cells;
+	private final Grid grid;
 
-	public Board(int boardSize, Grid grid) {
+	public Board(Grid grid) {
 		super(true); // Double-buffered
+
+		this.grid = grid;
+
+		int boardSize = grid.getGridSize();
 		cells = new HashMap<Position, Cell>(boardSize * boardSize);
 		Map<Position, Integer> aimMap = new HashMap<Position, Integer>();
+
 		setLayout(new GridLayout(boardSize, boardSize, 1, 1));
+
 		for(int column = 0; column < boardSize; ++column) {
 			for(int row = 0; row < boardSize; ++row) {
 				Cell cell = new Cell();
@@ -28,11 +36,11 @@ public class Board extends JPanel {
 				int agentId = grid.getAgentId(p);
 
 				if (agentId != -1) {
-					// si y a un agent, on l'affiche					
+					// si y a la destination d'un agent, on l'affiche
 					aimMap.put(grid.getAgent(agentId).getAimPosition(), agentId);
 					cell.setAgentColor(Cell.colorForAgent(agentId));
 				}
-				
+
 				cells.put(p, cell);
 				this.add(cell);
 			}

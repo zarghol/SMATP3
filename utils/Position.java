@@ -1,6 +1,4 @@
-package SMATP3;
-
-import SMATP3.model.Direction;
+package SMATP3.utils;
 
 public class Position {
 

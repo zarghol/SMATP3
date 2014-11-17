@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import SMATP3.Position;
+import SMATP3.utils.Position;
 import SMATP3.model.Agent;
 import SMATP3.model.Grid;
 import SMATP3.model.PostOffice;

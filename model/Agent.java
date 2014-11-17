@@ -1,6 +1,6 @@
 package SMATP3.model;
 
-import SMATP3.Position;
+import SMATP3.utils.Position;
 import SMATP3.model.messages.Message;
 import SMATP3.model.strategies.ThinkingStrategy;
 

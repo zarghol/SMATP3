@@ -1,6 +1,7 @@
 package SMATP3.model;
 
-import SMATP3.Position;
+import SMATP3.utils.Direction;
+import SMATP3.utils.Position;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,8 +116,8 @@ public class Snapshot {
 	/**
 	 * Trouve si une case est occupée.
 	 *
-	 * @param position la position de la case a vérifier.
-	 * @return retourne vrai si la case existe et qu'elle est occupée.
+	 * @param position La position de la case a vérifier.
+	 * @return True si la case existe et est occupée. False sinon.
 	 */
 	public boolean isPositionOccupied(Position position) {
 		synchronized (this.lockPositions) {
@@ -127,8 +128,8 @@ public class Snapshot {
 	/**
 	 * Détermine si une case dans la grille existe.
 	 *
-	 * @param position la position de la case.
-	 * @return retourne vrai si la position est dans la limite de la grille.
+	 * @param position La position de la case.
+	 * @return True si la position est dans la limite de la grille. False sinon.
 	 */
 	public boolean isPositionValid(Position position) {
 		return position.getX() >= 0

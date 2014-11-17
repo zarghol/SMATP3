@@ -1,6 +1,4 @@
-package SMATP3.model;
-
-import SMATP3.Position;
+package SMATP3.utils;
 
 public enum Direction {
 	UP(0, 1),

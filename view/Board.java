@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
-import SMATP3.Position;
+import SMATP3.utils.Position;
 import SMATP3.model.Grid;
 
 public class Board extends JPanel {

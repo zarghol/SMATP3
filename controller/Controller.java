@@ -12,6 +12,8 @@ import SMATP3.model.strategies.*;
 import SMATP3.view.MainWindow;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 // TODO: linking entre la maj de la grille et l'affichage dans le Window
 public class Controller {
@@ -19,11 +21,13 @@ public class Controller {
 	private Grid grid;
 	private StartAction startAction = new StartAction();
 	private StopAction stopAction = new StopAction();
+	private SliderListener speedSliderListener = new SliderListener();
+	private BoundedRangeModel speedBounds = new DefaultBoundedRangeModel(5, 0, 0, 10);
 
 	public Controller(int boardSize) {
 		this.grid = new Grid(boardSize);
 		PostOffice postOffice = new PostOffice();
-		List<Agent> agents = new ArrayList<Agent>();
+		List<Agent> agents = new ArrayList<>();
 
 		agents.add(new Agent(this.grid, postOffice, new Position(0, 3), new Position(1, 4)));
 		agents.add(new Agent(this.grid, postOffice, new Position(3, 0), new Position(3, 2)));
@@ -38,7 +42,6 @@ public class Controller {
 	}
 	
 	private void applyStrategy(Class<?> strategy, List<Agent> agents) {
-		
 		for (Agent a : agents) {
 			try {
 				a.setStrategy((ThinkingStrategy) strategy.newInstance());
@@ -66,6 +69,13 @@ public class Controller {
 		Controller controller = new Controller(5);
 	}
 
+	public BoundedRangeModel getSpeedBounds() {
+		return speedBounds;
+	}
+
+	public SliderListener getSpeedSliderListener() {
+		return speedSliderListener;
+	}
 
 	public class StartAction extends AbstractAction {
 		public StartAction() {
@@ -74,6 +84,7 @@ public class Controller {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			window.getStartStopButton().setAction(stopAction);
 			System.out.println("start");
 			grid.start();
 		}
@@ -86,8 +97,19 @@ public class Controller {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			window.getStartStopButton().setAction(startAction);
 			System.out.println("stop");
 			grid.stop();
+		}
+	}
+
+	private class SliderListener implements ChangeListener {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			JSlider slider = (JSlider)e.getSource();
+			if(!slider.getValueIsAdjusting()) {
+				grid.setLatency((10 - slider.getValue()) * 100);
+			}
 		}
 	}
 }

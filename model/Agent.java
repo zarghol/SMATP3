@@ -132,10 +132,6 @@ public class Agent implements Runnable {
 		return position;
 	}
 
-	public void setPosition(Position position) {
-		this.position = position;
-	}
-
 	public void setVerbose(boolean verbose) {
 		synchronized (lockVerbose) {
 			this.verbose = verbose;
@@ -150,7 +146,7 @@ public class Agent implements Runnable {
 		this.strategy = strategy;
 	}
 
-	public void setLatency(int latency) {
+	public void setLatency(long latency) {
 		synchronized (lockLatency) {
 			this.latency = latency;
 		}

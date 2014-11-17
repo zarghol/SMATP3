@@ -4,12 +4,9 @@ package SMATP3.view;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 import SMATP3.controller.Controller;
 
@@ -21,6 +18,8 @@ public class MainWindow extends JFrame {
 
 	private Board board;
 	private JToolBar controlPanel;
+	private JButton startStopButton;
+	private JSlider speedSlider;
 
 	public MainWindow(Controller controller) throws HeadlessException {
 		this.setTitle("SMA TP3");
@@ -29,30 +28,46 @@ public class MainWindow extends JFrame {
 
 		board = new Board(controller.getGrid());
 
-		this.getContentPane().setLayout(new BorderLayout(LAYOUT_SPACING, LAYOUT_SPACING));
-		this.getContentPane().add(board, BorderLayout.CENTER);
+		getContentPane().setLayout(new BorderLayout(LAYOUT_SPACING, LAYOUT_SPACING));
+		getContentPane().add(board, BorderLayout.CENTER);
 		
-		this.controlPanel = new JToolBar(JToolBar.VERTICAL);
-		this.controlPanel.setFloatable(false);
-		
-		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
+		controlPanel = new JToolBar(JToolBar.VERTICAL);
+		SpringLayout panelLayout = new SpringLayout();
+		controlPanel.setLayout(panelLayout);
+		controlPanel.setFloatable(false);
 
-		JButton launchButton = new JButton(controller.getStartAction());
-		launchButton.setHorizontalAlignment(SwingConstants.CENTER);
-		this.controlPanel.add(launchButton);
-		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
+		startStopButton = new JButton(controller.getStartAction());
+		startStopButton.setHorizontalAlignment(SwingConstants.CENTER);
+		controlPanel.add(startStopButton);
+		panelLayout.putConstraint(SpringLayout.WEST, startStopButton, LAYOUT_SPACING, SpringLayout.WEST, controlPanel);
+		panelLayout.putConstraint(SpringLayout.NORTH, startStopButton, LAYOUT_SPACING, SpringLayout.NORTH, controlPanel);
 
+		JLabel speedLabel = new JLabel("Speed :");
+		speedLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		controlPanel.add(speedLabel);
+		panelLayout.putConstraint(SpringLayout.WEST, speedLabel, LAYOUT_SPACING, SpringLayout.WEST, controlPanel);
+		panelLayout.putConstraint(SpringLayout.NORTH, speedLabel, LAYOUT_SPACING, SpringLayout.SOUTH, startStopButton);
 
-		JButton stopButton = new JButton(controller.getStopAction());
-		stopButton.setHorizontalAlignment(SwingConstants.CENTER);
-//		stopButton.setEnabled(false);
-		this.controlPanel.add(stopButton);
-//		this.controlPanel.addSeparator(new Dimension(0, LAYOUT_SPACING));
-		//TODO: Ajouter un contrôle pour la vitesse d'exécution
+		speedSlider = new JSlider(controller.getSpeedBounds());
+		speedSlider.setOrientation(JSlider.HORIZONTAL);
+		speedSlider.setMajorTickSpacing(5);
+		speedSlider.setMinorTickSpacing(1);
+		speedSlider.setPaintTicks(true);
+		speedSlider.setPaintLabels(true);
+		speedSlider.addChangeListener(controller.getSpeedSliderListener());
+		controlPanel.add(speedSlider);
+		panelLayout.putConstraint(SpringLayout.WEST, speedSlider, LAYOUT_SPACING, SpringLayout.WEST, controlPanel);
+		panelLayout.putConstraint(SpringLayout.NORTH, speedSlider, LAYOUT_SPACING, SpringLayout.SOUTH, speedLabel);
+
+		panelLayout.putConstraint(SpringLayout.EAST, controlPanel, LAYOUT_SPACING, SpringLayout.EAST, speedSlider);
 
 		this.getContentPane().add(controlPanel, BorderLayout.WEST);
 
 		this.pack();
 		this.setVisible(true);
+	}
+
+	public JButton getStartStopButton() {
+		return startStopButton;
 	}
 }

@@ -56,7 +56,7 @@ public class Grid extends Snapshot implements IObservable {
 		// TODO: revoir
 		int agentId = this.getAgentId(from);
 		synchronized (this.lockPositions) {
-			if (!this.isPositionOccupied(to) && this.isPositionValid(to)) {
+			if (this.isPositionValid(to) && !this.isPositionOccupied(to)) {
 				this.positions.remove(from);
 				this.positions.put(to, agentId);
 				this.setDirty();
@@ -67,7 +67,6 @@ public class Grid extends Snapshot implements IObservable {
 			return false;
 		}
 	}
-	
 
 	/**
 	 * Définit si les agents décrivent leurs actions dans la console.
@@ -76,6 +75,16 @@ public class Grid extends Snapshot implements IObservable {
 	public void setVerbose(boolean verbose) {
 		for(Agent agent : agents.values()) {
 			agent.setVerbose(verbose);
+		}
+	}
+
+	/**
+	 *
+	 * @param latency
+	 */
+	public void setLatency(long latency) {
+		for(Agent agent : agents.values()) {
+			agent.setLatency(latency);
 		}
 	}
 

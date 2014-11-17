@@ -76,27 +76,13 @@ public class Snapshot {
 		synchronized (this.lockPositions) {
 			for (Direction d : Direction.values()) {
 				Position neighbourPosition = positionChecked.towardDirection(d);
-				if (!this.positions.containsKey(neighbourPosition)) {
+				if (this.isPositionValid(neighbourPosition) && !this.positions.containsKey(neighbourPosition)) {
 					neighbourhood.add(neighbourPosition);
 				}
 			}
 		}
 		
 		return neighbourhood;
-	}
-
-	/**
-	 * Déplace un agent d'une case à une autre.
-	 *
-	 * @param from Position d'origine de l'agent.
-	 * @param to   Position de destination de l'agent.
-	 */
-	public void moveAgent(Position from, Position to) {
-		int agentId = this.getAgentId(from);
-		synchronized (this.lockPositions) {
-			this.positions.remove(from);
-			this.positions.put(to, agentId);
-		}
 	}
 
 	/**

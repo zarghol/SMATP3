@@ -3,6 +3,7 @@ package SMATP3.model;
 import SMATP3.utils.IObservable;
 import SMATP3.utils.Observable;
 import SMATP3.utils.Observer;
+import SMATP3.utils.Position;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,29 @@ public class Grid extends Snapshot implements IObservable {
 			return this.agents.get(agentId);
 		}
 	}
+	
+	/**
+	 * Déplace un agent d'une case à une autre.
+	 *
+	 * @param from Position d'origine de l'agent.
+	 * @param to   Position de destination de l'agent.
+	 */
+	public boolean moveAgent(Position from, Position to) {
+		// TODO: revoir
+		int agentId = this.getAgentId(from);
+		synchronized (this.lockPositions) {
+			if (!this.isPositionOccupied(to) && this.isPositionValid(to)) {
+				this.positions.remove(from);
+				this.positions.put(to, agentId);
+				this.setDirty();
+				this.notifyObservers();
+
+				return true;
+			}
+			return false;
+		}
+	}
+	
 
 	/**
 	 * Définit si les agents décrivent leurs actions dans la console.

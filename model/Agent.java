@@ -44,6 +44,7 @@ public class Agent implements Runnable {
 			this.talk("strategy : " + this.strategy.getName());
 			this.strategy.reflexionAction(this);
 
+			
 			synchronized (lockLatency) {
 				waitingTime = latency;
 			}
@@ -51,6 +52,7 @@ public class Agent implements Runnable {
 			synchronized (lockRunning) {
 				goOn = running;
 			}
+			goOn = goOn && !this.grid.isSolved();
 
 			try {
 				Thread.sleep(waitingTime);
@@ -108,8 +110,10 @@ public class Agent implements Runnable {
 	}
 
 	public void move(Position toPosition) {
-		this.talk("moving Agent " + this.agentId + " from " + this.position + " to " + toPosition);
-		this.grid.moveAgent(this.position, toPosition);
+		if (this.grid.moveAgent(this.position, toPosition)) {
+			this.talk("moving from " + this.position + " to " + toPosition);
+			this.position = new Position(toPosition);
+		}
 	}
 
 	public int getId() {

@@ -65,17 +65,16 @@ public class Board extends JPanel implements Observer {
 
 	@Override
 	public void update() {
+		System.out.println("board update");
 		int boardSize = grid.getGridSize();
 		Snapshot snapshot = new Snapshot(grid);
 		for (int column = 0; column < boardSize; ++column) {
 			for (int row = 0; row < boardSize; ++row) {
 				Position position = new Position(column, row);
 				int id = snapshot.getAgentId(position);
-				if(id != Agent.NO_AGENT) {
-					Cell cell = cells.get(position);
-					cell.setAgentColor(Cell.colorForAgent(id));
-					cell.invalidate();
-				}
+				Cell cell = cells.get(position);
+				cell.setAgentColor(Cell.colorForAgent(id));
+				cell.updateUI();	
 			}
 		}
 	}

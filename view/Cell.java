@@ -6,6 +6,8 @@ import java.awt.geom.GeneralPath;
 
 import javax.swing.JLabel;
 
+import SMATP3.model.Agent;
+
 public class Cell extends JLabel {
 
 	private static final int SIZE = 60;
@@ -65,6 +67,9 @@ public class Cell extends JLabel {
 	
 	
 	public static Color colorForAgent(int agentId) {
+		if (agentId == Agent.NO_AGENT) {
+			return null;
+		}
 		float hueAngle = ((agentId * 0.3f) % 1.0f);
 		return Color.getHSBColor(hueAngle, hueAngle, hueAngle);
 	}

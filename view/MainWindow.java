@@ -1,14 +1,11 @@
 package SMATP3.view;
 
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.HeadlessException;
-import java.awt.event.KeyEvent;
+import SMATP3.controller.Controller;
 
 import javax.swing.*;
-
-import SMATP3.controller.Controller;
+import java.awt.BorderLayout;
+import java.awt.HeadlessException;
 
 //TODO: Mettre plus de contrôles dans le panneau de contrôle
 

@@ -1,19 +1,23 @@
 package SMATP3.controller;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-
-import SMATP3.utils.Position;
 import SMATP3.model.Agent;
 import SMATP3.model.Grid;
 import SMATP3.model.PostOffice;
-import SMATP3.model.strategies.*;
+import SMATP3.model.strategies.DialogStrategy;
+import SMATP3.model.strategies.SimpleStrategy;
+import SMATP3.model.strategies.ThinkingStrategy;
+import SMATP3.utils.Position;
 import SMATP3.view.MainWindow;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
 	private MainWindow window;

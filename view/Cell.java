@@ -1,12 +1,11 @@
 package SMATP3.view;
 
+import SMATP3.model.Agent;
+
+import javax.swing.JLabel;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
-
-import javax.swing.JLabel;
-
-import SMATP3.model.Agent;
 
 public class Cell extends JLabel {
 

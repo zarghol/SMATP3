@@ -1,13 +1,9 @@
 package SMATP3.model.strategies;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
-
 import SMATP3.model.Snapshot;
 import SMATP3.utils.Position;
+
+import java.util.*;
 
 class Vertex implements Comparable<Vertex> {
 	/** position of the vertex */

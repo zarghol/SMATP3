@@ -1,13 +1,13 @@
 package SMATP3.model;
 
+import java.util.*;
+
 import SMATP3.model.strategies.SimpleStrategy;
 import SMATP3.model.strategies.ThinkingStrategy;
 import SMATP3.utils.IObservable;
 import SMATP3.utils.Observable;
 import SMATP3.utils.Observer;
 import SMATP3.utils.Position;
-
-import java.util.*;
 
 public class Grid extends Snapshot implements IObservable {
 
@@ -44,22 +44,21 @@ public class Grid extends Snapshot implements IObservable {
 	public Grid(int gridSize, int agentCount) {
 		this(gridSize);
 		PostOffice postOffice = new PostOffice();
-		Random random = new Random();
-		Position startPosition;
-		Position aimPosition;
-		List<Position> aimPositions = new ArrayList<>(gridSize);
-
-		for (int i = 0; i < agentCount; i++) {
-			do {
-				startPosition = new Position(random.nextInt(gridSize), random.nextInt(gridSize));
-			} while (isPositionOccupied(startPosition));
-			do {
-				aimPosition = new Position(random.nextInt(gridSize), random.nextInt(gridSize));
-			} while (aimPositions.contains(aimPosition));
-			aimPositions.add(aimPosition);
-			addAgent(new Agent(this, postOffice, aimPosition, startPosition));
+		
+		// utilisé pour vérifier les positions
+		HashMap<Position, Position> positionsAgents = new HashMap<Position, Position>();
+		
+		while (positionsAgents.size() < agentCount) {
+			Random r = new Random();
+			Position startPosition = new Position(r.nextInt(this.getGridSize()), r.nextInt(this.getGridSize()));
+			Position aimPosition = new Position(r.nextInt(this.getGridSize()), r.nextInt(this.getGridSize()));
+			if (!positionsAgents.containsKey(startPosition) && !positionsAgents.containsValue(aimPosition)) {
+				positionsAgents.put(startPosition, aimPosition);
+				this.addAgent(new Agent(this, postOffice, aimPosition, startPosition));
+			}
 		}
 	}
+	
 
 	public int getAgentCount() {
 		return agents.size();

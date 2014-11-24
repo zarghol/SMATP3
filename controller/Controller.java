@@ -1,22 +1,18 @@
 package SMATP3.controller;
 
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
 
-import SMATP3.utils.Position;
-import SMATP3.model.Agent;
-import SMATP3.model.Grid;
-import SMATP3.model.PostOffice;
-import SMATP3.model.strategies.*;
-import SMATP3.view.MainWindow;
-
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import SMATP3.model.Grid;
+import SMATP3.model.strategies.DialogStrategy;
+import SMATP3.model.strategies.UtilityDialogStrategy;
+import SMATP3.view.MainWindow;
 
 public class Controller {
 	private MainWindow window;
@@ -32,26 +28,12 @@ public class Controller {
 		this.grid = new Grid();
 		//FIXME: définir la stratégie en fonction de la sélection sur la fenêtre
 
-		this.grid.applyStrategy(DialogStrategy.class);
+		this.grid.applyStrategy(UtilityDialogStrategy.class);
 		this.grid.setVerbose(true);
 
 		this.window = new MainWindow(this);
 		
 		//this.startAction.actionPerformed(null);
-	}
-	
-	private HashMap<Position, Position> createRandomAgents(int nbAgents) {
-		HashMap<Position, Position> positionsAgents = new HashMap<Position, Position>();
-		while (positionsAgents.size() < nbAgents) {
-			Random r = new Random();
-			Position p1 = new Position(r.nextInt(this.grid.getGridSize()), r.nextInt(this.grid.getGridSize()));
-			Position p2 = new Position(r.nextInt(this.grid.getGridSize()), r.nextInt(this.grid.getGridSize()));
-			if (!positionsAgents.containsKey(p1) && !positionsAgents.containsValue(p2)) {
-				positionsAgents.put(p1, p2);
-			}
-			//Agent a = new Agent(this.grid, postOffice, aimPosition, startPosition)
-		}
-		return positionsAgents;
 	}
 
 	public Grid getGrid() {
@@ -91,6 +73,8 @@ public class Controller {
 	}
 
 	public class StartAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
+
 		public StartAction() {
 			super("Start");
 		}
@@ -104,6 +88,8 @@ public class Controller {
 	}
 
 	public class StopAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
+
 		public StopAction() {
 			super("Stop");
 		}
@@ -117,6 +103,8 @@ public class Controller {
 	}
 
 	public class ResetAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
+
 		public ResetAction() {
 			super("Reset");
 		}
@@ -128,6 +116,8 @@ public class Controller {
 	}
 
 	public class RandomizeAction extends AbstractAction {
+		private static final long serialVersionUID = 1L;
+
 		public RandomizeAction() {
 			super("Randomize");
 		}

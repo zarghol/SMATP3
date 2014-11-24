@@ -12,6 +12,8 @@ import java.awt.HeadlessException;
 
 public class MainWindow extends JFrame {
 
+	private static final long serialVersionUID = 1L;
+
 	private static final int LAYOUT_SPACING = 10;
 
 	private Board board;

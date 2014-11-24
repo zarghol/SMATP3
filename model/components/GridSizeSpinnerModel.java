@@ -4,6 +4,8 @@ import javax.swing.SpinnerNumberModel;
 
 public class GridSizeSpinnerModel extends SpinnerNumberModel {
 
+	private static final long serialVersionUID = 1L;
+
 	public GridSizeSpinnerModel() {
 		this(5);
 	}

@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 
 public class Board extends JPanel implements Observer {
 
+	private static final long serialVersionUID = 1L;
 	private final Map<Position, Cell> cells;
 	private final Grid grid;
 

@@ -2,7 +2,6 @@ package SMATP3.model.strategies;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import SMATP3.model.Agent;
 import SMATP3.model.messages.Action;
@@ -73,7 +72,8 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 					this.move(agent, true);
 				}
 			} else if (numTentative == 2) {
-				Position p = (Position) message.getComplementaryInformationForName("suggestedPosition");
+//				Position p = (Position) message.getComplementaryInformationForName("suggestedPosition");
+				this.move(agent, false);
 				response.setAction(Action.ACCEPTED);
 				agent.sendMessage(response);
 			} else if (numTentative == 3) {
@@ -107,7 +107,7 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 						Message response = agent.getNewMessage();
 						response.setPerformative(Performative.REQUEST);
 						response.setAction(Action.MOVE);
-						response.addComplementaryInformation(emptyNeighbourhood.get(new Random().nextInt(emptyNeighbourhood.size())), "suggestedPosition");
+//						response.addComplementaryInformation(emptyNeighbourhood.get(new Random().nextInt(emptyNeighbourhood.size())), "suggestedPosition");
 						response.addComplementaryInformation(2, "attempt");
 						agent.sendMessage(response);
 						return false;

@@ -9,6 +9,8 @@ import java.awt.geom.GeneralPath;
 
 public class Cell extends JLabel {
 
+	private static final long serialVersionUID = 1L;
+
 	public final static int DEFAULT_SIZE = 80;
 
 	private Color aimColor = null;

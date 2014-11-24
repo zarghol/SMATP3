@@ -15,6 +15,7 @@ public class Agent implements Runnable {
 	private final int agentId;
 	private final Grid grid;
 	private final PostOffice postOffice;
+	// TODO: revoir : sert à savoir si on est en attente de message. Si oui, on bouge pas, on attends les réponses
 	private int numberOfMessagesWaited;
 	private final Position aimPosition;
 
@@ -49,7 +50,6 @@ public class Agent implements Runnable {
 			this.perceiveEnvironment();
 			this.strategy.reflexionAction(this);
 
-			
 			synchronized (lockLatency) {
 				waitingTime = latency;
 			}
@@ -129,6 +129,19 @@ public class Agent implements Runnable {
 		}
 	}
 	
+	private void talk(String stringToSay) {
+		boolean v;
+		synchronized (lockVerbose) {
+			v = verbose;
+		}
+
+		if (v) {
+			System.out.println("agent " + this.agentId + " : " + stringToSay);
+		}
+	}
+	
+	// GETTERS / SETTERS
+	
 	public double getUtility() {
 		double finalUtility = (double) this.nbMove / (double)this.grid.getGlobalMoves();
 		if (this.grid.isSolved()) {
@@ -177,17 +190,6 @@ public class Agent implements Runnable {
 	public void setLatency(long latency) {
 		synchronized (lockLatency) {
 			this.latency = latency;
-		}
-	}
-
-	private void talk(String stringToSay) {
-		boolean v;
-		synchronized (lockVerbose) {
-			v = verbose;
-		}
-
-		if (v) {
-			System.out.println("agent " + this.agentId + " : " + stringToSay);
 		}
 	}
 }

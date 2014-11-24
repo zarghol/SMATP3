@@ -70,7 +70,7 @@ public class Cell extends JLabel {
 		if (agentId == Agent.NO_AGENT) {
 			return null;
 		}
-		float hueAngle = ((agentId * 0.3f) % 1.0f);
-		return Color.getHSBColor(hueAngle, hueAngle, hueAngle);
+		float hueAngle = (agentId * 0.13f);
+		return Color.getHSBColor(hueAngle, 0.8f, 0.8f);
 	}
 }

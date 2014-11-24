@@ -3,6 +3,7 @@ package SMATP3.model.messages;
 import SMATP3.model.Agent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Message {
@@ -12,7 +13,7 @@ public class Message {
 	private List<Integer> recipientIds;
 	private Performative performative;
 	private Action action;
-	private Object complementaryInformation;
+	private HashMap<String, Object> complementaryInformations;
 
 	/**
 	 * Constructor.
@@ -21,6 +22,7 @@ public class Message {
 	public Message(Agent emitter) {
 		this.emitterId = emitter.getId();
 		this.recipientIds = new ArrayList<Integer>();
+		this.complementaryInformations = new HashMap<String, Object>();
 	}
 
 	public void addRecipientId(int recipientId) {
@@ -51,12 +53,12 @@ public class Message {
 		return action;
 	}
 
-	public Object getComplementaryInformation() {
-		return complementaryInformation;
+	public Object getComplementaryInformationForName(String name) {
+		return this.complementaryInformations.get(name);
 	}
 
-	public void setComplementaryInformation(Object complementaryInformation) {
-		this.complementaryInformation = complementaryInformation;
+	public void addComplementaryInformation(Object complementaryInformation, String name) {
+		this.complementaryInformations.put(name, complementaryInformation);
 	}
 	
 	

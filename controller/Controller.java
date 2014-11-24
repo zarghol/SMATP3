@@ -1,12 +1,7 @@
 package SMATP3.controller;
 
-import SMATP3.model.Agent;
 import SMATP3.model.Grid;
-import SMATP3.model.PostOffice;
 import SMATP3.model.strategies.DialogStrategy;
-import SMATP3.model.strategies.SimpleStrategy;
-import SMATP3.model.strategies.ThinkingStrategy;
-import SMATP3.utils.Position;
 import SMATP3.view.MainWindow;
 
 import javax.swing.AbstractAction;
@@ -16,45 +11,26 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Controller {
 	private MainWindow window;
 	private Grid grid;
 	private StartAction startAction = new StartAction();
 	private StopAction stopAction = new StopAction();
+	private ResetAction resetAction = new ResetAction();
+	private RandomizeAction randomizeAction = new RandomizeAction();
 	private SliderListener speedSliderListener = new SliderListener();
 	private BoundedRangeModel speedBounds = new DefaultBoundedRangeModel(5, 0, 0, 10);
 
-	public Controller(int boardSize) {
-		this.grid = new Grid(boardSize);
-		PostOffice postOffice = new PostOffice();
-		List<Agent> agents = new ArrayList<>();
-
-		agents.add(new Agent(this.grid, postOffice, new Position(0, 3), new Position(1, 4)));
-		agents.add(new Agent(this.grid, postOffice, new Position(3, 0), new Position(3, 2)));
-		agents.add(new Agent(this.grid, postOffice, new Position(1, 2), new Position(2, 2)));
-		agents.add(new Agent(this.grid, postOffice, new Position(3, 4), new Position(0, 2)));
-
-		this.applyStrategy(DialogStrategy.class, agents);
-		this.grid.addAgents(agents);
-		this.grid.setVerbose(true);
-
+	public Controller() {
+		this.grid = new Grid();
 		this.window = new MainWindow(this);
+
+		//FIXME: définir la stratégie en fonction de la sélection sur la fenêtre
+		this.grid.applyStrategy(DialogStrategy.class);
+		this.grid.setVerbose(true);
 	}
-	
-	private void applyStrategy(Class<?> strategy, List<Agent> agents) {
-		for (Agent a : agents) {
-			try {
-				a.setStrategy((ThinkingStrategy) strategy.newInstance());
-			} catch (InstantiationException | IllegalAccessException e) {
-				a.setStrategy(new SimpleStrategy());
-			}
-		}
-	}
-	
-	
+
 	public Grid getGrid() {
 		return this.grid;
 	}
@@ -66,10 +42,17 @@ public class Controller {
 	public StopAction getStopAction() {
 		return this.stopAction;
 	}
-	
 
-	public static void main(String[] args) {
-		Controller controller = new Controller(5);
+	public ResetAction getResetAction() {
+		return this.resetAction;
+	}
+
+	public RandomizeAction getRandomizeAction() {
+		return randomizeAction;
+	}
+
+	public void setRandomizeAction(RandomizeAction randomizeAction) {
+		this.randomizeAction = randomizeAction;
 	}
 
 	public BoundedRangeModel getSpeedBounds() {
@@ -78,6 +61,10 @@ public class Controller {
 
 	public SliderListener getSpeedSliderListener() {
 		return speedSliderListener;
+	}
+
+	public static void main(String[] args) {
+		Controller controller = new Controller();
 	}
 
 	public class StartAction extends AbstractAction {
@@ -103,6 +90,32 @@ public class Controller {
 			window.getStartStopButton().setAction(startAction);
 			System.out.println("stop");
 			grid.stop();
+		}
+	}
+
+	public class ResetAction extends AbstractAction {
+		public ResetAction() {
+			super("Reset");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//TODO: implémenter la réinitialisation
+		}
+	}
+
+	public class RandomizeAction extends AbstractAction {
+		public RandomizeAction() {
+			super("Randomize");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			grid = new Grid((Integer) window.getGridSizeSpinner().getValue(), (Integer) window.getAgentCountSpinner().getValue());
+			window.setGrid(grid);
+			//FIXME: définir la stratégie en fonction de la sélection sur la fenêtre
+			grid.applyStrategy(DialogStrategy.class);
+			grid.setVerbose(true);
 		}
 	}
 

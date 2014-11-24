@@ -1,35 +1,88 @@
 package SMATP3.model;
 
+import SMATP3.model.strategies.SimpleStrategy;
+import SMATP3.model.strategies.ThinkingStrategy;
 import SMATP3.utils.IObservable;
 import SMATP3.utils.Observable;
 import SMATP3.utils.Observer;
 import SMATP3.utils.Position;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Grid extends Snapshot implements IObservable {
+
+	public final static int DEFAULT_GRID_SIZE = 5;
+	public final static int DEFAULT_AGENT_COUNT = 4;
 
 	private final Object lockAgents = new Object();
 	private final Observable observable = new Observable();
 
 	private Map<Integer, Agent> agents;
 
+	/**
+	 * Constructeur par défaut.
+	 */
+	public Grid() {
+		this(DEFAULT_GRID_SIZE, DEFAULT_AGENT_COUNT);
+	}
+
+	/**
+	 * Constructeur. Les agents doivent être ajoutés séparéments.
+	 * @param gridSize La taille de la grille.
+	 */
 	public Grid(int gridSize) {
 		super(gridSize);
 		agents = new HashMap<Integer, Agent>();
 	}
 
-	public void addAgent(Agent agent) {
-		if (this.isPositionValid(agent.getPosition())) {
-			synchronized (this.lockAgents) {
-				this.agents.put(agent.getId(), agent);
-			}
-			synchronized (this.lockPositions) {
-				this.positions.put(agent.getPosition(), agent.getId());
-			}
+	/**
+	 * Constructeur générant les agents aléatoirement.
+	 *
+	 * @param gridSize   La taille de la grille.
+	 * @param agentCount Le nombre d'agents à générer.
+	 */
+	public Grid(int gridSize, int agentCount) {
+		this(gridSize);
+		PostOffice postOffice = new PostOffice();
+		Random random = new Random();
+		Position startPosition;
+		Position aimPosition;
+		List<Position> aimPositions = new ArrayList<>(gridSize);
+
+		for (int i = 0; i < agentCount; i++) {
+			do {
+				startPosition = new Position(random.nextInt(gridSize), random.nextInt(gridSize));
+			} while (isPositionOccupied(startPosition));
+			do {
+				aimPosition = new Position(random.nextInt(gridSize), random.nextInt(gridSize));
+			} while (aimPositions.contains(aimPosition));
+			aimPositions.add(aimPosition);
+			addAgent(new Agent(this, postOffice, aimPosition, startPosition));
 		}
+	}
+
+	public int getAgentCount() {
+		return agents.size();
+	}
+
+	/**
+	 * Ajoute un agent à la grille.
+	 *
+	 * @param agent L'agent à ajouter.
+	 * @return True si l'agent a été ajouté. False sinon (position de départ ou de destination invalide).
+	 */
+	public boolean addAgent(Agent agent) {
+		if (!isPositionValid(agent.getPosition()) || !isPositionValid(agent.getAimPosition())) {
+			return false;
+		}
+
+		synchronized (this.lockPositions) {
+			this.positions.put(agent.getPosition(), agent.getId());
+		}
+		synchronized (this.lockAgents) {
+			this.agents.put(agent.getId(), agent);
+		}
+		return true;
 	}
 
 	public void addAgents(List<Agent> agents) {
@@ -45,7 +98,7 @@ public class Grid extends Snapshot implements IObservable {
 			return this.agents.get(agentId);
 		}
 	}
-	
+
 	/**
 	 * Déplace un agent d'une case à une autre.
 	 *
@@ -69,21 +122,40 @@ public class Grid extends Snapshot implements IObservable {
 	}
 
 	/**
+	 * Applique une stratégie donnée aux agents.
+	 *
+	 * @param strategy La stratégie à appliquer.
+	 */
+	public void applyStrategy(Class<?> strategy) {
+		synchronized (lockAgents) {
+			for (Agent a : agents.values()) {
+				try {
+					a.setStrategy((ThinkingStrategy) strategy.newInstance());
+				} catch (InstantiationException | IllegalAccessException e) {
+					a.setStrategy(new SimpleStrategy());
+				}
+			}
+		}
+	}
+
+	/**
 	 * Définit si les agents décrivent leurs actions dans la console.
+	 *
 	 * @param verbose
 	 */
 	public void setVerbose(boolean verbose) {
-		for(Agent agent : agents.values()) {
+		for (Agent agent : agents.values()) {
 			agent.setVerbose(verbose);
 		}
 	}
 
 	/**
+	 * Définit le temps d'attente entre chaque action d'un agent.
 	 *
-	 * @param latency
+	 * @param latency Temps entre deux actions d'un agent.
 	 */
 	public void setLatency(long latency) {
-		for(Agent agent : agents.values()) {
+		for (Agent agent : agents.values()) {
 			agent.setLatency(latency);
 		}
 	}

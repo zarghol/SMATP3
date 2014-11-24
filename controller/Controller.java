@@ -31,15 +31,17 @@ public class Controller {
 		PostOffice postOffice = new PostOffice();
 		List<Agent> agents = new ArrayList<>();
 		
-		for (Entry<Position, Position> entry : this.createRandomAgents(12).entrySet()) {
+		for (Entry<Position, Position> entry : this.createRandomAgents(5).entrySet()) {
 			agents.add(new Agent(this.grid, postOffice, entry.getKey(), entry.getValue()));
 		}
 
-		this.applyStrategy(DialogStrategy.class, agents);
+		this.applyStrategy(UtilityDialogStrategy.class, agents);
 		this.grid.addAgents(agents);
 		this.grid.setVerbose(true);
 
 		this.window = new MainWindow(this);
+		
+		//this.startAction.actionPerformed(null);
 	}
 	
 	private HashMap<Position, Position> createRandomAgents(int nbAgents) {

@@ -9,21 +9,7 @@ import java.awt.geom.GeneralPath;
 
 public class Cell extends JLabel {
 
-	private static final int SIZE = 60;
-	private static final GeneralPath AIM_ICON = new GeneralPath();
-	private static final GeneralPath AGENT_ICON = new GeneralPath();
-	static {
-		AIM_ICON.moveTo(0, 0);
-		AIM_ICON.lineTo(60, 0);
-		AIM_ICON.lineTo(60, 60);
-		AIM_ICON.lineTo(0, 60);
-		AIM_ICON.closePath();
-		AIM_ICON.append(new Ellipse2D.Double(5, 5, 50, 50), false);
-		AIM_ICON.setWindingRule(GeneralPath.WIND_EVEN_ODD);
-
-		AGENT_ICON.append(new Ellipse2D.Double(7, 7, 46, 46), false);
-		AGENT_ICON.setWindingRule(GeneralPath.WIND_NON_ZERO);
-	}
+	public final static int DEFAULT_SIZE = 80;
 
 	private Color aimColor = null;
 	private Color agentColor = null;
@@ -31,8 +17,8 @@ public class Cell extends JLabel {
 	public Cell() {
 		super();
 
-		setSize(SIZE, SIZE);
-		setPreferredSize(new Dimension(SIZE, SIZE));
+		setSize(DEFAULT_SIZE, DEFAULT_SIZE);
+		setPreferredSize(new Dimension(DEFAULT_SIZE, DEFAULT_SIZE));
 	}
 
 	public void setAgentColor(Color agentColor) {
@@ -55,21 +41,41 @@ public class Cell extends JLabel {
 
 		if(agentColor != null) {
 			g2d.setColor(agentColor);
-			g2d.fill(AGENT_ICON);
+			g2d.fill(getAgentIcon());
 		}
 
 		if(aimColor != null) {
 			g2d.setColor(aimColor);
-			g2d.fill(AIM_ICON);
+			g2d.fill(getAimIcon());
 		}
 	}
-	
-	
+
 	public static Color colorForAgent(int agentId) {
 		if (agentId == Agent.NO_AGENT) {
 			return null;
 		}
 		float hueAngle = ((agentId * 0.3f) % 1.0f);
 		return Color.getHSBColor(hueAngle, hueAngle, hueAngle);
+	}
+
+	private GeneralPath getAimIcon() {
+		int size = Math.max(getWidth(), getHeight());
+		GeneralPath aimIcon = new GeneralPath();
+		aimIcon.moveTo(0, 0);
+		aimIcon.lineTo(size, 0);
+		aimIcon.lineTo(size, size);
+		aimIcon.lineTo(0, size);
+		aimIcon.closePath();
+		aimIcon.append(new Ellipse2D.Double(size / 20, size / 20, size - size / 10, size - size / 10), false);
+		aimIcon.setWindingRule(GeneralPath.WIND_EVEN_ODD);
+		return aimIcon;
+	}
+
+	private GeneralPath getAgentIcon() {
+		int size = Math.max(getWidth(), getHeight());
+		GeneralPath agentIcon = new GeneralPath();
+		agentIcon.append(new Ellipse2D.Double(size / 20 + 2, size / 20 + 2, size - size / 10 - 4, size - size / 10 - 4), false);
+		agentIcon.setWindingRule(GeneralPath.WIND_NON_ZERO);
+		return agentIcon;
 	}
 }

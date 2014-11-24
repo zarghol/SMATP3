@@ -12,6 +12,7 @@ public class Message {
 	private List<Integer> recipientIds;
 	private Performative performative;
 	private Action action;
+	private Object complementaryInformation;
 
 	/**
 	 * Constructor.
@@ -49,4 +50,14 @@ public class Message {
 	public Action getAction() {
 		return action;
 	}
+
+	public Object getComplementaryInformation() {
+		return complementaryInformation;
+	}
+
+	public void setComplementaryInformation(Object complementaryInformation) {
+		this.complementaryInformation = complementaryInformation;
+	}
+	
+	
 }

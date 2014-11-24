@@ -53,7 +53,6 @@ public class Grid extends Snapshot implements IObservable {
 	 * @param to   Position de destination de l'agent.
 	 */
 	public boolean moveAgent(Position from, Position to) {
-		// TODO: revoir
 		int agentId = this.getAgentId(from);
 		synchronized (this.lockPositions) {
 			if (this.isPositionValid(to) && !this.isPositionOccupied(to)) {
@@ -76,6 +75,15 @@ public class Grid extends Snapshot implements IObservable {
 		for(Agent agent : agents.values()) {
 			agent.setVerbose(verbose);
 		}
+	}
+	
+	
+	public int getGlobalMoves() {
+		int sumMove = 0;
+		for (Agent a : this.agents.values()) {
+			sumMove += a.getNbMove();
+		}
+		return sumMove;
 	}
 
 	/**

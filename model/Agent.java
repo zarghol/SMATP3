@@ -15,7 +15,7 @@ public class Agent implements Runnable {
 	private final int agentId;
 	private final Grid grid;
 	private final PostOffice postOffice;
-	private boolean waitForMessage;
+	private int numberOfMessagesWaited;
 	private final Position aimPosition;
 
 	private Position position;
@@ -25,16 +25,20 @@ public class Agent implements Runnable {
 	private boolean verbose = false;
 	private boolean running = false;
 
+	private int nbMove;
+	
 	public Agent(Grid grid, PostOffice postOffice, Position aimPosition, Position startPosition) {
 		this.agentId = LAST_AGENT_ID++;
 		this.grid = grid;
 		this.postOffice = postOffice;
 		this.postOffice.addAgent(this);
-		this.waitForMessage = false;
+		this.numberOfMessagesWaited = 0;
 		this.aimPosition = aimPosition;
 		this.position = startPosition;
 		this.snapshot = null;
 		this.strategy = null;
+		
+		this.nbMove = 0;
 	}
 
 	@Override
@@ -91,36 +95,51 @@ public class Agent implements Runnable {
 		}
 		this.talk("sending mail to following agents :" + sb.toString());
 		if (message.getPerformative() == Performative.REQUEST) {
-			this.waitForMessage = true;
+			this.numberOfMessagesWaited++;
 		}
 		postOffice.sendMessage(message);
 	}
 
 	public boolean handleMessages() {
 		Message message = this.postOffice.getNextMessage(this);
-
-		if (message != null) {
+		boolean messageHandled = false;
+		while (message != null) {
 			this.talk("handling mail from Agent " + message.getEmitterId());
-			this.waitForMessage = false;
-			this.strategy.handleMessage(message, this);
-			return true;
+			if (this.strategy.handleMessage(message, this)) {
+				this.numberOfMessagesWaited--;
+			}
+			
+			messageHandled = true;
+			message = this.postOffice.getNextMessage(this);		
 		}
-		return this.waitForMessage;
+		this.talk("number of messages : " + this.numberOfMessagesWaited);
+		return messageHandled || this.numberOfMessagesWaited > 0;
 	}
 
 	private void perceiveEnvironment() {
 		this.talk("getting snapshot");
 		this.snapshot = this.grid.getSnapshot();
-		this.talk("snapshot received");
 	}
 
 	public void move(Position toPosition) {
 		if (this.grid.moveAgent(this.position, toPosition)) {
 			this.talk("moving from " + this.position + " to " + toPosition);
 			this.position = new Position(toPosition);
+			this.nbMove++;
 		}
 	}
-
+	
+	public double getUtility() {
+		double finalUtility = (double) this.nbMove / (double)this.grid.getGlobalMoves();
+		if (this.grid.isSolved()) {
+			return finalUtility;
+		} else if (this.isHappy()){
+			return finalUtility - 0.05 * finalUtility;
+		} else {
+			return finalUtility - 0.1 * finalUtility; // ou 0 ?
+		}
+	}
+	
 	public int getId() {
 		return this.agentId;
 	}
@@ -135,6 +154,10 @@ public class Agent implements Runnable {
 
 	public Position getPosition() {
 		return position;
+	}
+	
+	public int getNbMove() {
+		return this.nbMove;
 	}
 
 	public void setVerbose(boolean verbose) {

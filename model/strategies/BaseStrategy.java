@@ -36,11 +36,12 @@ public class BaseStrategy implements ThinkingStrategy {
 	}
 
 	@Override
-	public void handleMessage(Message message, Agent agent) {
+	public boolean handleMessage(Message message, Agent agent) {
 		if (message.getPerformative() == Performative.REQUEST && message.getAction() == Action.MOVE) {
 			ArrayList<Position> emptyNeighbourhood = agent.getSnapshot().getEmptyNeighbourhood(agent.getPosition());
 			agent.move(emptyNeighbourhood.get(0));
 		}
+		return true;
 	}
 
 }

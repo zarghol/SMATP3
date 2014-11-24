@@ -42,11 +42,10 @@ public class DialogStrategy implements ThinkingStrategy {
 				for (Integer i : agentsToContact) {
 					message.addRecipientId(i);
 				}
-				message.setComplementaryInformation(agent.getAimPosition());
+				message.addComplementaryInformation(agent.getAimPosition(), "aimPosition");
 				agent.sendMessage(message);
 			}
 		}
-		
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public class DialogStrategy implements ThinkingStrategy {
 	}
 
 	@Override
-	public void handleMessage(Message message, Agent agent) {
+	public boolean handleMessage(Message message, Agent agent) {
 		
 		// Si on nous demande de bouger
 		if (message.getPerformative() == Performative.REQUEST && message.getAction() == Action.MOVE) {
@@ -64,6 +63,8 @@ public class DialogStrategy implements ThinkingStrategy {
 			Message response = agent.getNewMessage();
 			response.setPerformative(Performative.INFORM);
 			response.addRecipientId(message.getEmitterId());
+			
+			// TODO: prendre en charge les infos supplémentaires du message : but final de celui qui veut qu'on bouge
 			
 			// On regarde si on peut se déplacer
 			Direction toFollow = Direction.directionDifferential(agent.getPosition(), agent.getAimPosition());
@@ -89,6 +90,8 @@ public class DialogStrategy implements ThinkingStrategy {
 				}
 			}
 		}
+		
+		return true;
 	}
 
 }

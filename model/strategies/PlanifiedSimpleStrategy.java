@@ -35,7 +35,8 @@ public class PlanifiedSimpleStrategy implements ThinkingStrategy {
 	}
 
 	@Override
-	public void handleMessage(Message message, Agent agent) {
+	public boolean handleMessage(Message message, Agent agent) {
+		return true;
 	}
 	
 	private void findRoute(Snapshot snap, Position origin, Position target) {

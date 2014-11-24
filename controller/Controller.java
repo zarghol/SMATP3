@@ -2,7 +2,10 @@ package SMATP3.controller;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Random;
 
 import SMATP3.utils.Position;
 import SMATP3.model.Agent;
@@ -27,17 +30,31 @@ public class Controller {
 		this.grid = new Grid(boardSize);
 		PostOffice postOffice = new PostOffice();
 		List<Agent> agents = new ArrayList<>();
-
-		agents.add(new Agent(this.grid, postOffice, new Position(0, 3), new Position(1, 4)));
-		agents.add(new Agent(this.grid, postOffice, new Position(3, 0), new Position(3, 2)));
-		agents.add(new Agent(this.grid, postOffice, new Position(1, 2), new Position(2, 2)));
-		agents.add(new Agent(this.grid, postOffice, new Position(3, 4), new Position(0, 2)));
+		
+		for (Entry<Position, Position> entry : this.createRandomAgents(12).entrySet()) {
+			agents.add(new Agent(this.grid, postOffice, entry.getKey(), entry.getValue()));
+		}
 
 		this.applyStrategy(DialogStrategy.class, agents);
 		this.grid.addAgents(agents);
 		this.grid.setVerbose(true);
 
 		this.window = new MainWindow(this);
+	}
+	
+	private HashMap<Position, Position> createRandomAgents(int nbAgents) {
+		HashMap<Position, Position> positionsAgents = new HashMap<Position, Position>();
+		while (positionsAgents.size() < nbAgents) {
+			Random r = new Random();
+			Position p1 = new Position(r.nextInt(this.grid.getGridSize()), r.nextInt(this.grid.getGridSize()));
+			Position p2 = new Position(r.nextInt(this.grid.getGridSize()), r.nextInt(this.grid.getGridSize()));
+			if (!positionsAgents.containsKey(p1) && !positionsAgents.containsValue(p2)) {
+				positionsAgents.put(p1, p2);
+			}
+			//Agent a = new Agent(this.grid, postOffice, aimPosition, startPosition)
+		}
+		return positionsAgents;
+		
 	}
 	
 	private void applyStrategy(Class<?> strategy, List<Agent> agents) {

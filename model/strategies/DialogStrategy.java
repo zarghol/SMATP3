@@ -8,6 +8,7 @@ import SMATP3.utils.Direction;
 import SMATP3.utils.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class DialogStrategy implements ThinkingStrategy {
@@ -20,17 +21,29 @@ public class DialogStrategy implements ThinkingStrategy {
 	}
 	
 	private void move(Agent agent, boolean sendMessageIfNecessary) {
-		Direction toFollow = Direction.directionDifferential(agent.getPosition(), agent.getAimPosition());
-		Position nextPosition = agent.getPosition().towardDirection(toFollow);
-		if (toFollow != Direction.NONE) {
-			if (agent.getSnapshot().isPositionOccupied(nextPosition) && sendMessageIfNecessary) {
+		List<Direction> directions = Direction.directionsPossible(agent.getPosition(), agent.getAimPosition());
+
+		if (directions.get(0) != Direction.NONE) {
+			List<Integer> agentsToContact = new ArrayList<Integer>();
+			for (Direction toFollow : directions) {
+				Position nextPosition = agent.getPosition().towardDirection(toFollow);
+				if (!agent.getSnapshot().isPositionOccupied(nextPosition)) {
+					agent.move(nextPosition);
+					return;
+				} else {
+					agentsToContact.add(agent.getSnapshot().getAgentId(nextPosition));
+				}
+			}
+			
+			if (sendMessageIfNecessary) {
 				Message message = agent.getNewMessage();
 				message.setAction(Action.MOVE);
 				message.setPerformative(Performative.REQUEST);
-				message.addRecipientId(agent.getSnapshot().getAgentId(nextPosition));
+				for (Integer i : agentsToContact) {
+					message.addRecipientId(i);
+				}
+				message.setComplementaryInformation(agent.getAimPosition());
 				agent.sendMessage(message);
-			} else {
-				agent.move(nextPosition);
 			}
 		}
 		
@@ -43,12 +56,16 @@ public class DialogStrategy implements ThinkingStrategy {
 
 	@Override
 	public void handleMessage(Message message, Agent agent) {
+		
+		// Si on nous demande de bouger
 		if (message.getPerformative() == Performative.REQUEST && message.getAction() == Action.MOVE) {
 			ArrayList<Position> emptyNeighbourhood = agent.getSnapshot().getEmptyNeighbourhood(agent.getPosition());
+			// On construit la réponse
 			Message response = agent.getNewMessage();
 			response.setPerformative(Performative.INFORM);
 			response.addRecipientId(message.getEmitterId());
 			
+			// On regarde si on peut se déplacer
 			Direction toFollow = Direction.directionDifferential(agent.getPosition(), agent.getAimPosition());
 			Position nextPosition = agent.getPosition().towardDirection(toFollow);
 			if (!agent.getSnapshot().isPositionOccupied(nextPosition)) {
@@ -56,7 +73,7 @@ public class DialogStrategy implements ThinkingStrategy {
 				agent.move(nextPosition);
 			} else if (emptyNeighbourhood.size() > 0) {
 				response.setAction(Action.ACCEPTED);
-				agent.move(emptyNeighbourhood.get(0));
+				agent.move(emptyNeighbourhood.get(new Random().nextInt(emptyNeighbourhood.size())));
 			} else {
 				response.setAction(Action.REFUSED);
 			}
@@ -68,8 +85,7 @@ public class DialogStrategy implements ThinkingStrategy {
 			} else if (message.getAction() == Action.REFUSED) {
 				ArrayList<Position> emptyNeighbourhood = agent.getSnapshot().getEmptyNeighbourhood(agent.getPosition());
 				if (emptyNeighbourhood.size() > 0) {
-					Random r = new Random();
-					agent.move(emptyNeighbourhood.get(r.nextInt(emptyNeighbourhood.size())));
+					agent.move(emptyNeighbourhood.get(new Random().nextInt(emptyNeighbourhood.size())));
 				}
 			}
 		}

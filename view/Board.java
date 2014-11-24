@@ -1,19 +1,17 @@
 package SMATP3.view;
 
+import SMATP3.model.Grid;
+import SMATP3.model.Snapshot;
+import SMATP3.utils.Observer;
+import SMATP3.utils.Position;
+
+import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.swing.JPanel;
-
-import SMATP3.model.Agent;
-import SMATP3.model.Snapshot;
-import SMATP3.utils.Observer;
-import SMATP3.utils.Position;
-import SMATP3.model.Grid;
 
 public class Board extends JPanel implements Observer {
 

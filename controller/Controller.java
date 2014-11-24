@@ -23,20 +23,16 @@ public class Controller {
 	private Grid grid;
 	private StartAction startAction = new StartAction();
 	private StopAction stopAction = new StopAction();
+	private ResetAction resetAction = new ResetAction();
+	private RandomizeAction randomizeAction = new RandomizeAction();
 	private SliderListener speedSliderListener = new SliderListener();
 	private BoundedRangeModel speedBounds = new DefaultBoundedRangeModel(5, 0, 0, 10);
 
-	public Controller(int boardSize) {
-		this.grid = new Grid(boardSize);
-		PostOffice postOffice = new PostOffice();
-		List<Agent> agents = new ArrayList<>();
-		
-		for (Entry<Position, Position> entry : this.createRandomAgents(5).entrySet()) {
-			agents.add(new Agent(this.grid, postOffice, entry.getKey(), entry.getValue()));
-		}
+	public Controller() {
+		this.grid = new Grid();
+		//FIXME: définir la stratégie en fonction de la sélection sur la fenêtre
 
-		this.applyStrategy(UtilityDialogStrategy.class, agents);
-		this.grid.addAgents(agents);
+		this.grid.applyStrategy(DialogStrategy.class);
 		this.grid.setVerbose(true);
 
 		this.window = new MainWindow(this);
@@ -56,20 +52,8 @@ public class Controller {
 			//Agent a = new Agent(this.grid, postOffice, aimPosition, startPosition)
 		}
 		return positionsAgents;
-		
 	}
-	
-	private void applyStrategy(Class<?> strategy, List<Agent> agents) {
-		for (Agent a : agents) {
-			try {
-				a.setStrategy((ThinkingStrategy) strategy.newInstance());
-			} catch (InstantiationException | IllegalAccessException e) {
-				a.setStrategy(new SimpleStrategy());
-			}
-		}
-	}
-	
-	
+
 	public Grid getGrid() {
 		return this.grid;
 	}
@@ -81,10 +65,17 @@ public class Controller {
 	public StopAction getStopAction() {
 		return this.stopAction;
 	}
-	
 
-	public static void main(String[] args) {
-		Controller controller = new Controller(5);
+	public ResetAction getResetAction() {
+		return this.resetAction;
+	}
+
+	public RandomizeAction getRandomizeAction() {
+		return randomizeAction;
+	}
+
+	public void setRandomizeAction(RandomizeAction randomizeAction) {
+		this.randomizeAction = randomizeAction;
 	}
 
 	public BoundedRangeModel getSpeedBounds() {
@@ -93,6 +84,10 @@ public class Controller {
 
 	public SliderListener getSpeedSliderListener() {
 		return speedSliderListener;
+	}
+
+	public static void main(String[] args) {
+		Controller controller = new Controller();
 	}
 
 	public class StartAction extends AbstractAction {
@@ -118,6 +113,32 @@ public class Controller {
 			window.getStartStopButton().setAction(startAction);
 			System.out.println("stop");
 			grid.stop();
+		}
+	}
+
+	public class ResetAction extends AbstractAction {
+		public ResetAction() {
+			super("Reset");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//TODO: implémenter la réinitialisation
+		}
+	}
+
+	public class RandomizeAction extends AbstractAction {
+		public RandomizeAction() {
+			super("Randomize");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			grid = new Grid((Integer) window.getGridSizeSpinner().getValue(), (Integer) window.getAgentCountSpinner().getValue());
+			window.setGrid(grid);
+			//FIXME: définir la stratégie en fonction de la sélection sur la fenêtre
+			grid.applyStrategy(DialogStrategy.class);
+			grid.setVerbose(true);
 		}
 	}
 

@@ -1,11 +1,11 @@
 package SMATP3.model;
 
-import SMATP3.utils.Direction;
-import SMATP3.utils.Position;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import SMATP3.utils.Direction;
+import SMATP3.utils.Position;
 
 public class Snapshot {
 

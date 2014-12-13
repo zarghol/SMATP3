@@ -5,8 +5,10 @@ import SMATP3.controller.Controller;
 import SMATP3.model.Grid;
 import SMATP3.model.components.AgentCountSpinnerModel;
 import SMATP3.model.components.GridSizeSpinnerModel;
+import SMATP3.model.strategies.Strategy;
 
 import javax.swing.*;
+
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 
@@ -20,7 +22,7 @@ public class MainWindow extends JFrame {
 	private JToolBar controlPanel;
 	private JSpinner gridSizeSpinner;
 	private JSpinner agentCountSpinner;
-	private JComboBox<String> strategyPicker; //TODO: ajouter liste de sélection de stratégie
+	private JComboBox<Strategy> strategyPicker; //TODO: ajouter liste de sélection de stratégie
 	private JButton resetButton;
 	private JButton randomizeButton;
 	private JButton startStopButton;
@@ -33,7 +35,7 @@ public class MainWindow extends JFrame {
 
 
 		getContentPane().setLayout(new BorderLayout(LAYOUT_SPACING, LAYOUT_SPACING));
-		setGrid(controller.getGrid());
+		//setGrid(controller.getGrid());
 
 		
 		controlPanel = new JToolBar(JToolBar.VERTICAL);
@@ -47,7 +49,7 @@ public class MainWindow extends JFrame {
 		panelLayout.putConstraint(SpringLayout.NORTH, gridSizeLabel, LAYOUT_SPACING, SpringLayout.NORTH, controlPanel);
 
 		gridSizeSpinner = new JSpinner(new GridSizeSpinnerModel());
-		gridSizeSpinner.setValue(controller.getGrid().getGridSize());
+		gridSizeSpinner.setValue(Grid.DEFAULT_GRID_SIZE);
 		controlPanel.add(gridSizeSpinner);
 		panelLayout.putConstraint(SpringLayout.EAST, gridSizeSpinner, -LAYOUT_SPACING, SpringLayout.EAST, controlPanel);
 		panelLayout.putConstraint(SpringLayout.NORTH, gridSizeSpinner, LAYOUT_SPACING, SpringLayout.NORTH, controlPanel);
@@ -58,10 +60,24 @@ public class MainWindow extends JFrame {
 		panelLayout.putConstraint(SpringLayout.NORTH, agentCountLabel, LAYOUT_SPACING, SpringLayout.SOUTH, gridSizeSpinner);
 
 		agentCountSpinner = new JSpinner(new AgentCountSpinnerModel());
-		agentCountSpinner.setValue(controller.getGrid().getAgentCount());
+		agentCountSpinner.setValue(Grid.DEFAULT_AGENT_COUNT);
 		controlPanel.add(agentCountSpinner);
 		panelLayout.putConstraint(SpringLayout.EAST, agentCountSpinner, -LAYOUT_SPACING, SpringLayout.EAST, controlPanel);
 		panelLayout.putConstraint(SpringLayout.NORTH, agentCountSpinner, LAYOUT_SPACING, SpringLayout.SOUTH, gridSizeSpinner);
+		
+		JLabel strategyPickerLabel = new JLabel("Strategy :");
+		controlPanel.add(strategyPickerLabel);
+		panelLayout.putConstraint(SpringLayout.WEST, strategyPickerLabel, LAYOUT_SPACING, SpringLayout.WEST, controlPanel);
+		panelLayout.putConstraint(SpringLayout.NORTH, strategyPickerLabel, LAYOUT_SPACING, SpringLayout.SOUTH, agentCountSpinner);
+
+		strategyPicker = new JComboBox<Strategy>(Strategy.values());
+		controlPanel.add(strategyPicker);
+		panelLayout.putConstraint(SpringLayout.EAST, strategyPicker, -LAYOUT_SPACING, SpringLayout.EAST, controlPanel);
+		panelLayout.putConstraint(SpringLayout.NORTH, strategyPicker, LAYOUT_SPACING, SpringLayout.SOUTH, agentCountSpinner);
+		
+		panelLayout.putConstraint(SpringLayout.WEST, strategyPicker, LAYOUT_SPACING, SpringLayout.EAST, strategyPickerLabel);
+
+		
 
 		randomizeButton = new JButton(controller.getRandomizeAction());
 //		try {
@@ -71,7 +87,7 @@ public class MainWindow extends JFrame {
 //		}
 		controlPanel.add(randomizeButton);
 		panelLayout.putConstraint(SpringLayout.WEST, randomizeButton, LAYOUT_SPACING, SpringLayout.WEST, controlPanel);
-		panelLayout.putConstraint(SpringLayout.NORTH, randomizeButton, LAYOUT_SPACING, SpringLayout.SOUTH, agentCountSpinner);
+		panelLayout.putConstraint(SpringLayout.NORTH, randomizeButton, LAYOUT_SPACING, SpringLayout.SOUTH, strategyPicker);
 
 		resetButton = new JButton(controller.getResetAction());
 //		try {
@@ -81,7 +97,7 @@ public class MainWindow extends JFrame {
 //		}
 		controlPanel.add(resetButton);
 		panelLayout.putConstraint(SpringLayout.WEST, resetButton, LAYOUT_SPACING, SpringLayout.EAST, randomizeButton);
-		panelLayout.putConstraint(SpringLayout.NORTH, resetButton, LAYOUT_SPACING, SpringLayout.SOUTH, agentCountSpinner);
+		panelLayout.putConstraint(SpringLayout.NORTH, resetButton, LAYOUT_SPACING, SpringLayout.SOUTH, strategyPicker);
 
 		startStopButton = new JButton(controller.getStartAction());
 //		try {
@@ -91,7 +107,7 @@ public class MainWindow extends JFrame {
 //		}
 		controlPanel.add(startStopButton);
 		panelLayout.putConstraint(SpringLayout.WEST, startStopButton, LAYOUT_SPACING, SpringLayout.EAST, resetButton);
-		panelLayout.putConstraint(SpringLayout.NORTH, startStopButton, LAYOUT_SPACING, SpringLayout.SOUTH, agentCountSpinner);
+		panelLayout.putConstraint(SpringLayout.NORTH, startStopButton, LAYOUT_SPACING, SpringLayout.SOUTH, strategyPicker);
 
 		JLabel speedLabel = new JLabel("Speed :");
 		controlPanel.add(speedLabel);
@@ -113,7 +129,6 @@ public class MainWindow extends JFrame {
 
 		this.getContentPane().add(controlPanel, BorderLayout.WEST);
 
-		this.pack();
 		this.setVisible(true);
 	}
 
@@ -125,6 +140,7 @@ public class MainWindow extends JFrame {
 		getContentPane().add(board, BorderLayout.CENTER);
 		validate();
 		repaint();
+		this.pack();
 	}
 
 	public JSpinner getGridSizeSpinner() {
@@ -135,7 +151,7 @@ public class MainWindow extends JFrame {
 		return agentCountSpinner;
 	}
 
-	public JComboBox<String> getStrategyPicker() {
+	public JComboBox<Strategy> getStrategyPicker() {
 		return strategyPicker;
 	}
 

@@ -1,17 +1,21 @@
 package SMATP3.view;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.swing.JPanel;
+
+import SMATP3.model.Agent;
 import SMATP3.model.Grid;
 import SMATP3.model.Snapshot;
 import SMATP3.utils.Observer;
 import SMATP3.utils.Position;
-
-import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class Board extends JPanel implements Observer {
 
@@ -65,16 +69,23 @@ public class Board extends JPanel implements Observer {
 	@Override
 	public void update() {
 		System.out.println("board update");
-		int boardSize = grid.getGridSize();
-		Snapshot snapshot = new Snapshot(grid);
-		for (int column = 0; column < boardSize; ++column) {
-			for (int row = 0; row < boardSize; ++row) {
+		Snapshot snapshot = grid.getSnapshot();
+		
+		List<Integer> ids = new ArrayList<Integer>();
+		
+		for (int column = 0; column < snapshot.getGridSize(); column++) {
+			for (int row = 0; row < snapshot.getGridSize(); row++) {
 				Position position = new Position(column, row);
 				int id = snapshot.getAgentId(position);
+				if (id != Agent.NO_AGENT) {
+					ids.add(id);
+				}
 				Cell cell = cells.get(position);
 				cell.setAgentColor(Cell.colorForAgent(id));
 				cell.updateUI();	
 			}
 		}
+		
+		System.out.println("ids count : " + ids.size());
 	}
 }

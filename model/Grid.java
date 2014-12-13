@@ -3,6 +3,7 @@ package SMATP3.model;
 import java.util.*;
 
 import SMATP3.model.strategies.SimpleStrategy;
+import SMATP3.model.strategies.Strategy;
 import SMATP3.model.strategies.ThinkingStrategy;
 import SMATP3.utils.IObservable;
 import SMATP3.utils.Observable;
@@ -16,6 +17,8 @@ public class Grid extends Snapshot implements IObservable {
 
 	private final Object lockAgents = new Object();
 	private final Observable observable = new Observable();
+	
+	private Strategy currentStrategy;
 
 	private Map<Integer, Agent> agents;
 
@@ -32,7 +35,8 @@ public class Grid extends Snapshot implements IObservable {
 	 */
 	public Grid(int gridSize) {
 		super(gridSize);
-		agents = new HashMap<Integer, Agent>();
+		this.agents = new HashMap<Integer, Agent>();
+		this.currentStrategy = Strategy.SIMPLESTRATEGY;
 	}
 
 	/**
@@ -57,6 +61,13 @@ public class Grid extends Snapshot implements IObservable {
 				this.addAgent(new Agent(this, postOffice, aimPosition, startPosition));
 			}
 		}
+		this.applyStrategy();
+	}
+	
+	public Grid(int gridSize, int agentCount, Strategy strategy) {
+		this(gridSize, agentCount);
+		this.currentStrategy = strategy;
+		this.applyStrategy();
 	}
 	
 
@@ -97,6 +108,15 @@ public class Grid extends Snapshot implements IObservable {
 			return this.agents.get(agentId);
 		}
 	}
+	
+	public Strategy getCurrentStrategy() {
+		return this.currentStrategy;
+	}
+	
+	public void setCurrentStrategy(Strategy selectedStrategy) {
+		this.currentStrategy = selectedStrategy;	
+		this.applyStrategy();
+	}
 
 	/**
 	 * Déplace un agent d'une case à une autre.
@@ -124,11 +144,12 @@ public class Grid extends Snapshot implements IObservable {
 	 *
 	 * @param strategy La stratégie à appliquer.
 	 */
-	public void applyStrategy(Class<?> strategy) {
+	private void applyStrategy() {
+		System.out.println("application de la strategy");
 		synchronized (lockAgents) {
 			for (Agent a : agents.values()) {
 				try {
-					a.setStrategy((ThinkingStrategy) strategy.newInstance());
+					a.setStrategy((ThinkingStrategy) this.currentStrategy.getStrategy().newInstance());
 				} catch (InstantiationException | IllegalAccessException e) {
 					a.setStrategy(new SimpleStrategy());
 				}
@@ -228,4 +249,6 @@ public class Grid extends Snapshot implements IObservable {
 	public void setDirty() {
 		observable.setDirty();
 	}
+
+	
 }

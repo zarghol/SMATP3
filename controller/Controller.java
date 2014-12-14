@@ -70,7 +70,7 @@ public class Controller {
 		Controller controller = new Controller();
 	}
 
-	private class StartAction extends AbstractAction {
+	public class StartAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		public StartAction() {
@@ -88,7 +88,7 @@ public class Controller {
 		}
 	}
 
-	private class StopAction extends AbstractAction {
+	public class StopAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		public StopAction() {
@@ -107,7 +107,7 @@ public class Controller {
 		}
 	}
 
-	private class ResetAction extends AbstractAction {
+	public class ResetAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 		
 		private Snapshot originalState;
@@ -127,7 +127,7 @@ public class Controller {
 		}
 	}
 
-	private class RandomizeAction extends AbstractAction {
+	public class RandomizeAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		public RandomizeAction() {
@@ -148,7 +148,7 @@ public class Controller {
 		}
 	}
 
-	private class SpeedSliderListener implements ChangeListener {
+	public class SpeedSliderListener implements ChangeListener {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			JSlider slider = (JSlider)e.getSource();
@@ -158,7 +158,7 @@ public class Controller {
 		}
 	}
 
-	private class GridSizeSpinnerListener implements ChangeListener {
+	public class GridSizeSpinnerListener implements ChangeListener {
 
 		@Override
 		public void stateChanged(ChangeEvent e) {

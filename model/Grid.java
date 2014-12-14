@@ -20,8 +20,6 @@ public class Grid extends Snapshot implements IObservable {
 
 	private final Object lockAgents = new Object();
 	private final Observable observable = new Observable();
-	
-	
 
 	private Map<Integer, Agent> agents;
 

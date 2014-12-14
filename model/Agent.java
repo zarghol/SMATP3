@@ -57,7 +57,12 @@ public class Agent implements Runnable {
 			synchronized (lockRunning) {
 				goOn = running;
 			}
-			goOn = goOn && !this.grid.isSolved();
+
+			if(this.grid.isSolved()) {
+				this.grid.setDirty();
+				this.grid.notifyObservers(Grid.NotificationCode.PUZZLE_SOLVED);
+				goOn = false;
+			}
 
 			try {
 				Thread.sleep(waitingTime);

@@ -136,8 +136,8 @@ public class MainWindow extends JFrame implements Observer {
 		}
 		board = new Board(grid);
 		getContentPane().add(board, BorderLayout.CENTER);
-		validate();
-		repaint();
+		this.validate();
+		this.repaint();
 		this.pack();
 	}
 

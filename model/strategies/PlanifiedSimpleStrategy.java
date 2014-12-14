@@ -2,6 +2,7 @@ package SMATP3.model.strategies;
 
 import SMATP3.model.Agent;
 import SMATP3.model.Snapshot;
+import SMATP3.model.messages.ConversationStatus;
 import SMATP3.model.messages.Message;
 import SMATP3.model.strategies.dependencies.Dijkstra;
 import SMATP3.utils.Position;
@@ -36,8 +37,8 @@ public class PlanifiedSimpleStrategy implements ThinkingStrategy {
 	}
 
 	@Override
-	public boolean handleMessage(Message message, Agent agent) {
-		return true;
+	public ConversationStatus handleMessage(Message message, Agent agent) {
+		return ConversationStatus.NOCHANGE;
 	}
 	
 	private void findRoute(Snapshot snap, Position origin, Position target) {

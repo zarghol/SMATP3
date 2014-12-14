@@ -1,5 +1,8 @@
 package SMATP3.model.strategies;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import SMATP3.model.Agent;
 import SMATP3.model.messages.Action;
 import SMATP3.model.messages.ConversationStatus;
@@ -8,13 +11,10 @@ import SMATP3.model.messages.Performative;
 import SMATP3.utils.Direction;
 import SMATP3.utils.Position;
 
-import java.util.ArrayList;
-
-public class BaseStrategy implements ThinkingStrategy {
+public class IndependentGroupStrategy extends GroupStrategy{
 
 	@Override
 	public void reflexionAction(Agent agent) {
-		// si on a pas de message a attendre => pas de conversation ouverte
 		if (!agent.handleMessages()) {
 			Direction toFollow = Direction.directionDifferential(agent.getPosition(), agent.getAimPosition());
 			if (toFollow != Direction.NONE)  {
@@ -30,11 +30,12 @@ public class BaseStrategy implements ThinkingStrategy {
 				}
 			}
 		}
+
 	}
 
 	@Override
 	public String getName() {
-		return "BaseStrategy";
+		return "IndependentGroupStrategy";
 	}
 
 	@Override
@@ -44,8 +45,10 @@ public class BaseStrategy implements ThinkingStrategy {
 			Message response = agent.getNewMessage();
 			response.setPerformative(Performative.INFORM);
 
-			if (emptyNeighbourhood.size() > 0) {
-				agent.move(emptyNeighbourhood.get(0));
+			// on accepte de bouger que pour un copain
+			if (this.group.containsAgent(message.getEmitterId()) && emptyNeighbourhood.size() > 0) {
+				Random r = new Random();
+				agent.move(emptyNeighbourhood.get(r.nextInt(emptyNeighbourhood.size())));
 				response.setAction(Action.ACCEPTED);
 			} else {
 				response.setAction(Action.REFUSED);
@@ -53,6 +56,13 @@ public class BaseStrategy implements ThinkingStrategy {
 			response.addRecipientId(message.getEmitterId());
 			agent.sendMessage(response, ConversationStatus.NOCHANGE);
 		} else if (message.getPerformative() == Performative.INFORM) {
+			if (message.getAction() == Action.REFUSED) {
+				ArrayList<Position> emptyNeighbourhood = agent.getSnapshot().getEmptyNeighbourhood(agent.getPosition());
+				Random r = new Random();
+				agent.move(emptyNeighbourhood.get(r.nextInt(emptyNeighbourhood.size())));
+			}
+			
+			
 			return ConversationStatus.ENDED;
 		}
 		return ConversationStatus.NOCHANGE;

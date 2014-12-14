@@ -7,16 +7,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class AbstractGroup {
+public class Group {
 	protected Grid grid;
 	protected List<Integer> agents;
 	// ordres => message, dans le postOffice
 
-	public AbstractGroup(Grid grid, Collection<Agent> agents) {
+	public Group(Grid grid, Collection<Agent> agents) {
 		this.grid = grid;
 		this.agents = new ArrayList<Integer>();
-		for (Agent a : agents) {
-			this.agents.add(a.getId());
+		if (agents != null) {
+			for (Agent a : agents) {
+				this.agents.add(a.getId());
+			}
 		}
 	}
 
@@ -31,5 +33,9 @@ public abstract class AbstractGroup {
 
 	public void addAgent(int id) {
 		this.agents.add(id);
+	}
+
+	public boolean containsAgent(int id) {
+		return this.agents.contains(id);
 	}
 }

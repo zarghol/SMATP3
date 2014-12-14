@@ -1,7 +1,7 @@
 package SMATP3.model;
 
+import SMATP3.model.messages.ConversationStatus;
 import SMATP3.model.messages.Message;
-import SMATP3.model.messages.Performative;
 import SMATP3.model.strategies.ThinkingStrategy;
 import SMATP3.utils.Position;
 
@@ -39,6 +39,10 @@ public class Agent implements Runnable {
 		this.strategy = null;
 
 		this.nbMove = 0;
+	}
+
+	public static void resetIds() {
+		LAST_AGENT_ID = 0;
 	}
 
 	@Override
@@ -95,32 +99,49 @@ public class Agent implements Runnable {
 		return new Message(this);
 	}
 
-	public void sendMessage(Message message) {
+	public void sendMessage(Message message, ConversationStatus status) {
 		StringBuilder sb = new StringBuilder();
 		for (int id : message.getRecipientIds()) {
 			sb.append(" ").append(id);
 		}
 		this.talk("sending mail to following agents :" + sb.toString());
-		if (message.getPerformative() == Performative.REQUEST) {
-			this.numberOfMessagesWaited++;
-		}
+		// Si c'est une requete, on attend une réponse
+		this.handleConversationStatus(status);
+
 		postOffice.sendMessage(message);
 	}
 
+	private void handleConversationStatus(ConversationStatus status) {
+		switch (status) {
+			case BEGAN:
+				this.numberOfMessagesWaited++;
+				break;
+
+			case ENDED:
+				this.numberOfMessagesWaited--;
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * gère les messages
+	 *
+	 * @return true si on attend encore des réponses, false sinon
+	 */
 	public boolean handleMessages() {
 		Message message = this.postOffice.getNextMessage(this);
-		boolean messageHandled = false;
+		// Tant qu'on a des messages a lire
 		while (message != null) {
 			this.talk("handling mail from Agent " + message.getEmitterId());
-			if (this.strategy.handleMessage(message, this)) {
-				this.numberOfMessagesWaited--;
-			}
+			this.handleConversationStatus(this.strategy.handleMessage(message, this));
 
-			messageHandled = true;
 			message = this.postOffice.getNextMessage(this);
 		}
 		this.talk("number of messages : " + this.numberOfMessagesWaited);
-		return messageHandled || this.numberOfMessagesWaited > 0;
+		return this.numberOfMessagesWaited > 0;
 	}
 
 	private void perceiveEnvironment() {
@@ -136,6 +157,8 @@ public class Agent implements Runnable {
 		}
 	}
 
+	// GETTERS / SETTERS
+
 	private void talk(String stringToSay) {
 		boolean v;
 		synchronized (lockVerbose) {
@@ -146,8 +169,6 @@ public class Agent implements Runnable {
 			System.out.println("agent " + this.agentId + " : " + stringToSay);
 		}
 	}
-
-	// GETTERS / SETTERS
 
 	public double getUtility() {
 		double finalUtility = (double) this.nbMove / (double) this.grid.getGlobalMoves();
@@ -198,9 +219,5 @@ public class Agent implements Runnable {
 		synchronized (lockLatency) {
 			this.latency = latency;
 		}
-	}
-
-	public static void resetIds() {
-		LAST_AGENT_ID = 0;
 	}
 }

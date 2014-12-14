@@ -135,9 +135,8 @@ public class Controller {
 			System.out.println("creation grille");
 			Agent.resetIds();
 			grid = new Grid((Integer) window.getGridSizeSpinner().getValue(), (Integer) window.getAgentCountSpinner().getValue(), (Strategy) window.getStrategyPicker().getSelectedItem());
-			grid.setVerbose(false);
+			grid.setVerbose(true);
 			
-			System.out.println("application de la grille a la window");
 			window.setGrid(grid);
 
 			getStopAction().actionPerformed(null);

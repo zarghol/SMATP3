@@ -2,6 +2,7 @@ package SMATP3.model.strategies;
 
 import SMATP3.model.Agent;
 import SMATP3.model.messages.Action;
+import SMATP3.model.messages.ConversationStatus;
 import SMATP3.model.messages.Message;
 import SMATP3.model.messages.Performative;
 import SMATP3.utils.Direction;
@@ -42,7 +43,7 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 				for (Integer i : agentsToContact) {
 					message.addRecipientId(i);
 				}
-				agent.sendMessage(message);
+				agent.sendMessage(message, ConversationStatus.BEGAN);
 			}
 		}
 	}
@@ -53,7 +54,7 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 	}
 
 	@Override
-	public boolean handleMessage(Message message, Agent agent) {
+	public ConversationStatus handleMessage(Message message, Agent agent) {
 		// Si on nous demande de bouger
 		if (message.getPerformative() == Performative.REQUEST && message.getAction() == Action.MOVE) {
 			// On construit la réponse
@@ -75,7 +76,7 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 //				Position p = (Position) message.getComplementaryInformationForName("suggestedPosition");
 				this.move(agent, false);
 				response.setAction(Action.ACCEPTED);
-				agent.sendMessage(response);
+				agent.sendMessage(response, ConversationStatus.ENDED);
 			} else if (numTentative == 3) {
 				double otherUtility = (double) message.getComplementaryInformationForName("utility");
 				if (agent.getUtility() <= otherUtility) {
@@ -88,13 +89,13 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 			
 			response.addComplementaryInformation(numTentative, "attempt");
 
-			agent.sendMessage(response);
-			return response.getAction() == Action.ACCEPTED;
+			agent.sendMessage(response, response.getAction() == Action.ACCEPTED ? ConversationStatus.ENDED : ConversationStatus.CONTINUED);
+			return ConversationStatus.NOCHANGE;
 
 		} else if (message.getPerformative() == Performative.INFORM) {
 			if (message.getAction() == Action.ACCEPTED) {
 				this.move(agent, false);
-				return true;
+				return ConversationStatus.ENDED;
 			} else if (message.getAction() == Action.REFUSED) {
 				// NAN MAIS OH ! T'AS PAS LE DROIT DE REFUSER !! GRRRRR !
 				// recherche alternative pour l'autre
@@ -109,24 +110,24 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 						response.setAction(Action.MOVE);
 //						response.addComplementaryInformation(emptyNeighbourhood.get(new Random().nextInt(emptyNeighbourhood.size())), "suggestedPosition");
 						response.addComplementaryInformation(2, "attempt");
-						agent.sendMessage(response);
-						return false;
+						agent.sendMessage(response, ConversationStatus.CONTINUED);
+						return ConversationStatus.NOCHANGE;
 					} else {
 						Message response = agent.getNewMessage();
 						response.setPerformative(Performative.REQUEST);
 						response.setAction(Action.MOVE);
 						response.addComplementaryInformation(agent.getUtility(), "utility");
 						response.addComplementaryInformation(3, "attempt");
-						agent.sendMessage(response);
-						return false;
+						agent.sendMessage(response, ConversationStatus.CONTINUED);
+						return ConversationStatus.NOCHANGE;
 					}
 				} else {
 					this.move(agent, true);
-					return true;
+					return ConversationStatus.ENDED;
 				}
 			}
 		}
-		return true;
+		return ConversationStatus.NOCHANGE;
 	}
 
 }

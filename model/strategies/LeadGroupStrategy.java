@@ -16,7 +16,7 @@ public class LeadGroupStrategy implements ThinkingStrategy {
 		// si on est le leader
 		if (agent.getId() == this.group.getLeader()) {
 			// TODO on donne des ordres en fonction de la situation actuelle
-			// comment ? utilisation de djikstra ?
+			// comment ? utilisation de dijkstra ?
 			
 			// pour les ordres
 			Message m = agent.getNewMessage();

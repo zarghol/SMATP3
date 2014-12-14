@@ -9,10 +9,7 @@ import SMATP3.model.Grid;
 public class LeadGroup extends AbstractGroup {
 	private int leader;
 
-	public LeadGroup(Grid grid, int... integers) {
-		super(grid, integers);
-		this.electLeader();
-	}
+
 	
 	public LeadGroup(Grid grid, Collection<Agent> agents) {
 		super(grid, agents);

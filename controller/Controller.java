@@ -11,6 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import SMATP3.model.Grid;
+import SMATP3.model.Snapshot;
 import SMATP3.model.strategies.Strategy;
 import SMATP3.view.MainWindow;
 
@@ -107,14 +108,21 @@ public class Controller {
 
 	public class ResetAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
+		
+		private Snapshot originalState;
 
 		public ResetAction() {
 			super("Reset");
 		}
+		
+		public void setOriginalState(Snapshot snap) {
+			this.originalState = snap;
+		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//TODO: implémenter la réinitialisation
+//			grid = new Grid(this.originalState);
+//			window.setGrid(grid);
 		}
 	}
 
@@ -133,6 +141,8 @@ public class Controller {
 			
 			System.out.println("application de la grille a la window");
 			window.setGrid(grid);
+			
+			getResetAction().setOriginalState(grid.getSnapshot());
 		}
 	}
 

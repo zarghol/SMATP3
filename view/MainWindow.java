@@ -22,7 +22,7 @@ public class MainWindow extends JFrame {
 	private JToolBar controlPanel;
 	private JSpinner gridSizeSpinner;
 	private JSpinner agentCountSpinner;
-	private JComboBox<Strategy> strategyPicker; //TODO: ajouter liste de sélection de stratégie
+	private JComboBox<Strategy> strategyPicker;
 	private JButton resetButton;
 	private JButton randomizeButton;
 	private JButton startStopButton;

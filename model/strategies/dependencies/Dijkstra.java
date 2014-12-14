@@ -1,4 +1,4 @@
-package SMATP3.model.strategies;
+package SMATP3.model.strategies.dependencies;
 
 import SMATP3.model.Snapshot;
 import SMATP3.utils.Position;

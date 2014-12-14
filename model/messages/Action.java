@@ -2,7 +2,8 @@ package SMATP3.model.messages;
 
 public enum Action {
 	MOVE("move"),
-	ACCEPTED("accepted"),
+	WAIT("wait"),
+	ACCEPTED("accepted"), // TODO a mettre dans les complementary option et pas dans actions ??
 	REFUSED("refused");
 
 	private String label;

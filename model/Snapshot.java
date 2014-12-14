@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import SMATP3.model.strategies.Strategy;
 import SMATP3.utils.Direction;
 import SMATP3.utils.Position;
 
@@ -13,6 +14,8 @@ public class Snapshot {
 	protected final int gridSize;
 
 	protected Map<Position, Integer> positions;
+	
+	protected Strategy currentStrategy;
 
 	/**
 	 * Constructor.
@@ -22,6 +25,7 @@ public class Snapshot {
 	public Snapshot(int gridSize) {
 		this.gridSize = gridSize;
 		this.positions = new HashMap<Position, Integer>();
+		this.currentStrategy = Strategy.SIMPLESTRATEGY;
 	}
 
 	/**
@@ -31,11 +35,16 @@ public class Snapshot {
 	 */
 	public Snapshot(Snapshot snapshot) {
 		this(snapshot.gridSize);
+		this.currentStrategy = snapshot.getCurrentStrategy();
 		synchronized (snapshot.lockPositions) {
 			for (Map.Entry<Position, Integer> entry : snapshot.positions.entrySet()) {
 				this.positions.put(new Position(entry.getKey()), entry.getValue());
 			}
 		}
+	}
+	
+	public Strategy getCurrentStrategy() {
+		return this.currentStrategy;
 	}
 
 	/**

@@ -3,6 +3,7 @@ package SMATP3.model.strategies;
 import SMATP3.model.Agent;
 import SMATP3.model.Snapshot;
 import SMATP3.model.messages.Message;
+import SMATP3.model.strategies.dependencies.Dijkstra;
 import SMATP3.utils.Position;
 
 import java.util.List;

@@ -1,6 +1,9 @@
 package SMATP3.model;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import SMATP3.model.strategies.SimpleStrategy;
 import SMATP3.model.strategies.Strategy;
@@ -18,7 +21,7 @@ public class Grid extends Snapshot implements IObservable {
 	private final Object lockAgents = new Object();
 	private final Observable observable = new Observable();
 	
-	private Strategy currentStrategy;
+	
 
 	private Map<Integer, Agent> agents;
 
@@ -36,7 +39,6 @@ public class Grid extends Snapshot implements IObservable {
 	public Grid(int gridSize) {
 		super(gridSize);
 		this.agents = new HashMap<Integer, Agent>();
-		this.currentStrategy = Strategy.SIMPLESTRATEGY;
 	}
 
 	/**
@@ -69,6 +71,24 @@ public class Grid extends Snapshot implements IObservable {
 		this.currentStrategy = strategy;
 		this.applyStrategy();
 	}
+	
+//	TODO: finir la réinitialisation
+//	public Grid(Snapshot snapshot) {
+//		super(snapshot);
+//		
+//		HashMap<Position, Position> positionsAgents = new HashMap<Position, Position>();
+//
+//		
+//		for (Entry<Position, Integer> entry : this.positions.entrySet()) {
+//			Random r = new Random();
+//			Position aimPosition = new Position(r.nextInt(this.getGridSize()), r.nextInt(this.getGridSize()));
+//			if (!positionsAgents.containsKey(entry.getKey()) && !positionsAgents.containsValue(aimPosition)) {
+//				positionsAgents.put(entry.getKey(), aimPosition);
+//				this.addAgent(new Agent(this, postOffice, aimPosition, startPosition));
+//			}
+//
+//		}
+//	}
 	
 
 	public int getAgentCount() {
@@ -109,10 +129,6 @@ public class Grid extends Snapshot implements IObservable {
 		}
 	}
 	
-	public Strategy getCurrentStrategy() {
-		return this.currentStrategy;
-	}
-	
 	public void setCurrentStrategy(Strategy selectedStrategy) {
 		this.currentStrategy = selectedStrategy;	
 		this.applyStrategy();
@@ -147,13 +163,7 @@ public class Grid extends Snapshot implements IObservable {
 	private void applyStrategy() {
 		System.out.println("application de la strategy");
 		synchronized (lockAgents) {
-			for (Agent a : agents.values()) {
-				try {
-					a.setStrategy((ThinkingStrategy) this.currentStrategy.getStrategy().newInstance());
-				} catch (InstantiationException | IllegalAccessException e) {
-					a.setStrategy(new SimpleStrategy());
-				}
-			}
+			this.currentStrategy.apply(this, (List<Agent>) this.agents.values());
 		}
 	}
 

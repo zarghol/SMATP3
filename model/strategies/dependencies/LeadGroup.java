@@ -6,14 +6,9 @@ import java.util.Random;
 import SMATP3.model.Agent;
 import SMATP3.model.Grid;
 
-public class LeadGroup extends AbstractGroup {
+public class LeadGroup extends Group {
 	private int leader;
 
-	public LeadGroup(Grid grid, int... integers) {
-		super(grid, integers);
-		this.electLeader();
-	}
-	
 	public LeadGroup(Grid grid, Collection<Agent> agents) {
 		super(grid, agents);
 		this.electLeader();

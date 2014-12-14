@@ -8,14 +8,12 @@ import SMATP3.model.messages.Performative;
 import SMATP3.model.strategies.dependencies.LeadGroup;
 import SMATP3.utils.Position;
 
-public class LeadGroupStrategy implements ThinkingStrategy {
-	// TODO voir plus tard avec une liste de groupe (pas forcement une seule figure a realiser)
-	private LeadGroup group;
+public class LeadGroupStrategy extends GroupStrategy {
 
 	@Override
 	public void reflexionAction(Agent agent) {
 		// si on est le leader
-		if (agent.getId() == this.group.getLeader()) {
+		if (agent.getId() == ((LeadGroup) this.group).getLeader()) {
 			// TODO on donne des ordres en fonction de la situation actuelle
 			// comment ? utilisation de djikstra ?
 			
@@ -49,10 +47,6 @@ public class LeadGroupStrategy implements ThinkingStrategy {
 			}
 		}
 		return ConversationStatus.NOCHANGE;
-	}
-	
-	public void setGroup(LeadGroup group) {
-		this.group = group;
 	}
 
 }

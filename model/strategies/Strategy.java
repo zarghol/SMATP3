@@ -1,9 +1,13 @@
 package SMATP3.model.strategies;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
 import SMATP3.model.Agent;
 import SMATP3.model.Grid;
+import SMATP3.model.strategies.dependencies.Group;
 import SMATP3.model.strategies.dependencies.LeadGroup;
 
 public enum Strategy {
@@ -12,7 +16,8 @@ public enum Strategy {
 	PLANIFIEDSIMPLESTRATEGY(PlanifiedSimpleStrategy.class),
 	SIMPLESTRATEGY(SimpleStrategy.class),
 	UTILITYDIALOGSTRATEGY(UtilityDialogStrategy.class),
-	LEADGROUPSTRATEGY(LeadGroupStrategy.class);
+	LEADGROUPSTRATEGY(LeadGroupStrategy.class),
+	INDEPENDENTGROUPSTRATEGY(IndependentGroupStrategy.class);
 	
 	private Class<?> strategy;
 	
@@ -38,18 +43,40 @@ public enum Strategy {
 	}
 	
 	public void apply(Grid grid, Collection<Agent> collection) {
-		LeadGroup group = null;
+		List<Group> groups = new ArrayList<>();
 		
-		if (this == LEADGROUPSTRATEGY) {
-			group = new LeadGroup(grid, collection);
-		}
+		
+		HashMap<Agent, Group> mapping = new HashMap<Agent, Group>();
+		
+		if (this == LEADGROUPSTRATEGY || this == INDEPENDENTGROUPSTRATEGY) {
+			int nbGroup = 2;
+			
+			for (int i = 0; i < nbGroup; i++) {
+				Group toAdd = null;
+				if (this == LEADGROUPSTRATEGY) {
+					toAdd = new LeadGroup(grid, null);
+				} else {
+					toAdd = new Group(grid, null);
+				}
+				groups.add(toAdd);
+			}
+			
+			int i = 0;
+
+			for (Agent a : collection) {
+				groups.get(i).addAgent(a.getId());
+				mapping.put(a, groups.get(i));
+				i = (i + 1) % nbGroup;
+			}			
+		} 
+		
 		for (Agent a : collection) {
 			try {
 				ThinkingStrategy strat = (ThinkingStrategy) this.strategy.newInstance();
 				
-				if (this == LEADGROUPSTRATEGY) {
-					LeadGroupStrategy st = (LeadGroupStrategy) strat;
-					st.setGroup(group);
+				if (this == LEADGROUPSTRATEGY || this == INDEPENDENTGROUPSTRATEGY) {
+					GroupStrategy st = (GroupStrategy) strat;
+					st.setGroup(mapping.get(a));
 				}
 				
 				

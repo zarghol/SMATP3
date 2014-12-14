@@ -163,7 +163,7 @@ public class Grid extends Snapshot implements IObservable {
 	private void applyStrategy() {
 		System.out.println("application de la strategy");
 		synchronized (lockAgents) {
-			this.currentStrategy.apply(this, (List<Agent>) this.agents.values());
+			this.currentStrategy.apply(this, this.agents.values());
 		}
 	}
 

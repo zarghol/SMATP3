@@ -143,6 +143,7 @@ public class Controller {
 			window.setGrid(grid);
 			
 			getResetAction().setOriginalState(grid.getSnapshot());
+			getStopAction().actionPerformed(null);
 		}
 	}
 

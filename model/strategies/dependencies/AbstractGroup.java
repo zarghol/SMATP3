@@ -1,6 +1,7 @@
 package SMATP3.model.strategies.dependencies;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import SMATP3.model.Agent;
@@ -18,13 +19,13 @@ public abstract class AbstractGroup {
 			this.agents.add(i);
 		}
 	}
-											//        TODO  __________=> SUPER MOCHE A SUPPRIMER
-	public AbstractGroup(Grid grid, List<Integer> integers, int rien) {
+										//       TODO  __________=> SUPER MOCHE A SUPPRIMER
+	public AbstractGroup(Grid grid, List<Integer> ids, int rien) {
 		this.grid = grid;
-		this.agents = new ArrayList<Integer>(integers);
+		this.agents = new ArrayList<Integer>(ids);
 	}
 	
-	public AbstractGroup(Grid grid, List<Agent> agents) {
+	public AbstractGroup(Grid grid, Collection<Agent> agents) {
 		this.grid = grid;
 		this.agents = new ArrayList<Integer>();
 		for (Agent a : agents) {

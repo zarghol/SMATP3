@@ -1,7 +1,6 @@
 package SMATP3.model.strategies.dependencies;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Random;
 
 import SMATP3.model.Agent;
@@ -15,7 +14,7 @@ public class LeadGroup extends AbstractGroup {
 		this.electLeader();
 	}
 	
-	public LeadGroup(Grid grid, List<Agent> agents) {
+	public LeadGroup(Grid grid, Collection<Agent> agents) {
 		super(grid, agents);
 		this.electLeader();
 	}

@@ -1,6 +1,6 @@
 package SMATP3.model.strategies;
 
-import java.util.List;
+import java.util.Collection;
 
 import SMATP3.model.Agent;
 import SMATP3.model.Grid;
@@ -37,13 +37,13 @@ public enum Strategy {
 		return strat.getName();
 	}
 	
-	public void apply(Grid grid, List<Agent> agents) {
+	public void apply(Grid grid, Collection<Agent> collection) {
 		LeadGroup group = null;
 		
 		if (this == LEADGROUPSTRATEGY) {
-			group = new LeadGroup(grid, agents);
+			group = new LeadGroup(grid, collection);
 		}
-		for (Agent a : agents) {
+		for (Agent a : collection) {
 			try {
 				ThinkingStrategy strat = (ThinkingStrategy) this.strategy.newInstance();
 				

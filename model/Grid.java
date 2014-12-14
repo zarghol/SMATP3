@@ -1,17 +1,12 @@
 package SMATP3.model;
 
-import SMATP3.model.strategies.SimpleStrategy;
 import SMATP3.model.strategies.Strategy;
-import SMATP3.model.strategies.ThinkingStrategy;
 import SMATP3.utils.IObservable;
 import SMATP3.utils.Observable;
 import SMATP3.utils.Observer;
 import SMATP3.utils.Position;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Grid extends Snapshot implements IObservable {
 
@@ -20,24 +15,9 @@ public class Grid extends Snapshot implements IObservable {
 
 	private final Object lockAgents = new Object();
 	private final Observable observable = new Observable();
+	private final Snapshot initialState;
 
-	private Map<Integer, Agent> agents;
-
-	/**
-	 * Constructeur par défaut.
-	 */
-	public Grid() {
-		this(DEFAULT_GRID_SIZE, DEFAULT_AGENT_COUNT);
-	}
-
-	/**
-	 * Constructeur. Les agents doivent être ajoutés séparéments.
-	 * @param gridSize La taille de la grille.
-	 */
-	public Grid(int gridSize) {
-		super(gridSize);
-		this.agents = new HashMap<Integer, Agent>();
-	}
+	private Map<Integer, Agent> agents = new HashMap<>();
 
 	/**
 	 * Constructeur générant les agents aléatoirement.
@@ -45,48 +25,54 @@ public class Grid extends Snapshot implements IObservable {
 	 * @param gridSize   La taille de la grille.
 	 * @param agentCount Le nombre d'agents à générer.
 	 */
-	public Grid(int gridSize, int agentCount) {
-		this(gridSize);
-		PostOffice postOffice = new PostOffice();
-		
-		// utilisé pour vérifier les positions
-		HashMap<Position, Position> positionsAgents = new HashMap<Position, Position>();
-		
-		while (positionsAgents.size() < agentCount) {
-			Random r = new Random();
-			Position startPosition = new Position(r.nextInt(this.getGridSize()), r.nextInt(this.getGridSize()));
-			Position aimPosition = new Position(r.nextInt(this.getGridSize()), r.nextInt(this.getGridSize()));
-			if (!positionsAgents.containsKey(startPosition) && !positionsAgents.containsValue(aimPosition)) {
-				positionsAgents.put(startPosition, aimPosition);
-				this.addAgent(new Agent(this, postOffice, aimPosition, startPosition));
-			}
-		}
-		this.applyStrategy();
-	}
-	
 	public Grid(int gridSize, int agentCount, Strategy strategy) {
-		this(gridSize, agentCount);
+		super(gridSize);
+		PostOffice postOffice = new PostOffice();
+		Random random = new Random();
+		Position startPosition, aimPosition;
+
+		while (this.positions.size() < agentCount) {
+			do {
+				startPosition = new Position(random.nextInt(gridSize), random.nextInt(gridSize));
+			} while(this.positions.containsKey(startPosition));
+			do {
+				aimPosition = new Position(random.nextInt(gridSize), random.nextInt(gridSize));
+			} while(this.aims.containsKey(aimPosition));
+			this.addAgent(new Agent(this, postOffice, aimPosition, startPosition));
+		}
 		this.currentStrategy = strategy;
 		this.applyStrategy();
+		this.initialState = this.getSnapshot();
 	}
 	
-//	TODO: finir la réinitialisation
-//	public Grid(Snapshot snapshot) {
-//		super(snapshot);
-//		
-//		HashMap<Position, Position> positionsAgents = new HashMap<Position, Position>();
-//
-//		
-//		for (Entry<Position, Integer> entry : this.positions.entrySet()) {
-//			Random r = new Random();
-//			Position aimPosition = new Position(r.nextInt(this.getGridSize()), r.nextInt(this.getGridSize()));
-//			if (!positionsAgents.containsKey(entry.getKey()) && !positionsAgents.containsValue(aimPosition)) {
-//				positionsAgents.put(entry.getKey(), aimPosition);
-//				this.addAgent(new Agent(this, postOffice, aimPosition, startPosition));
-//			}
-//
-//		}
-//	}
+	public Grid(int gridSize, int agentCount) {
+		this(gridSize, agentCount, Strategy.BASE_STRATEGY);
+	}
+
+	public Grid(Snapshot snapshot) {
+		super(snapshot);
+		PostOffice postOffice = new PostOffice();
+
+		for(int i=0; i<this.positions.size(); i++) {
+			Position startPosition = null;
+			Position aimPosition = null;
+			for (Map.Entry<Position, Integer> entry : this.positions.entrySet()) {
+				if (entry.getValue() == i) {
+					startPosition = entry.getKey();
+					break;
+				}
+			}
+			for (Map.Entry<Position, Integer> entry : this.aims.entrySet()) {
+				if (entry.getValue() == i) {
+					aimPosition = entry.getKey();
+					break;
+				}
+			}
+			this.addAgent(new Agent(this, postOffice, aimPosition, startPosition));
+		}
+		this.applyStrategy();
+		this.initialState = this.getSnapshot();
+	}
 	
 
 	public int getAgentCount() {
@@ -96,28 +82,17 @@ public class Grid extends Snapshot implements IObservable {
 	/**
 	 * Ajoute un agent à la grille.
 	 *
-	 * @param agent L'agent à ajouter.
-	 * @return True si l'agent a été ajouté. False sinon (position de départ ou de destination invalide).
+	 * @param agent L'agent à ajouter. L'agent doit avoir des position de départ et de destination valides.
 	 */
-	public boolean addAgent(Agent agent) {
-		if (!isPositionValid(agent.getPosition()) || !isPositionValid(agent.getAimPosition())) {
-			return false;
-		}
-
+	private void addAgent(Agent agent) {
 		synchronized (this.lockPositions) {
 			this.positions.put(agent.getPosition(), agent.getId());
 		}
+		synchronized (this.lockAims) {
+			this.aims.put(agent.getAimPosition(), agent.getId());
+		}
 		synchronized (this.lockAgents) {
 			this.agents.put(agent.getId(), agent);
-		}
-		return true;
-	}
-
-	public void addAgents(List<Agent> agents) {
-		synchronized (this.lockAgents) {
-			for (Agent a : agents) {
-				this.addAgent(a);
-			}
 		}
 	}
 
@@ -239,6 +214,10 @@ public class Grid extends Snapshot implements IObservable {
 
 	public Snapshot getSnapshot() {
 		return new Snapshot(this);
+	}
+
+	public Snapshot getInitialState() {
+		return this.initialState;
 	}
 
 	@Override

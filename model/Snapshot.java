@@ -11,9 +11,11 @@ import SMATP3.utils.Position;
 public class Snapshot {
 
 	protected final Object lockPositions = new Object();
+	protected final Object lockAims = new Object();
 	protected final int gridSize;
 
 	protected Map<Position, Integer> positions;
+	protected Map<Position, Integer> aims;
 	
 	protected Strategy currentStrategy;
 
@@ -24,8 +26,9 @@ public class Snapshot {
 	 */
 	public Snapshot(int gridSize) {
 		this.gridSize = gridSize;
-		this.positions = new HashMap<Position, Integer>();
-		this.currentStrategy = Strategy.SIMPLESTRATEGY;
+		this.positions = new HashMap<>();
+		this.aims = new HashMap<>();
+		this.currentStrategy = Strategy.SIMPLE_STRATEGY;
 	}
 
 	/**
@@ -39,6 +42,11 @@ public class Snapshot {
 		synchronized (snapshot.lockPositions) {
 			for (Map.Entry<Position, Integer> entry : snapshot.positions.entrySet()) {
 				this.positions.put(new Position(entry.getKey()), entry.getValue());
+			}
+		}
+		synchronized (snapshot.lockAims) {
+			for (Map.Entry<Position, Integer> entry : snapshot.aims.entrySet()) {
+				this.aims.put(new Position(entry.getKey()), entry.getValue());
 			}
 		}
 	}

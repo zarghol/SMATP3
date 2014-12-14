@@ -1,5 +1,6 @@
 package SMATP3.controller;
 
+import SMATP3.model.Agent;
 import SMATP3.model.Grid;
 import SMATP3.model.Snapshot;
 import SMATP3.model.components.AgentCountSpinnerModel;
@@ -109,21 +110,16 @@ public class Controller {
 
 	public class ResetAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
-		
-		private Snapshot originalState;
 
 		public ResetAction() {
 			super("Reset");
 		}
-		
-		public void setOriginalState(Snapshot snap) {
-			this.originalState = snap;
-		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-//			grid = new Grid(this.originalState);
-//			window.setGrid(grid);
+			Agent.resetIds();
+			grid = new Grid(grid.getInitialState());
+			window.setGrid(grid);
 		}
 	}
 
@@ -137,13 +133,13 @@ public class Controller {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("creation grille");
+			Agent.resetIds();
 			grid = new Grid((Integer) window.getGridSizeSpinner().getValue(), (Integer) window.getAgentCountSpinner().getValue(), (Strategy) window.getStrategyPicker().getSelectedItem());
 			grid.setVerbose(false);
 			
 			System.out.println("application de la grille a la window");
 			window.setGrid(grid);
-			
-			getResetAction().setOriginalState(grid.getSnapshot());
+
 			getStopAction().actionPerformed(null);
 		}
 	}

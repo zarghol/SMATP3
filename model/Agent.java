@@ -15,10 +15,9 @@ public class Agent implements Runnable {
 	private final int agentId;
 	private final Grid grid;
 	private final PostOffice postOffice;
+	private final Position aimPosition;
 	// TODO: revoir : sert à savoir si on est en attente de message. Si oui, on bouge pas, on attends les réponses
 	private int numberOfMessagesWaited;
-	private final Position aimPosition;
-
 	private Position position;
 	private Snapshot snapshot;
 	private ThinkingStrategy strategy;
@@ -27,7 +26,7 @@ public class Agent implements Runnable {
 	private boolean running = false;
 
 	private int nbMove;
-	
+
 	public Agent(Grid grid, PostOffice postOffice, Position aimPosition, Position startPosition) {
 		this.agentId = LAST_AGENT_ID++;
 		this.grid = grid;
@@ -38,7 +37,7 @@ public class Agent implements Runnable {
 		this.position = startPosition;
 		this.snapshot = null;
 		this.strategy = null;
-		
+
 		this.nbMove = 0;
 	}
 
@@ -58,7 +57,7 @@ public class Agent implements Runnable {
 				goOn = running;
 			}
 
-			if(this.grid.isSolved()) {
+			if (this.grid.isSolved()) {
 				this.grid.setDirty();
 				this.grid.notifyObservers(Grid.NotificationCode.PUZZLE_SOLVED);
 				goOn = false;
@@ -116,9 +115,9 @@ public class Agent implements Runnable {
 			if (this.strategy.handleMessage(message, this)) {
 				this.numberOfMessagesWaited--;
 			}
-			
+
 			messageHandled = true;
-			message = this.postOffice.getNextMessage(this);		
+			message = this.postOffice.getNextMessage(this);
 		}
 		this.talk("number of messages : " + this.numberOfMessagesWaited);
 		return messageHandled || this.numberOfMessagesWaited > 0;
@@ -136,7 +135,7 @@ public class Agent implements Runnable {
 			this.nbMove++;
 		}
 	}
-	
+
 	private void talk(String stringToSay) {
 		boolean v;
 		synchronized (lockVerbose) {
@@ -147,20 +146,20 @@ public class Agent implements Runnable {
 			System.out.println("agent " + this.agentId + " : " + stringToSay);
 		}
 	}
-	
+
 	// GETTERS / SETTERS
-	
+
 	public double getUtility() {
-		double finalUtility = (double) this.nbMove / (double)this.grid.getGlobalMoves();
+		double finalUtility = (double) this.nbMove / (double) this.grid.getGlobalMoves();
 		if (this.grid.isSolved()) {
 			return finalUtility;
-		} else if (this.isHappy()){
+		} else if (this.isHappy()) {
 			return finalUtility - 0.05 * finalUtility;
 		} else {
 			return finalUtility - 0.1 * finalUtility; // ou 0 ?
 		}
 	}
-	
+
 	public int getId() {
 		return this.agentId;
 	}
@@ -176,7 +175,7 @@ public class Agent implements Runnable {
 	public Position getPosition() {
 		return position;
 	}
-	
+
 	public int getNbMove() {
 		return this.nbMove;
 	}
@@ -199,5 +198,9 @@ public class Agent implements Runnable {
 		synchronized (lockLatency) {
 			this.latency = latency;
 		}
+	}
+
+	public static void resetIds() {
+		LAST_AGENT_ID = 0;
 	}
 }

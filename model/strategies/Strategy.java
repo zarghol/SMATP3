@@ -7,12 +7,12 @@ import SMATP3.model.Grid;
 import SMATP3.model.strategies.dependencies.LeadGroup;
 
 public enum Strategy {
-	BASESTRATEGY(BaseStrategy.class),
-	DIALOGSTRATEGY(DialogStrategy.class),
-	PLANIFIEDSIMPLESTRATEGY(PlanifiedSimpleStrategy.class),
-	SIMPLESTRATEGY(SimpleStrategy.class),
-	UTILITYDIALOGSTRATEGY(UtilityDialogStrategy.class),
-	LEADGROUPSTRATEGY(LeadGroupStrategy.class);
+	BASE_STRATEGY(BaseStrategy.class),
+	DIALOG_STRATEGY(DialogStrategy.class),
+	PLANIFIED_SIMPLE_STRATEGY(PlanifiedSimpleStrategy.class),
+	SIMPLE_STRATEGY(SimpleStrategy.class),
+	UTILITY_DIALOG_STRATEGY(UtilityDialogStrategy.class),
+	LEAD_GROUP_STRATEGY(LeadGroupStrategy.class);
 	
 	private Class<?> strategy;
 	
@@ -40,14 +40,14 @@ public enum Strategy {
 	public void apply(Grid grid, Collection<Agent> collection) {
 		LeadGroup group = null;
 		
-		if (this == LEADGROUPSTRATEGY) {
+		if (this == LEAD_GROUP_STRATEGY) {
 			group = new LeadGroup(grid, collection);
 		}
 		for (Agent a : collection) {
 			try {
 				ThinkingStrategy strat = (ThinkingStrategy) this.strategy.newInstance();
 				
-				if (this == LEADGROUPSTRATEGY) {
+				if (this == LEAD_GROUP_STRATEGY) {
 					LeadGroupStrategy st = (LeadGroupStrategy) strat;
 					st.setGroup(group);
 				}

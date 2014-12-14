@@ -1,14 +1,14 @@
 package SMATP3.model.strategies;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import SMATP3.model.Agent;
 import SMATP3.model.messages.Action;
 import SMATP3.model.messages.Message;
 import SMATP3.model.messages.Performative;
 import SMATP3.utils.Direction;
 import SMATP3.utils.Position;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UtilityDialogStrategy implements ThinkingStrategy {
 

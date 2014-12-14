@@ -1,10 +1,5 @@
 package SMATP3.model;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import SMATP3.model.strategies.SimpleStrategy;
 import SMATP3.model.strategies.Strategy;
 import SMATP3.model.strategies.ThinkingStrategy;
@@ -12,6 +7,11 @@ import SMATP3.utils.IObservable;
 import SMATP3.utils.Observable;
 import SMATP3.utils.Observer;
 import SMATP3.utils.Position;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class Grid extends Snapshot implements IObservable {
 
@@ -147,7 +147,7 @@ public class Grid extends Snapshot implements IObservable {
 				this.positions.remove(from);
 				this.positions.put(to, agentId);
 				this.setDirty();
-				this.notifyObservers();
+				this.notifyObservers(NotificationCode.AGENT_MOVED);
 
 				return true;
 			}
@@ -157,8 +157,6 @@ public class Grid extends Snapshot implements IObservable {
 
 	/**
 	 * Applique une stratégie donnée aux agents.
-	 *
-	 * @param strategy La stratégie à appliquer.
 	 */
 	private void applyStrategy() {
 		System.out.println("application de la strategy");
@@ -236,6 +234,11 @@ public class Grid extends Snapshot implements IObservable {
 		return true;
 	}
 
+	public enum NotificationCode {
+		AGENT_MOVED,
+		PUZZLE_SOLVED;
+	}
+
 	public Snapshot getSnapshot() {
 		return new Snapshot(this);
 	}
@@ -251,8 +254,8 @@ public class Grid extends Snapshot implements IObservable {
 	}
 
 	@Override
-	public void notifyObservers() {
-		observable.notifyObservers();
+	public void notifyObservers(Object arg) {
+		observable.notifyObservers(arg);
 	}
 
 	@Override

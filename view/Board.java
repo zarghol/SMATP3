@@ -35,8 +35,8 @@ public class Board extends JPanel implements Observer {
 
 		setLayout(new GridLayout(boardSize, boardSize, 1, 1));
 
-		for(int column = 0; column < boardSize; ++column) {
-			for(int row = 0; row < boardSize; ++row) {
+		for (int column = 0; column < boardSize; ++column) {
+			for (int row = 0; row < boardSize; ++row) {
 				Cell cell = new Cell();
 				Position p = new Position(column, row);
 				int agentId = grid.getAgentId(p);
@@ -51,7 +51,7 @@ public class Board extends JPanel implements Observer {
 				this.add(cell);
 			}
 		}
-		
+
 		for (Entry<Position, Integer> entry : aimMap.entrySet()) {
 			cells.get(entry.getKey()).setAimColor(Cell.colorForAgent(entry.getValue()));
 		}
@@ -67,25 +67,20 @@ public class Board extends JPanel implements Observer {
 	}
 
 	@Override
-	public void update() {
-		System.out.println("board update");
-		Snapshot snapshot = grid.getSnapshot();
-		
-		List<Integer> ids = new ArrayList<Integer>();
-		
-		for (int column = 0; column < snapshot.getGridSize(); column++) {
-			for (int row = 0; row < snapshot.getGridSize(); row++) {
-				Position position = new Position(column, row);
-				int id = snapshot.getAgentId(position);
-				if (id != Agent.NO_AGENT) {
-					ids.add(id);
+	public void update(Object arg) {
+		if (arg == Grid.NotificationCode.AGENT_MOVED) {
+			System.out.println("board update");
+			Snapshot snapshot = new Snapshot(grid);
+			int boardSize = snapshot.getGridSize();
+			for (int column = 0; column < boardSize; ++column) {
+				for (int row = 0; row < boardSize; ++row) {
+					Position position = new Position(column, row);
+					int id = snapshot.getAgentId(position);
+					Cell cell = cells.get(position);
+					cell.setAgentColor(Cell.colorForAgent(id));
+					cell.updateUI();
 				}
-				Cell cell = cells.get(position);
-				cell.setAgentColor(Cell.colorForAgent(id));
-				cell.updateUI();	
 			}
 		}
-		
-		System.out.println("ids count : " + ids.size());
 	}
 }

@@ -19,10 +19,10 @@ public class Observable implements IObservable {
 	}
 
 	@Override
-	public void notifyObservers() {
+	public void notifyObservers(Object arg) {
 		if(dirty) {
 			for (Observer observer : observers) {
-				observer.update();
+				observer.update(arg);
 			}
 			dirty = false;
 		}

@@ -1,19 +1,15 @@
 package SMATP3.controller;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.BoundedRangeModel;
-import javax.swing.DefaultBoundedRangeModel;
-import javax.swing.JComboBox;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import SMATP3.model.Grid;
 import SMATP3.model.Snapshot;
+import SMATP3.model.components.AgentCountSpinnerModel;
 import SMATP3.model.strategies.Strategy;
 import SMATP3.view.MainWindow;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
 
 public class Controller {
 	private MainWindow window;
@@ -23,7 +19,8 @@ public class Controller {
 	private StopAction stopAction = new StopAction();
 	private ResetAction resetAction = new ResetAction();
 	private RandomizeAction randomizeAction = new RandomizeAction();
-	private SliderListener speedSliderListener = new SliderListener();
+	private SpeedSliderListener speedSliderListener = new SpeedSliderListener();
+	private GridSizeSpinnerListener gridSizeSpinnerListener = new GridSizeSpinnerListener();
 	private BoundedRangeModel speedBounds = new DefaultBoundedRangeModel(5, 0, 0, 10);
 
 	public Controller() {
@@ -60,16 +57,20 @@ public class Controller {
 		return speedBounds;
 	}
 
-	public SliderListener getSpeedSliderListener() {
+	public SpeedSliderListener getSpeedSliderListener() {
 		return speedSliderListener;
 	}
 	
+
+	public GridSizeSpinnerListener getGridSizeSpinnerListener() {
+		return gridSizeSpinnerListener;
+	}
 
 	public static void main(String[] args) {
 		Controller controller = new Controller();
 	}
 
-	public class StartAction extends AbstractAction {
+	private class StartAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		public StartAction() {
@@ -87,7 +88,7 @@ public class Controller {
 		}
 	}
 
-	public class StopAction extends AbstractAction {
+	private class StopAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		public StopAction() {
@@ -106,7 +107,7 @@ public class Controller {
 		}
 	}
 
-	public class ResetAction extends AbstractAction {
+	private class ResetAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 		
 		private Snapshot originalState;
@@ -126,7 +127,7 @@ public class Controller {
 		}
 	}
 
-	public class RandomizeAction extends AbstractAction {
+	private class RandomizeAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
 		public RandomizeAction() {
@@ -147,7 +148,7 @@ public class Controller {
 		}
 	}
 
-	private class SliderListener implements ChangeListener {
+	private class SpeedSliderListener implements ChangeListener {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			JSlider slider = (JSlider)e.getSource();
@@ -156,17 +157,21 @@ public class Controller {
 			}
 		}
 	}
-	
-	// TODO utile ? va-t-on changer la strategie en cours de partie ??
-	private class StrategyListener implements ChangeListener {
+
+	private class GridSizeSpinnerListener implements ChangeListener {
+
 		@Override
 		public void stateChanged(ChangeEvent e) {
-			JComboBox<Strategy> comboBox = (JComboBox<Strategy>) e.getSource();
-			Strategy selectedStrategy = (Strategy) comboBox.getSelectedItem();
-			if (grid.getCurrentStrategy() != selectedStrategy) {
-				grid.setCurrentStrategy(selectedStrategy);
+			JSpinner gridSizeSpinner = (JSpinner) e.getSource();
+			int gridSize = ((Integer) gridSizeSpinner.getValue());
+			int max = gridSize * gridSize - 1;
+
+			JSpinner agentCountSpinner = window.getAgentCountSpinner();
+			AgentCountSpinnerModel agentCountModel = (AgentCountSpinnerModel) agentCountSpinner.getModel();
+			agentCountModel.setMaximum(max);
+			if(((Integer) agentCountSpinner.getValue()) > max) {
+				agentCountSpinner.setValue(max);
 			}
 		}
 	}
-	
 }

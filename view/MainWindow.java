@@ -6,13 +6,13 @@ import SMATP3.model.Grid;
 import SMATP3.model.components.AgentCountSpinnerModel;
 import SMATP3.model.components.GridSizeSpinnerModel;
 import SMATP3.model.strategies.Strategy;
+import SMATP3.utils.Observer;
 
 import javax.swing.*;
-
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements Observer {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,10 +33,7 @@ public class MainWindow extends JFrame {
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setResizable(false);
 
-
 		getContentPane().setLayout(new BorderLayout(LAYOUT_SPACING, LAYOUT_SPACING));
-		//setGrid(controller.getGrid());
-
 		
 		controlPanel = new JToolBar(JToolBar.VERTICAL);
 		SpringLayout panelLayout = new SpringLayout();
@@ -49,7 +46,7 @@ public class MainWindow extends JFrame {
 		panelLayout.putConstraint(SpringLayout.NORTH, gridSizeLabel, LAYOUT_SPACING, SpringLayout.NORTH, controlPanel);
 
 		gridSizeSpinner = new JSpinner(new GridSizeSpinnerModel());
-		gridSizeSpinner.setValue(Grid.DEFAULT_GRID_SIZE);
+		gridSizeSpinner.addChangeListener(controller.getGridSizeSpinnerListener());
 		controlPanel.add(gridSizeSpinner);
 		panelLayout.putConstraint(SpringLayout.EAST, gridSizeSpinner, -LAYOUT_SPACING, SpringLayout.EAST, controlPanel);
 		panelLayout.putConstraint(SpringLayout.NORTH, gridSizeSpinner, LAYOUT_SPACING, SpringLayout.NORTH, controlPanel);
@@ -169,5 +166,15 @@ public class MainWindow extends JFrame {
 
 	public JSlider getSpeedSlider() {
 		return speedSlider;
+	}
+
+	@Override
+	public void update(Object arg) {
+		if(arg == Grid.NotificationCode.PUZZLE_SOLVED) {
+			// Déclenche un clic sur le bouton pour le repasser a 'Start'.
+			// Cela n'a pas d'influence sur le modèle puisque les agents sont déjà arrêtés,
+			startStopButton.doClick();
+			//TODO: notifier la vue depuis le modèle (une seule fois!)
+		}
 	}
 }

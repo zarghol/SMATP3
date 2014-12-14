@@ -66,6 +66,9 @@ public class Agent implements Runnable {
 				goOn = false;
 			}
 		}
+		synchronized (lockRunning) {
+			running = false;
+		}
 	}
 
 	public void start() {

@@ -1,6 +1,7 @@
 package SMATP3.model.strategies;
 
 import SMATP3.model.Agent;
+import SMATP3.model.messages.ConversationStatus;
 import SMATP3.model.messages.Message;
 
 public interface ThinkingStrategy {
@@ -13,6 +14,6 @@ public interface ThinkingStrategy {
 	 * @param agent l'agent recevant le message
 	 * @return true si on ferme la discussion, false sinon
 	 */
-	public abstract boolean handleMessage(Message message, Agent agent);
+	public abstract ConversationStatus handleMessage(Message message, Agent agent);
 	
 }

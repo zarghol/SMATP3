@@ -2,6 +2,7 @@ package SMATP3.model.strategies;
 
 import SMATP3.model.Agent;
 import SMATP3.model.messages.Action;
+import SMATP3.model.messages.ConversationStatus;
 import SMATP3.model.messages.Message;
 import SMATP3.model.messages.Performative;
 import SMATP3.model.strategies.dependencies.LeadGroup;
@@ -25,6 +26,7 @@ public class LeadGroupStrategy implements ThinkingStrategy {
 			Position newPosition = new Position(0, 0);
 			m.addComplementaryInformation(newPosition, "position");
 			m.addRecipientId(0);
+			agent.sendMessage(m, ConversationStatus.NOCHANGE);
 			
 			// TODO on se déplace soi meme
 		}
@@ -39,14 +41,14 @@ public class LeadGroupStrategy implements ThinkingStrategy {
 	}
 
 	@Override
-	public boolean handleMessage(Message message, Agent agent) {
+	public ConversationStatus handleMessage(Message message, Agent agent) {
 		if (message.getPerformative() == Performative.ORDER) {
 			if (message.getAction() == Action.MOVE) {
 				Position p = (Position) message.getComplementaryInformationForName("position");
 				agent.move(p);
 			}
 		}
-		return true;
+		return ConversationStatus.NOCHANGE;
 	}
 	
 	public void setGroup(LeadGroup group) {

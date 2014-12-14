@@ -138,9 +138,8 @@ public class Controller {
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("creation grille");
 			grid = new Grid((Integer) window.getGridSizeSpinner().getValue(), (Integer) window.getAgentCountSpinner().getValue(), (Strategy) window.getStrategyPicker().getSelectedItem());
-			grid.setVerbose(false);
+			grid.setVerbose(true);
 			
-			System.out.println("application de la grille a la window");
 			window.setGrid(grid);
 			
 			getResetAction().setOriginalState(grid.getSnapshot());

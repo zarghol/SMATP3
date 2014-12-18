@@ -6,6 +6,7 @@ import SMATP3.model.messages.ConversationStatus;
 import SMATP3.model.messages.Message;
 import SMATP3.model.messages.Performative;
 import SMATP3.model.strategies.dependencies.LeadGroup;
+import SMATP3.utils.Direction;
 import SMATP3.utils.Position;
 
 public class LeadGroupStrategy extends GroupStrategy {
@@ -14,22 +15,31 @@ public class LeadGroupStrategy extends GroupStrategy {
 	public void reflexionAction(Agent agent) {
 		// si on est le leader
 		if (agent.getId() == ((LeadGroup) this.group).getLeader()) {
-			// TODO on donne des ordres en fonction de la situation actuelle
-			// comment ? utilisation de dijkstra ?
+			for (Agent a : this.group.getMembers()) {
+				// strategie particuliere pour chaque agent : semblable a SimpleStrategy
+				Direction toFollow = Direction.directionDifferential(a.getPosition(), a.getAimPosition());
+				Position newPosition = a.getPosition().towardDirection(toFollow);
 
-			// pour les ordres
-			Message m = agent.getNewMessage();
-			m.setPerformative(Performative.ORDER);
-			m.setAction(Action.MOVE);
-			Position newPosition = new Position(0, 0);
-			m.addComplementaryInformation(newPosition, "position");
-			m.addRecipientId(0);
-			agent.sendMessage(m, ConversationStatus.NOCHANGE);
-
-			// TODO on se déplace soi meme
+				if (!a.getSnapshot().isPositionOccupied(newPosition)) {
+					if (a != agent) {
+						this.giveOrder(agent, newPosition);
+					} else {
+						a.move(newPosition);
+					}
+				}
+				
+			}
 		}
-
-		// sinon on suit les ordres qui est dans un message, donc ici, rien
+	}
+	
+	private void giveOrder(Agent leader, Position newPosition) {
+		// pour les ordres
+		Message m = leader.getNewMessage();
+		m.setPerformative(Performative.ORDER);
+		m.setAction(Action.MOVE);
+		m.addComplementaryInformation(newPosition, "position");
+		m.addRecipientId(0);
+		leader.sendMessage(m, ConversationStatus.NOCHANGE);
 	}
 
 	@Override

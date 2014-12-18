@@ -63,7 +63,6 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 			response.addRecipientId(message.getEmitterId());
 			
 			int numTentative = (int) message.getComplementaryInformationForName("attempt");
-			// TODO : switch ou pattern Strategie / Etat ????
 			if (numTentative == 1) {
 				if (agent.isHappy() || agent.getSnapshot().getEmptyNeighbourhood(agent.getPosition()).size() == 0) {
 					response.setAction(Action.REFUSED);
@@ -100,7 +99,6 @@ public class UtilityDialogStrategy implements ThinkingStrategy {
 				// NAN MAIS OH ! T'AS PAS LE DROIT DE REFUSER !! GRRRRR !
 				// recherche alternative pour l'autre
 				int numTentative = (int) message.getComplementaryInformationForName("attempt");
-				// TODO : switch ou pattern Strategie / Etat ????
 				if (numTentative == 1) {
 					Position p = (Position) message.getComplementaryInformationForName("aimPosition");
 					ArrayList<Position> emptyNeighbourhood = agent.getSnapshot().getEmptyNeighbourhood(p);

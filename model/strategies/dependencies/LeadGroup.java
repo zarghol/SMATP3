@@ -11,7 +11,9 @@ public class LeadGroup extends Group {
 
 	public LeadGroup(Grid grid, Collection<Agent> agents) {
 		super(grid, agents);
-		this.electLeader();
+		if (this.agents.size() > 0) {
+			this.electLeader();
+		}
 	}
 
 	@Override

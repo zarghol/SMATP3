@@ -16,7 +16,6 @@ public class Agent implements Runnable {
 	private final Grid grid;
 	private final PostOffice postOffice;
 	private final Position aimPosition;
-	// TODO: revoir : sert à savoir si on est en attente de message. Si oui, on bouge pas, on attends les réponses
 	private int numberOfMessagesWaited;
 	private Position position;
 	private Snapshot snapshot;

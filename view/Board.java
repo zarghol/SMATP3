@@ -3,15 +3,12 @@ package SMATP3.view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
-import SMATP3.model.Agent;
 import SMATP3.model.Grid;
 import SMATP3.model.Snapshot;
 import SMATP3.utils.Observer;

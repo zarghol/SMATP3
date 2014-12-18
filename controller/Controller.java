@@ -22,6 +22,7 @@ public class Controller {
 	private RandomizeAction randomizeAction = new RandomizeAction();
 	private SpeedSliderListener speedSliderListener = new SpeedSliderListener();
 	private GridSizeSpinnerListener gridSizeSpinnerListener = new GridSizeSpinnerListener();
+	private AgentCountSpinnerListener agentCountSpinnerListener = new AgentCountSpinnerListener();
 	private BoundedRangeModel speedBounds = new DefaultBoundedRangeModel(5, 0, 0, 10);
 
 	public Controller() {
@@ -65,6 +66,10 @@ public class Controller {
 
 	public GridSizeSpinnerListener getGridSizeSpinnerListener() {
 		return gridSizeSpinnerListener;
+	}
+	
+	public AgentCountSpinnerListener getAgentCountSpinnerListener() {
+		return agentCountSpinnerListener;
 	}
 
 	public static void main(String[] args) {
@@ -167,6 +172,15 @@ public class Controller {
 			if(((Integer) agentCountSpinner.getValue()) > max) {
 				agentCountSpinner.setValue(max);
 			}
+			getRandomizeAction().actionPerformed(null);
+		}
+	}
+	
+	public class AgentCountSpinnerListener implements ChangeListener {
+		
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			getRandomizeAction().actionPerformed(null);
 		}
 	}
 }

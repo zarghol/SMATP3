@@ -9,6 +9,7 @@ import SMATP3.model.strategies.Strategy;
 import SMATP3.utils.Observer;
 
 import javax.swing.*;
+
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 
@@ -27,13 +28,16 @@ public class MainWindow extends JFrame implements Observer {
 	private JButton randomizeButton;
 	private JButton startStopButton;
 	private JSlider speedSlider;
+	private JPanel panelBoard;
 
 	public MainWindow(Controller controller) throws HeadlessException {
 		this.setTitle("SMA TP3");
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setResizable(false);
+		 JPanel panelPrincipal = new JPanel();
+		 panelPrincipal.setLayout(new BorderLayout(LAYOUT_SPACING, LAYOUT_SPACING));
+		
 
-		getContentPane().setLayout(new BorderLayout(LAYOUT_SPACING, LAYOUT_SPACING));
 		
 		controlPanel = new JToolBar(JToolBar.VERTICAL);
 		SpringLayout panelLayout = new SpringLayout();
@@ -57,6 +61,7 @@ public class MainWindow extends JFrame implements Observer {
 		panelLayout.putConstraint(SpringLayout.NORTH, agentCountLabel, LAYOUT_SPACING, SpringLayout.SOUTH, gridSizeSpinner);
 
 		agentCountSpinner = new JSpinner(new AgentCountSpinnerModel());
+		agentCountSpinner.addChangeListener(controller.getAgentCountSpinnerListener());
 		agentCountSpinner.setValue(Grid.DEFAULT_AGENT_COUNT);
 		controlPanel.add(agentCountSpinner);
 		panelLayout.putConstraint(SpringLayout.EAST, agentCountSpinner, -LAYOUT_SPACING, SpringLayout.EAST, controlPanel);
@@ -124,18 +129,25 @@ public class MainWindow extends JFrame implements Observer {
 
 		panelLayout.putConstraint(SpringLayout.EAST, controlPanel, LAYOUT_SPACING, SpringLayout.EAST, startStopButton);
 
-		this.getContentPane().add(controlPanel, BorderLayout.WEST);
-
+		this.panelBoard = new JPanel();
+		
+		
+		panelPrincipal.add(controlPanel, BorderLayout.WEST);
+		panelPrincipal.add(panelBoard, BorderLayout.CENTER);
+		//this.getContentPane().add(controlPanel, BorderLayout.WEST);
+		this.setContentPane(panelPrincipal);
 		this.setVisible(true);
 	}
 
 	public void setGrid(Grid grid) {
 		grid.registerObserver(this);
 		if(board != null) {
-			getContentPane().remove(board);
+			this.panelBoard.remove(board);
 		}
 		board = new Board(grid);
-		getContentPane().add(board, BorderLayout.CENTER);
+		this.panelBoard.add(board, BorderLayout.CENTER);
+		
+		this.panelBoard.setSize(board.getSize());
 		this.validate();
 		this.repaint();
 		this.pack();

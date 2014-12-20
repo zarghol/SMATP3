@@ -73,6 +73,7 @@ public class MainWindow extends JFrame implements Observer {
 		panelLayout.putConstraint(SpringLayout.NORTH, strategyPickerLabel, LAYOUT_SPACING, SpringLayout.SOUTH, agentCountSpinner);
 
 		strategyPicker = new JComboBox<>(Strategy.values());
+		strategyPicker.addActionListener(controller.getRandomizeAction());
 		controlPanel.add(strategyPicker);
 		panelLayout.putConstraint(SpringLayout.EAST, strategyPicker, -LAYOUT_SPACING, SpringLayout.EAST, controlPanel);
 		panelLayout.putConstraint(SpringLayout.NORTH, strategyPicker, LAYOUT_SPACING, SpringLayout.SOUTH, agentCountSpinner);
@@ -131,26 +132,34 @@ public class MainWindow extends JFrame implements Observer {
 
 		this.panelBoard = new JPanel();
 		
-		
 		panelPrincipal.add(controlPanel, BorderLayout.WEST);
 		panelPrincipal.add(panelBoard, BorderLayout.CENTER);
 		//this.getContentPane().add(controlPanel, BorderLayout.WEST);
 		this.setContentPane(panelPrincipal);
+		// utile pour éviter le bug de la fenetre vide planté au début.
+		this.setBoard(new Board(Grid.DEFAULT_GRID_SIZE));
 		this.setVisible(true);
 	}
-
-	public void setGrid(Grid grid) {
-		grid.registerObserver(this);
-		if(board != null) {
-			this.panelBoard.remove(board);
+	
+	
+	private void setBoard(Board board) {
+		if(this.board != null) {
+			this.panelBoard.remove(this.board);
 		}
-		board = new Board(grid);
-		this.panelBoard.add(board, BorderLayout.CENTER);
+		this.board = board;
+		this.panelBoard.add(this.board);
 		
 		this.panelBoard.setSize(board.getSize());
 		this.validate();
 		this.repaint();
 		this.pack();
+	}
+
+	public void setGrid(Grid grid) {
+		grid.registerObserver(this);
+
+		Board board = new Board(grid);
+		this.setBoard(board);
 	}
 
 	public JSpinner getGridSizeSpinner() {

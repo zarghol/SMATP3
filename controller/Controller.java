@@ -2,7 +2,6 @@ package SMATP3.controller;
 
 import SMATP3.model.Agent;
 import SMATP3.model.Grid;
-import SMATP3.model.Snapshot;
 import SMATP3.model.components.AgentCountSpinnerModel;
 import SMATP3.model.strategies.Strategy;
 import SMATP3.view.MainWindow;
@@ -22,12 +21,15 @@ public class Controller {
 	private RandomizeAction randomizeAction = new RandomizeAction();
 	private SpeedSliderListener speedSliderListener = new SpeedSliderListener();
 	private GridSizeSpinnerListener gridSizeSpinnerListener = new GridSizeSpinnerListener();
-	private AgentCountSpinnerListener agentCountSpinnerListener = new AgentCountSpinnerListener();
+	private RandomizerListener agentCountSpinnerListener = new RandomizerListener();
 	private BoundedRangeModel speedBounds = new DefaultBoundedRangeModel(5, 0, 0, 10);
 
 	public Controller() {
 		System.out.println("creation de la fenetre");
 		this.window = new MainWindow(this);
+	}
+	
+	public void launch() {
 		this.randomizeAction.actionPerformed(null);
 	}
 
@@ -68,12 +70,13 @@ public class Controller {
 		return gridSizeSpinnerListener;
 	}
 	
-	public AgentCountSpinnerListener getAgentCountSpinnerListener() {
+	public RandomizerListener getAgentCountSpinnerListener() {
 		return agentCountSpinnerListener;
 	}
 
 	public static void main(String[] args) {
 		Controller controller = new Controller();
+		controller.launch();
 	}
 
 	public class StartAction extends AbstractAction {
@@ -137,13 +140,10 @@ public class Controller {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println("creation grille");
 			Agent.resetIds();
 			grid = new Grid((Integer) window.getGridSizeSpinner().getValue(), (Integer) window.getAgentCountSpinner().getValue(), (Strategy) window.getStrategyPicker().getSelectedItem());
-			grid.setVerbose(true);
-			
+			grid.setVerbose(false);
 			window.setGrid(grid);
-
 			getStopAction().actionPerformed(null);
 		}
 	}
@@ -176,7 +176,7 @@ public class Controller {
 		}
 	}
 	
-	public class AgentCountSpinnerListener implements ChangeListener {
+	public class RandomizerListener implements ChangeListener {
 		
 		@Override
 		public void stateChanged(ChangeEvent e) {
